@@ -8,7 +8,7 @@
   <meta name="application-name" content="PILECOUNT.">
   <meta name="build-type" content="Internal Engineering Evaluation &amp; Field Test Build">
   <meta name="description" content="Acoustic Pile Driving &amp; Pile Cap Blow Count Audio Processor and Foot-by-Foot Lap Logger designed by Julian Gomez-Rodriguez for heavy highway and bridge infrastructure field testing.">
-  <title>PILECOUNT. — Acoustic Pile Driving &amp; Foot-by-Foot Blow Counter (DelDOT / AASHTO)</title>
+  <title>PILECOUNT. — Acoustic Pile Driving &amp; Foot-by-Foot Lap Counter (Standard Spec Section 605)</title>
 
   <!-- ========================================================================== -->
   <!-- PILECOUNT. - SYSTEM ARCHITECTURE & FIELD ENGINEERING SPECIFICATION        -->
@@ -158,6 +158,14 @@
         width: 100% !important;
         padding: 0 !important;
       }
+      #delDotSheetModalContent input {
+        border: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+        font-weight: 700 !important;
+        color: #000000 !important;
+        box-shadow: none !important;
+      }
     }
   </style>
 </head>
@@ -178,15 +186,21 @@
           INTERNAL TEST BUILD
         </span>
         <span class="text-[10px] font-mono tracking-wider text-gray-500 uppercase hidden lg:inline">
-          DEV: JULIAN GOMEZ-RODRIGUEZ
+          [ SEC. 605 DRIVEN PILES • MOBILE COCKPIT ]
         </span>
       </div>
 
-      <!-- Quick Action: DelDOT Sheet Modal & Equipment -->
+      <!-- Quick Action: Field Sheet Modal, New Pile & Equipment -->
       <div class="flex flex-wrap items-center gap-2 font-mono text-xs w-full sm:w-auto justify-between sm:justify-end">
         <button onclick="openDelDotSheetModal()" class="px-3 py-1.5 bg-ink text-white hover:bg-signal font-bold uppercase transition flex items-center space-x-1.5 border border-ink text-[11px]">
           <i class="ph-bold ph-table text-sm"></i>
-          <span>DELDOT SHEET VIEW</span>
+          <span>FIELD SHEET VIEW</span>
+        </button>
+
+        <!-- Prominent Top Start New Pile Button -->
+        <button onclick="openResetModal()" class="px-2.5 py-1.5 bg-white border-2 border-black/30 hover:bg-signal hover:text-white hover:border-signal text-ink font-bold uppercase transition flex items-center space-x-1.5 text-[11px] shadow-sm" title="Erase current data and start a new pile">
+          <i class="ph-bold ph-arrow-counter-clockwise text-xs"></i>
+          <span>START NEW PILE</span>
         </button>
 
         <select id="selectHammerType" class="bg-white border-2 border-ink text-xs font-bold text-ink px-2.5 py-1 focus:outline-none shadow-sm">
@@ -197,8 +211,13 @@
         </select>
 
         <div id="headerStatusBadge" class="flex items-center space-x-1.5 px-2.5 py-1 bg-white border border-black/20 text-ink font-bold text-[11px]">
-          <span class="w-2 h-2 rounded-full bg-gray-400" id="headerStatusDot"></span>
-          <span id="headerStatusText">AUTO</span>
+          <span class="w-2 h-2 rounded-full bg-signal" id="headerStatusDot"></span>
+          <span id="headerStatusText">MANUAL</span>
+        </div>
+
+        <div id="headerCacheBadge" class="flex items-center space-x-1 px-2 py-1 bg-emerald/10 border border-emerald/30 text-emerald text-[10px] font-mono font-bold" title="Logs and counts auto-saved in browser local cache">
+          <i class="ph-bold ph-hard-drive"></i>
+          <span id="headerCacheText">SAVED</span>
         </div>
       </div>
 
@@ -216,48 +235,49 @@
     <section class="space-y-2">
       <div class="flex items-center justify-between font-mono text-xs">
         <span class="text-gray-500 uppercase tracking-widest">[ STEP 01 / OPERATING MODE ]</span>
-        <span class="font-bold text-ink uppercase text-[11px]" id="lblActiveModeTitle">MODE: AUTOMATIC MIC</span>
+        <span class="font-bold text-ink uppercase text-[11px]" id="lblActiveModeTitle">MODE: MANUAL CLICKER (PRIMARY FIELD MODE)</span>
       </div>
 
       <div class="bg-white border border-black/15 p-3 sm:p-4 space-y-3 shadow-sm">
         
-        <!-- 3 Primary Mode Switcher Tabs -->
+        <!-- 4 Mode Switcher Tabs (2x2 Grid on Mobile, 1x4 on Desktop) -->
+        <!-- MANUAL CLICKER IS #1 AND ACTIVE BY DEFAULT -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-xs">
-          <button id="btnModeAuto" class="p-2.5 bg-ink text-white font-bold border-2 border-ink flex flex-col items-center justify-center space-y-0.5 transition text-center shadow-sm">
-            <span class="flex items-center space-x-1 text-xs uppercase">
-              <i class="ph-bold ph-microphone"></i>
-              <span>1. AUTOMATIC</span>
-            </span>
-            <span class="text-[9px] font-normal opacity-80">[ Mic Detects Blows ]</span>
-          </button>
-
-          <button id="btnModeManual" class="p-2.5 bg-chalk hover:bg-black/10 text-ink font-bold border-2 border-black/20 flex flex-col items-center justify-center space-y-0.5 transition text-center">
-            <span class="flex items-center space-x-1 text-xs uppercase">
+          <button id="btnModeManual" class="p-2 sm:p-2.5 bg-ink text-white font-bold border-2 border-ink flex flex-col items-center justify-center space-y-0.5 transition text-center shadow-sm w-full">
+            <span class="flex items-center space-x-1 text-[11px] sm:text-xs uppercase">
               <i class="ph-bold ph-hand-tap"></i>
-              <span>2. MANUAL CLICKER</span>
+              <span>1. MANUAL CLICKER</span>
             </span>
-            <span class="text-[9px] font-normal text-gray-500">[ Tap Strike (+1) ]</span>
+            <span class="text-[9px] font-normal opacity-75 leading-tight">[ Primary Field Mode ]</span>
           </button>
 
-          <button id="btnModeRecording" class="p-2.5 bg-chalk hover:bg-black/10 text-ink font-bold border-2 border-black/20 flex flex-col items-center justify-center space-y-0.5 transition text-center">
-            <span class="flex items-center space-x-1 text-xs uppercase">
+          <button id="btnModeAuto" class="p-2 sm:p-2.5 bg-chalk hover:bg-black/10 text-ink font-bold border-2 border-black/20 flex flex-col items-center justify-center space-y-0.5 transition text-center w-full">
+            <span class="flex items-center space-x-1 text-[11px] sm:text-xs uppercase">
+              <i class="ph-bold ph-microphone"></i>
+              <span>2. AUTOMATIC (BETA)</span>
+            </span>
+            <span class="text-[9px] font-normal opacity-75 leading-tight">[ Mic Detects Blows ]</span>
+          </button>
+
+          <button id="btnModeRecording" class="p-2 sm:p-2.5 bg-chalk hover:bg-black/10 text-ink font-bold border-2 border-black/20 flex flex-col items-center justify-center space-y-0.5 transition text-center w-full">
+            <span class="flex items-center space-x-1 text-[11px] sm:text-xs uppercase">
               <i class="ph-bold ph-waveform"></i>
               <span>3. FILE UPLOAD</span>
             </span>
-            <span class="text-[9px] font-normal text-gray-500">[ .m4a / .wav Memo ]</span>
+            <span class="text-[9px] font-normal opacity-75 leading-tight">[ .m4a / .wav Memo ]</span>
           </button>
 
-          <button id="btnModeSimulator" class="p-2.5 bg-chalk hover:bg-black/10 text-ink font-bold border-2 border-black/20 flex flex-col items-center justify-center space-y-0.5 transition text-center col-span-2 sm:col-span-1">
-            <span class="flex items-center space-x-1 text-xs uppercase">
+          <button id="btnModeSimulator" class="p-2 sm:p-2.5 bg-chalk hover:bg-black/10 text-ink font-bold border-2 border-black/20 flex flex-col items-center justify-center space-y-0.5 transition text-center w-full">
+            <span class="flex items-center space-x-1 text-[11px] sm:text-xs uppercase">
               <i class="ph-bold ph-play-circle"></i>
-              <span>SIMULATOR DEMO</span>
+              <span>4. SIMULATOR DEMO</span>
             </span>
-            <span class="text-[9px] font-normal text-gray-500">[ 52 BPM Demo ]</span>
+            <span class="text-[9px] font-normal opacity-75 leading-tight">[ 52 BPM Demo ]</span>
           </button>
         </div>
 
-        <!-- Automatic Mic Settings Bar -->
-        <div id="panelAutoMode" class="grid grid-cols-1 sm:grid-cols-12 gap-2 pt-1">
+        <!-- Automatic Mic Settings Bar (Hidden by default in Manual Mode) -->
+        <div id="panelAutoMode" class="hidden grid-cols-1 sm:grid-cols-12 gap-2 pt-1">
           <div class="sm:col-span-5 font-mono text-xs">
             <select id="selectAudioInputDevice" class="w-full bg-chalk border border-black/20 text-ink text-xs font-bold p-2 focus:outline-none">
               <option value="">Default Smartphone Microphone</option>
@@ -319,21 +339,26 @@
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center font-mono">
           <!-- Current Penetration Depth Setting -->
           <div class="p-3 bg-chalk border border-black/15 text-left">
-            <span class="text-[10px] text-gray-500 uppercase tracking-wider block font-bold">STARTING DEPTH:</span>
+            <span class="text-[10px] text-gray-500 uppercase tracking-wider block font-bold" id="lblDepthInputTitle">STARTING DEPTH:</span>
             <div class="flex items-baseline space-x-1.5 mt-0.5">
-              <input id="inputCurrentDepthFeet" type="number" step="1" value="17" class="w-16 bg-white border-2 border-ink text-2xl sm:text-3xl font-mono font-black text-center text-ink p-0.5 tabular-num focus:outline-none">
-              <span class="editorial-title text-2xl uppercase text-ink">FT</span>
+              <input id="inputCurrentDepthFeet" type="number" step="1" value="17" class="w-14 bg-white border-2 border-ink text-2xl sm:text-3xl font-mono font-black text-center text-ink p-0.5 tabular-num focus:outline-none">
+              <span class="editorial-title text-xl uppercase text-ink">FT</span>
+              
+              <div id="containerInchInput" class="hidden flex items-baseline space-x-1 pl-1 border-l border-black/20">
+                <input id="inputCurrentDepthInches" type="number" min="0" max="11" step="1" value="0" class="w-12 bg-white border-2 border-ink text-2xl sm:text-3xl font-mono font-black text-center text-signal p-0.5 tabular-num focus:outline-none">
+                <span class="editorial-title text-xl uppercase text-signal">IN</span>
+              </div>
             </div>
-            <span class="text-[10px] text-gray-500 block mt-0.5">Lap: <b id="lblDepthIntervalBadge" class="text-ink">17' &rarr; 18'</b></span>
+            <span class="text-[10px] text-gray-500 block mt-0.5">Interval: <b id="lblDepthIntervalBadge" class="text-ink">17' &rarr; 18'</b></span>
           </div>
 
-          <!-- Active Foot Blow Count -->
+          <!-- Active Foot / Inch Blow Count -->
           <div class="p-3 bg-chalk border border-black/15">
-            <span class="text-[10px] text-gray-500 uppercase tracking-wider block font-bold">ACTIVE FOOT BLOWS</span>
+            <span class="text-[10px] text-gray-500 uppercase tracking-wider block font-bold" id="lblActiveIntervalTitle">ACTIVE FOOT BLOWS</span>
             <div id="lblCurrentFootBlowCount" class="editorial-title text-4xl sm:text-5xl text-signal tabular-num my-0.5">
               0
             </div>
-            <span class="text-[10px] text-gray-500">Foot <span id="lblActiveFootBadge" class="font-bold text-ink">17'</span></span>
+            <span class="text-[10px] text-gray-500" id="lblActiveIntervalSubtext">Foot <span id="lblActiveFootBadge" class="font-bold text-ink">17'</span></span>
           </div>
 
           <!-- Total Cumulative Blows -->
@@ -352,6 +377,32 @@
               0.0
             </div>
             <span class="text-[10px] text-gray-500" id="lblBpmSubtext">LIVE CADENCE</span>
+          </div>
+        </div>
+
+        <!-- ====================================================== -->
+        <!-- INTERVAL UNIT SWITCHER: FT (FEET) vs IN (INCHES)      -->
+        <!-- Right above the action buttons for instant access!     -->
+        <!-- ====================================================== -->
+        <div class="flex flex-wrap items-center justify-between bg-chalk border border-black/20 p-2.5 font-mono text-xs gap-2">
+          <div class="flex items-center space-x-2">
+            <span class="text-gray-500 font-bold uppercase text-[10px] flex items-center space-x-1">
+              <i class="ph-bold ph-scales text-sm text-signal"></i>
+              <span>INTERVAL UNIT:</span>
+            </span>
+            <div class="inline-flex border-2 border-ink bg-white shadow-sm" role="group">
+              <button id="btnUnitFeet" type="button" class="px-3.5 py-1 font-bold text-xs uppercase bg-ink text-white transition flex items-center space-x-1">
+                <i class="ph-bold ph-ruler"></i>
+                <span>FT (FEET)</span>
+              </button>
+              <button id="btnUnitInches" type="button" class="px-3.5 py-1 font-bold text-xs uppercase text-ink hover:bg-black/10 transition flex items-center space-x-1">
+                <i class="ph-bold ph-arrows-in-line-horizontal"></i>
+                <span>IN (INCHES)</span>
+              </button>
+            </div>
+          </div>
+          <div class="flex items-center space-x-1.5 text-[11px] text-gray-600 font-bold">
+            <span id="lblUnitHelperText">LOGGING: <b>1 FOOT INTERVAL</b> (Standard Spec limit &le; 120 blows/ft)</span>
           </div>
         </div>
 
@@ -412,16 +463,20 @@
           BLOW DETECTED!
         </div>
 
-        <!-- Filter Badges & DelDOT Status Bar -->
+        <!-- Filter Badges & Spec 605 Status Bar -->
         <div class="pt-2 border-t border-black/15 flex flex-wrap justify-between items-center text-xs font-mono gap-2">
           <div class="flex items-center space-x-2">
-            <span class="text-gray-500 font-bold uppercase text-[10px]">DELDOT 605.3.8:</span>
+            <span class="text-gray-500 font-bold uppercase text-[10px]">SPEC 605.3.8:</span>
             <span id="lblDelDOTComplianceStatus" class="font-bold px-2 py-0.5 bg-emerald/10 border border-emerald text-emerald text-[11px]">PASS (&le; 120 BLOWS/FT)</span>
           </div>
           <div class="flex items-center space-x-2">
-            <span id="badgeVoiceVAD" class="px-2 py-0.5 text-[9px] font-bold bg-white border border-black/20 text-gray-400">VOICE: REJECTED</span>
-            <span id="badgeEchoLockout" class="px-2 py-0.5 text-[9px] font-bold bg-white border border-black/20 text-gray-400">ECHO: LOCKED</span>
-            <button id="btnResetAllCounters" class="px-2 py-0.5 bg-white border border-black/30 hover:border-black text-ink font-bold text-[10px] uppercase transition ml-1">
+            <span id="badgeVoiceVAD" class="px-2 py-0.5 text-[9px] font-bold bg-white border border-black/20 text-gray-400">MANUAL TALLY</span>
+            <span id="badgeEchoLockout" class="px-2 py-0.5 text-[9px] font-bold bg-white border border-black/20 text-gray-400">ZERO MIC LAG</span>
+            <span id="badgeCacheStatus" class="px-2 py-0.5 text-[9px] font-bold bg-emerald/10 border border-emerald text-emerald flex items-center space-x-1" title="Data is cached in browser local storage">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald"></span>
+              <span>CACHE: SAVED</span>
+            </span>
+            <button id="btnResetAllCounters" class="px-2 py-0.5 bg-white border border-black/30 hover:border-black text-ink font-bold text-[10px] uppercase transition ml-1" title="Clear all counts to start a new pile">
               Reset
             </button>
           </div>
@@ -442,7 +497,11 @@
         <div class="flex items-center space-x-2">
           <button onclick="openDelDotSheetModal()" class="bg-deldot text-white hover:bg-black px-3 py-1 font-bold uppercase transition text-[11px] flex items-center space-x-1">
             <i class="ph-bold ph-table"></i>
-            <span>OPEN DELDOT SHEET</span>
+            <span>OPEN FIELD SHEET</span>
+          </button>
+          <button id="btnBackupJson" onclick="downloadSessionBackupJson()" class="bg-white hover:bg-black hover:text-white border border-black/30 text-ink px-2.5 py-1 font-bold uppercase transition text-[11px] flex items-center space-x-1" title="Download instant JSON backup file">
+            <i class="ph-bold ph-floppy-disk"></i>
+            <span>BACKUP</span>
           </button>
           <button id="btnExportCsvFile" class="bg-white hover:bg-black hover:text-white border border-black/30 text-ink px-2.5 py-1 font-bold uppercase transition text-[11px] flex items-center space-x-1">
             <i class="ph-bold ph-file-csv"></i>
@@ -466,7 +525,7 @@
                 <th class="p-2 text-center">Cumulative</th>
                 <th class="p-2 text-center">Avg BPM</th>
                 <th class="p-2 text-center">Duration</th>
-                <th class="p-2 text-right">DelDOT Status</th>
+                <th class="p-2 text-right">Driving Status</th>
               </tr>
             </thead>
             <tbody id="footLogTableBody" class="divide-y divide-black/10">
@@ -475,7 +534,7 @@
                   <i class="ph-bold ph-clipboard-text text-xl mb-1 block text-gray-300"></i>
                   <span>NO FEET LOGGED YET</span>
                   <span class="block text-[10px] text-gray-400 mt-0.5">
-                    Tap "NEXT FOOT" as each pile mark passes to populate your DelDOT IDR table.
+                    Tap "NEXT FOOT" as each pile mark passes to populate your Daily Work Report (IDR) table.
                   </span>
                 </td>
               </tr>
@@ -512,50 +571,71 @@
             INTERNAL FIELD EVALUATION &bull; EXPERIMENTAL TESTING USE ONLY
           </p>
           <p class="text-gray-500 uppercase tracking-wide text-[9px]">
-            DelDOT Standard Specifications Section 605 Reference &bull; Acoustic DSP Pipeline
+            Standard Specifications Section 605 Reference &bull; Acoustic DSP Pipeline
           </p>
         </div>
       </div>
 
-      <!-- Legal Framework Notice Box -->
-      <div class="border-2 border-black/20 bg-white p-5 space-y-3 text-[10px] leading-relaxed text-gray-600 font-mono shadow-[2px_2px_0px_0px_rgba(17,17,17,0.15)]">
-        
-        <div class="flex items-center justify-between text-ink font-bold uppercase text-[11px] pb-2 border-b border-black/10">
+      <!-- Collapsible Legal Framework Accordion Trigger Button -->
+      <div class="space-y-0">
+        <button id="btnToggleLegalFramework" type="button" class="w-full bg-white hover:bg-black hover:text-white border-2 border-ink p-3 text-left font-mono text-xs font-bold text-ink transition flex items-center justify-between shadow-[2px_2px_0px_0px_rgba(17,17,17,1)] cursor-pointer group">
           <span class="flex items-center space-x-2">
             <i class="ph-bold ph-shield-warning text-signal text-base"></i>
-            <span class="tracking-wider">LEGAL FRAMEWORK, NON-ENDORSEMENT NOTICE &amp; TERMS OF USE</span>
+            <span class="uppercase tracking-wider">LEGAL FRAMEWORK, NON-ENDORSEMENT &amp; AI NOTICE</span>
           </span>
-          <span class="text-gray-400 text-[9px] font-normal tracking-widest">SPECIFICATION REF: DELDOT 605 / AASHTO LRFD</span>
+          <span class="flex items-center space-x-1.5 text-[10px] text-gray-500 group-hover:text-white font-normal">
+            <span id="lblLegalAccordionStatus">[ VIEW LEGAL NOTICE ▾ ]</span>
+          </span>
+        </button>
+
+        <!-- Collapsible Content (HIDDEN by default!) -->
+        <div id="panelLegalFrameworkContent" class="hidden border-2 border-t-0 border-ink bg-white p-5 space-y-3 text-[10px] leading-relaxed text-gray-600 font-mono shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
+          <div class="flex items-center justify-between text-ink font-bold uppercase text-[11px] pb-2 border-b border-black/10">
+            <span class="flex items-center space-x-2">
+              <i class="ph-bold ph-scales text-signal text-base"></i>
+              <span class="tracking-wider">TERMS OF USE, NON-ENDORSEMENT &amp; AI DISCLAIMER</span>
+            </span>
+            <span class="text-gray-400 text-[9px] font-normal tracking-widest">SPECIFICATION REF: STANDARD SPEC SECTION 605 / AASHTO LRFD</span>
+          </div>
+
+          <div class="space-y-2.5">
+            <p>
+              <strong class="text-ink font-bold">1. INDEPENDENT FIELD CALCULATION TOOL:</strong> <code>PILECOUNT.</code> is an independent engineering calculation and mobile audio processing utility created for heavy civil infrastructure field research, transient acoustic analysis, and inspection efficiency.
+            </p>
+
+            <p>
+              <strong class="text-ink font-bold">2. NON-ENDORSEMENT &amp; AFFILIATION DISCLAIMER:</strong> This software and its author are <strong>NOT</strong> affiliated with, sponsored by, authorized by, or officially endorsed by the <strong class="text-ink">Delaware Department of Transportation (DelDOT)</strong>, the <strong class="text-ink">American Association of State Highway and Transportation Officials (AASHTO)</strong>, the <strong class="text-ink">Federal Highway Administration (FHWA)</strong>, or any federal, state, county, or municipal government agency, nor any commercial software vendor or hammer manufacturer. Any citation or reference to <em>DelDOT Standard Specifications Section 605 (Driven Piles)</em>, <em>AASHTO LRFD Bridge Construction Specifications</em>, or standard <em>Inspector's Daily Work Reports (IDR / DWR)</em> is strictly for computational reference, technical benchmarking, and field alignment purposes.
+            </p>
+
+            <p>
+              <strong class="text-ink font-bold">3. EXPERIMENTAL PROTOTYPE &amp; TESTING PURPOSE:</strong> This system is distributed and deployed strictly as an <strong class="text-ink">INTERNAL TEST BUILD</strong> for experimental testing, field validation, and preliminary calculation assistance. It has NOT been certified or calibrated as an official, legally binding, or regulatory instrument of record.
+            </p>
+
+            <p>
+              <strong class="text-ink font-bold">4. PROFESSIONAL JUDGMENT &amp; INSPECTOR RESPONSIBILITY:</strong> Acoustic transient detection, automatic decibel thresholds, voice activity suppression, and cadence (BPM) estimations may be influenced by background ambient noise, reverberations off bridge caps or water bodies, microphone hardware limitations, and physical site geometry. The designated <strong class="text-ink">Certified Field Inspector, Project Engineer, or Resident Project Representative (RPR)</strong> retains sole and absolute responsibility for visually verifying pile markings, hammer drop heights, rebound, penetration rates, practical refusal determinations, and final approval of official construction inspection records.
+            </p>
+
+            <p>
+              <strong class="text-ink font-bold">5. "AS IS" DISCLAIMER &amp; LIMITATION OF LIABILITY:</strong> THIS SOFTWARE IS PROVIDED "AS IS" AND "WITH ALL FAULTS," WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, STRUCTURAL ACCURACY, OR FREEDOM FROM COMPUTATIONAL DEFECTS. UNDER NO CIRCUMSTANCES SHALL THE DEVELOPER, DELDOT, AASHTO, OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES, CONSTRUCTION DELAYS, EQUIPMENT WEAR, PILE OVERDRIVING, STRUCTURAL FOUNDATION CLAIMS, OR FINANCIAL LOSSES ARISING FROM THE USE OF OR INABILITY TO USE THIS APPLICATION.
+            </p>
+
+            <p>
+              <strong class="text-ink font-bold">6. AI-ASSISTED DEVELOPMENT &amp; ALGORITHMIC INTEGRITY NOTICE:</strong> This application, its signal processing algorithms, and codebase were created with the assistance of Artificial Intelligence (AI). AI-generated code and digital audio filters may exhibit computational anomalies or edge-case variations under non-ideal acoustic environments (severe reverberation, mic distortion, or heavy machinery resonance). Certified Field Inspectors and Engineers of Record must maintain independent human oversight and physically verify pile depth markings, stroke heights, and penetration rates before utilizing any data for official construction records, payment items, or structural certifications.
+            </p>
+          </div>
+
+          <div class="pt-2 text-right border-t border-black/10">
+            <button type="button" onclick="toggleLegalFramework()" class="text-[10px] font-bold text-signal uppercase hover:underline">
+              ▲ COLLAPSE / HIDE LEGAL NOTICE
+            </button>
+          </div>
         </div>
-
-        <div class="space-y-2.5">
-          <p>
-            <strong class="text-ink font-bold">1. INDEPENDENT FIELD CALCULATION TOOL:</strong> <code>PILECOUNT.</code> is an independent engineering calculation and mobile audio processing utility created by <strong class="text-ink">Julian Gomez-Rodriguez</strong> for construction field research, transient acoustic analysis, and workflow efficiency.
-          </p>
-
-          <p>
-            <strong class="text-ink font-bold">2. NON-ENDORSEMENT &amp; AFFILIATION DISCLAIMER:</strong> This software and its author are <strong>NOT</strong> affiliated with, sponsored by, authorized by, or officially endorsed by the <strong class="text-ink">Delaware Department of Transportation (DelDOT)</strong>, the <strong class="text-ink">American Association of State Highway and Transportation Officials (AASHTO)</strong>, the <strong class="text-ink">Federal Highway Administration (FHWA)</strong>, or any federal, state, county, or municipal government agency, nor any commercial software vendor or hammer manufacturer. Any citation or reference to <em>DelDOT Standard Specifications Section 605 (Driven Piles)</em>, <em>AASHTO LRFD Bridge Construction Specifications</em>, or standard <em>Inspector's Daily Work Reports (IDR / DWR)</em> is strictly for computational reference, technical benchmarking, and field alignment purposes.
-          </p>
-
-          <p>
-            <strong class="text-ink font-bold">3. EXPERIMENTAL PROTOTYPE &amp; TESTING PURPOSE:</strong> This system is distributed and deployed strictly as an <strong class="text-ink">INTERNAL TEST BUILD</strong> for experimental testing, field validation, and preliminary calculation assistance. It has NOT been certified or calibrated as an official, legally binding, or regulatory instrument of record.
-          </p>
-
-          <p>
-            <strong class="text-ink font-bold">4. PROFESSIONAL JUDGMENT &amp; INSPECTOR RESPONSIBILITY:</strong> Acoustic transient detection, automatic decibel thresholds, voice activity suppression, and cadence (BPM) estimations may be influenced by background ambient noise, reverberations off bridge caps or water bodies, microphone hardware limitations, and physical site geometry. The designated <strong class="text-ink">Certified Field Inspector, Project Engineer, or Resident Project Representative (RPR)</strong> retains sole and absolute responsibility for visually verifying pile markings, hammer drop heights, rebound, penetration rates, practical refusal determinations, and final approval of official construction inspection records.
-          </p>
-
-          <p>
-            <strong class="text-ink font-bold">5. "AS IS" DISCLAIMER &amp; LIMITATION OF LIABILITY:</strong> THIS SOFTWARE IS PROVIDED "AS IS" AND "WITH ALL FAULTS," WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, STRUCTURAL ACCURACY, OR FREEDOM FROM COMPUTATIONAL DEFECTS. UNDER NO CIRCUMSTANCES SHALL THE CREATOR (JULIAN GOMEZ-RODRIGUEZ), DELDOT, AASHTO, OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES, CONSTRUCTION DELAYS, EQUIPMENT WEAR, PILE OVERDRIVING, STRUCTURAL FOUNDATION CLAIMS, OR FINANCIAL LOSSES ARISING FROM THE USE OF OR INABILITY TO USE THIS APPLICATION.
-          </p>
-        </div>
-
       </div>
 
       <!-- Bottom Micro-Bar -->
       <div class="flex flex-col sm:flex-row justify-between items-center text-[9px] text-gray-500 font-mono gap-2 pt-2 border-t border-black/10">
-        <span>&copy; 2026 Julian Gomez-Rodriguez. All rights reserved. Built for heavy civil infrastructure field testing.</span>
-        <span>DelDOT Section 605 Driven Piles Compliance Reference &bull; Non-Governmental Open Engineering Utility</span>
+        <span>&copy; 2026 PILECOUNT. All rights reserved. Built for heavy civil infrastructure field testing.</span>
+        <span>Section 605 Driven Piles Compliance Reference &bull; Non-Governmental Open Engineering Utility</span>
       </div>
 
     </div>
@@ -565,7 +645,18 @@
   <!-- MOBILE PERSISTENT FLOATING STICKY COCKPIT BAR (ZERO-SCROLL!)   -->
   <!-- Pinned to bottom of phone viewport so thumb is always ready!   -->
   <!-- ============================================================== -->
-  <div id="mobileStickyCockpit" class="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-chalk/95 backdrop-blur-md border-t-2 border-ink p-2.5 shadow-[0_-4px_10px_rgba(0,0,0,0.15)]">
+  <div id="mobileStickyCockpit" class="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-chalk/95 backdrop-blur-md border-t-2 border-ink p-2 shadow-[0_-4px_10px_rgba(0,0,0,0.15)]">
+    <!-- Mobile Mini Unit Switcher & Active Lap Status -->
+    <div class="flex items-center justify-between pb-1 px-1 font-mono text-[10px] border-b border-black/10 mb-1.5">
+      <div class="flex items-center space-x-1 font-bold">
+        <span class="text-gray-500 uppercase">UNIT:</span>
+        <button id="btnStickyToggleUnit" type="button" class="px-2 py-0.5 bg-ink active:bg-signal text-white font-bold border border-black text-[9px] uppercase tracking-wider">
+          <span id="txtStickyUnitToggle">FT &bull; TAP FOR INCHES</span>
+        </button>
+      </div>
+      <span class="font-bold text-ink" id="lblStickyActiveLap">17' &rarr; 18'</span>
+    </div>
+
     <div class="grid grid-cols-12 gap-2 max-w-md mx-auto">
       
       <!-- Sticky Action 1: Tap Strike (Manual Mode) or Live Counter Display (Auto Mode) -->
@@ -576,12 +667,12 @@
             <span id="txtStickyStrike">BLOW (+1)</span>
           </span>
           <span class="font-mono text-[9px] text-yellow-300 font-bold">
-            Foot: <b id="lblStickyFootBlows">0</b> | Tot: <b id="lblStickyTotalBlows">0</b>
+            <span id="lblStickyUnitPrefix">Foot</span>: <b id="lblStickyFootBlows">0</b> | Tot: <b id="lblStickyTotalBlows">0</b>
           </span>
         </button>
       </div>
 
-      <!-- Sticky Action 2: Next Foot Button -->
+      <!-- Sticky Action 2: Next Foot / Next Inch Button -->
       <div class="col-span-5">
         <button id="btnStickyNextFoot" class="w-full brutalist-btn py-3 px-2 text-center flex flex-col items-center justify-center bg-signal text-white border-2 border-ink shadow-[2px_2px_0px_0px_rgba(17,17,17,1)]">
           <span class="editorial-title text-lg uppercase tracking-normal" id="txtStickyNextFoot">
@@ -590,6 +681,59 @@
           <span class="text-[9px] font-mono normal-case block font-bold text-white/90">
             <span id="lblStickyDepthBadge">17' &rarr; 18'</span>
           </span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- START NEW PILE & PERMANENT RESET CONFIRMATION MODAL            -->
+  <!-- Protects against accidental data loss with explicit warning    -->
+  <!-- ============================================================== -->
+  <div id="resetConfirmModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-sm p-4 flex items-center justify-center">
+    <div class="bg-white border-4 border-signal max-w-lg w-full p-6 space-y-5 shadow-[10px_10px_0px_0px_rgba(255,68,0,1)]">
+      
+      <div class="flex items-center space-x-3 text-signal">
+        <i class="ph-bold ph-warning-octagon text-3xl"></i>
+        <h3 class="editorial-title text-2xl uppercase tracking-tight text-ink">START NEW PILE &bull; PERMANENT RESET</h3>
+      </div>
+
+      <div class="p-3 bg-signal/10 border-2 border-signal/40 space-y-2 text-ink font-mono text-xs">
+        <p class="font-bold text-signal uppercase tracking-wider text-[11px] flex items-center space-x-1">
+          <i class="ph-bold ph-warning"></i>
+          <span>WARNING: THIS WILL PERMANENTLY ERASE ALL WRITTEN DATA!</span>
+        </p>
+        <p>
+          You are about to wipe the active pile driving log from device memory and local storage cache:
+        </p>
+        <ul class="list-disc list-inside space-y-1 font-bold pl-1 text-[11px]">
+          <li><span id="resetModalBlowCount" class="text-signal font-black">0</span> total blows will be erased</li>
+          <li><span id="resetModalIntervalCount" class="text-ink font-black">0</span> depth intervals logged will be cleared</li>
+          <li>Browser offline storage (`localStorage`) will be reset for the new pile</li>
+        </ul>
+        <p class="text-[10px] text-gray-600 italic">
+          If you need these numbers for your DWR/IDR report, please download a backup first.
+        </p>
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-2 font-mono text-xs pt-1">
+        <!-- Safety Download Backup Button -->
+        <button onclick="downloadSessionBackupJson();" class="px-3 py-2.5 bg-chalk hover:bg-black hover:text-white border border-black/30 text-ink font-bold uppercase transition flex items-center justify-center space-x-1 flex-1 text-[11px]">
+          <i class="ph-bold ph-floppy-disk"></i>
+          <span>DOWNLOAD BACKUP</span>
+        </button>
+
+        <!-- Cancel Button -->
+        <button onclick="closeResetModal()" class="px-3 py-2.5 bg-ink text-white hover:bg-black font-bold uppercase transition flex items-center justify-center space-x-1 flex-1 text-[11px]">
+          <i class="ph-bold ph-x"></i>
+          <span>CANCEL (KEEP)</span>
+        </button>
+
+        <!-- Red Erase Confirm Button -->
+        <button onclick="executePermanentReset()" class="px-3 py-2.5 bg-signal text-white hover:bg-black font-black uppercase transition flex items-center justify-center space-x-1 border-2 border-signal flex-1 text-[11px]">
+          <i class="ph-bold ph-trash"></i>
+          <span>ERASE &amp; START</span>
         </button>
       </div>
 
@@ -608,7 +752,7 @@
         <div>
           <div class="flex items-center space-x-2">
             <span class="text-[10px] font-mono text-gray-500 uppercase tracking-widest font-bold">
-              DELAWARE DEPARTMENT OF TRANSPORTATION • SECTION 605
+              HEAVY HIGHWAY &amp; CIVIL INFRASTRUCTURE • SECTION 605
             </span>
             <span class="text-[8px] font-mono font-bold bg-chalk border border-black/20 text-gray-600 px-1.5 py-0.2">
               INTERNAL TEST LOG
@@ -618,7 +762,7 @@
             PILE DRIVING INSPECTION LOG (IDR)
           </h2>
           <span class="text-[9px] font-mono text-gray-400 uppercase tracking-wider block">
-            Independent calculation assistant designed by Julian Gomez-Rodriguez • Non-official evaluation build
+            Independent calculation assistant • Standard Specifications Section 605
           </span>
         </div>
         <div class="flex items-center space-x-2 font-mono text-xs no-print">
@@ -632,23 +776,23 @@
         </div>
       </div>
 
-      <!-- DelDOT Engineering Metadata Grid Box -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-chalk border border-black/20 font-mono text-xs">
-        <div>
-          <span class="text-[9px] text-gray-500 block uppercase font-bold">CONTRACT NO:</span>
-          <span class="font-bold text-ink" id="sheetContractNo">T202007303</span>
+      <!-- DelDOT Engineering Metadata Grid Box (100% User-Editable for Any Jobsite!) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 p-3 sm:p-4 bg-chalk border-2 border-black/20 font-mono text-xs">
+        <div class="space-y-1">
+          <label for="sheetContractNo" class="text-[9px] text-gray-500 block uppercase font-bold">CONTRACT NO:</label>
+          <input id="sheetContractNo" type="text" placeholder="e.g. T2024-XXXX" value="" class="w-full bg-white border border-black/30 text-ink font-bold px-2.5 py-1.5 focus:outline-none focus:border-signal text-xs placeholder:text-gray-400">
         </div>
-        <div>
-          <span class="text-[9px] text-gray-500 block uppercase font-bold">SUBSTRUCTURE / PILE ID:</span>
-          <span class="font-bold text-ink" id="sheetPileId">Pier 1 Cap — Pile P-104</span>
+        <div class="space-y-1">
+          <label for="sheetPileId" class="text-[9px] text-gray-500 block uppercase font-bold">SUBSTRUCTURE / PILE ID:</label>
+          <input id="sheetPileId" type="text" placeholder="e.g. Pier 1 Cap — Pile P-1" value="" class="w-full bg-white border border-black/30 text-ink font-bold px-2.5 py-1.5 focus:outline-none focus:border-signal text-xs placeholder:text-gray-400">
         </div>
-        <div>
-          <span class="text-[9px] text-gray-500 block uppercase font-bold">HAMMER EQUIPMENT:</span>
-          <span class="font-bold text-ink" id="sheetHammerType">Diesel Pile Hammer</span>
+        <div class="space-y-1">
+          <label for="sheetHammerType" class="text-[9px] text-gray-500 block uppercase font-bold">HAMMER / EQUIPMENT:</label>
+          <input id="sheetHammerType" type="text" placeholder="e.g. Delmag / Berminghammer" value="DIESEL (35-65 BPM, 0.45s)" class="w-full bg-white border border-black/30 text-ink font-bold px-2.5 py-1.5 focus:outline-none focus:border-signal text-xs placeholder:text-gray-400">
         </div>
-        <div>
-          <span class="text-[9px] text-gray-500 block uppercase font-bold">DATE & INSPECTOR:</span>
-          <span class="font-bold text-ink" id="sheetInspectorDate">Current Shift</span>
+        <div class="space-y-1">
+          <label for="sheetInspectorDate" class="text-[9px] text-gray-500 block uppercase font-bold">DATE &amp; INSPECTOR:</label>
+          <input id="sheetInspectorDate" type="text" placeholder="e.g. Shift 1 — Inspector" value="" class="w-full bg-white border border-black/30 text-ink font-bold px-2.5 py-1.5 focus:outline-none focus:border-signal text-xs placeholder:text-gray-400">
         </div>
       </div>
 
@@ -656,7 +800,7 @@
       <div class="space-y-2">
         <div class="flex justify-between items-center text-xs font-mono">
           <span class="font-bold uppercase text-gray-600">FOOT-BY-FOOT PENETRATION LOG (CHRONOLOGICAL):</span>
-          <span class="text-gray-500">DelDOT Limit: &le; 120 blows/ft | Refusal: &ge; 20 blows/in</span>
+          <span class="text-gray-500">Spec Limit: &le; 120 blows/ft | Practical Refusal: &ge; 20 blows/in</span>
         </div>
 
         <div id="sheetGridContainer" class="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -679,7 +823,7 @@
           <span class="font-bold text-lg text-deldot" id="sheetAvgBpm">0.0 BPM</span>
         </div>
         <div>
-          <span class="text-[9px] text-gray-500 uppercase block font-bold">DELDOT 605 STATUS:</span>
+          <span class="text-[9px] text-gray-500 uppercase block font-bold">RESISTANCE STATUS:</span>
           <span class="font-bold text-sm px-2 py-0.5 rounded bg-emerald/10 text-emerald border border-emerald inline-block mt-0.5" id="sheetComplianceBadge">PASS</span>
         </div>
       </div>
@@ -687,10 +831,10 @@
       <!-- Sheet Legal Disclaimer & Sign-off Notice -->
       <div class="border-t border-black/15 pt-2 text-[9px] font-mono text-gray-500 space-y-1">
         <p>
-          <strong class="text-ink">TESTING &amp; FIELD VERIFICATION NOTICE:</strong> This inspection sheet was generated by an experimental field tool developed by <strong class="text-ink">Julian Gomez-Rodriguez</strong> for testing and evaluation purposes. Not affiliated with or endorsed by DelDOT, AASHTO, or any agency.
+          <strong class="text-ink">TESTING &amp; FIELD VERIFICATION NOTICE:</strong> This inspection sheet was generated by an experimental field calculation tool for internal testing and validation purposes. Not affiliated with or endorsed by DelDOT, AASHTO, or any agency.
         </p>
         <p class="text-gray-400">
-          Official engineering records and pay quantities require physical verification of pile markings and signature by the designated DelDOT Inspector of Record.
+          Official engineering records and pay quantities require physical verification of pile markings and signature by the designated Certified Field Inspector of Record.
         </p>
       </div>
 
@@ -698,7 +842,7 @@
       <div class="flex justify-between items-center pt-2 font-mono text-xs no-print">
         <button onclick="copyDelDotSheetMarkdown()" class="bg-chalk hover:bg-black hover:text-white border border-black/20 text-ink font-bold px-4 py-2 uppercase transition flex items-center space-x-1.5">
           <i class="ph-bold ph-copy"></i>
-          <span>COPY DELDOT SHEET TABLE</span>
+          <span>COPY INSPECTION SHEET</span>
         </button>
         <button onclick="closeDelDotSheetModal()" class="bg-ink hover:bg-signal text-white font-bold px-6 py-2 uppercase transition">
           DONE / CLOSE
@@ -716,7 +860,7 @@
   <!-- ============================================================== -->
   <script>
     // Global Application State Variables
-    let currentOperatingMode = "auto"; // "auto", "manual", "recording", "sim"
+    let currentOperatingMode = "manual"; // Manual Clicker is now default primary mode
     let audioContext = null;
     let microphoneStream = null;
     let isMicrophoneActive = false;
@@ -785,14 +929,23 @@
     const liveOscilloscopeCanvas = document.getElementById("liveOscilloscopeCanvas");
     const canvasContext = liveOscilloscopeCanvas.getContext("2d");
 
-    // Depth & Foot Log Elements
+    // Depth & Foot / Inch Log Elements
+    let currentIntervalUnit = "ft"; // "ft" or "in"
+    let currentDepthInches = 0;
     const inputCurrentDepthFeet = document.getElementById("inputCurrentDepthFeet");
+    const inputCurrentDepthInches = document.getElementById("inputCurrentDepthInches");
+    const containerInchInput = document.getElementById("containerInchInput");
     const lblDepthIntervalBadge = document.getElementById("lblDepthIntervalBadge");
     const lblActiveFootBadge = document.getElementById("lblActiveFootBadge");
+    const lblActiveIntervalTitle = document.getElementById("lblActiveIntervalTitle");
+    const lblActiveIntervalSubtext = document.getElementById("lblActiveIntervalSubtext");
     const btnRecordNextFoot = document.getElementById("btnRecordNextFoot");
     const txtRecordNextFoot = document.getElementById("txtRecordNextFoot");
     const footLogTableBody = document.getElementById("footLogTableBody");
     const lblDelDOTComplianceStatus = document.getElementById("lblDelDOTComplianceStatus");
+    const btnUnitFeet = document.getElementById("btnUnitFeet");
+    const btnUnitInches = document.getElementById("btnUnitInches");
+    const lblUnitHelperText = document.getElementById("lblUnitHelperText");
 
     // Mobile Sticky Floating Bar Elements
     const btnStickyManualStrike = document.getElementById("btnStickyManualStrike");
@@ -802,16 +955,22 @@
     const lblStickyFootBlows = document.getElementById("lblStickyFootBlows");
     const lblStickyTotalBlows = document.getElementById("lblStickyTotalBlows");
     const lblStickyDepthBadge = document.getElementById("lblStickyDepthBadge");
+    const btnStickyToggleUnit = document.getElementById("btnStickyToggleUnit");
+    const txtStickyUnitToggle = document.getElementById("txtStickyUnitToggle");
+    const lblStickyActiveLap = document.getElementById("lblStickyActiveLap");
+    const lblStickyUnitPrefix = document.getElementById("lblStickyUnitPrefix");
 
-    // DelDOT Sheet Modal Elements
+    // DelDOT Sheet Modal Elements (Editable Metadata Inputs)
     const delDotSheetModal = document.getElementById("delDotSheetModal");
+    const sheetContractNo = document.getElementById("sheetContractNo");
+    const sheetPileId = document.getElementById("sheetPileId");
+    const sheetHammerType = document.getElementById("sheetHammerType");
+    const sheetInspectorDate = document.getElementById("sheetInspectorDate");
     const sheetGridContainer = document.getElementById("sheetGridContainer");
     const sheetTotalFeet = document.getElementById("sheetTotalFeet");
     const sheetTotalBlows = document.getElementById("sheetTotalBlows");
     const sheetAvgBpm = document.getElementById("sheetAvgBpm");
     const sheetComplianceBadge = document.getElementById("sheetComplianceBadge");
-    const sheetHammerType = document.getElementById("sheetHammerType");
-    const sheetInspectorDate = document.getElementById("sheetInspectorDate");
 
     // Discover & Enumerate Audio Input Devices (Microphones, AirPods, USB Headsets)
     async function discoverAudioDevices() {
@@ -839,13 +998,13 @@
     }
     discoverAudioDevices();
 
-    // MODE SWITCHER ENGINE: 1. AUTO | 2. MANUAL | 3. RECORDING | 4. SIM
-    btnModeAuto.addEventListener("click", () => setOperatingMode("auto"));
+    // MODE SWITCHER ENGINE: 1. MANUAL | 2. AUTO | 3. RECORDING | 4. SIM
     btnModeManual.addEventListener("click", () => setOperatingMode("manual"));
+    btnModeAuto.addEventListener("click", () => setOperatingMode("auto"));
     btnModeRecording.addEventListener("click", () => setOperatingMode("recording"));
     btnModeSimulator.addEventListener("click", () => setOperatingMode("sim"));
 
-    function setOperatingMode(newMode) {
+    function setOperatingMode(newMode, showToastAlert = true) {
       currentOperatingMode = newMode;
 
       panelAutoMode.classList.toggle("hidden", newMode !== "auto");
@@ -866,27 +1025,27 @@
         txtStickyStrike.innerText = "MANUAL (+1)";
       }
 
-      const activeBtnClass = "p-2.5 bg-ink text-white font-bold border-2 border-ink flex flex-col items-center justify-center space-y-0.5 transition text-center shadow-sm";
-      const inactiveBtnClass = "p-2.5 bg-chalk hover:bg-black/10 text-ink font-bold border-2 border-black/20 flex flex-col items-center justify-center space-y-0.5 transition text-center";
+      const activeBtnClass = "p-2 sm:p-2.5 bg-ink text-white font-bold border-2 border-ink flex flex-col items-center justify-center space-y-0.5 transition text-center shadow-sm w-full";
+      const inactiveBtnClass = "p-2 sm:p-2.5 bg-chalk hover:bg-black/10 text-ink font-bold border-2 border-black/20 flex flex-col items-center justify-center space-y-0.5 transition text-center w-full";
 
-      btnModeAuto.className = newMode === "auto" ? activeBtnClass : inactiveBtnClass;
       btnModeManual.className = newMode === "manual" ? activeBtnClass : inactiveBtnClass;
+      btnModeAuto.className = newMode === "auto" ? activeBtnClass : inactiveBtnClass;
       btnModeRecording.className = newMode === "recording" ? activeBtnClass : inactiveBtnClass;
       btnModeSimulator.className = newMode === "sim" ? activeBtnClass : inactiveBtnClass;
 
       if (newMode === "auto") {
-        lblActiveModeTitle.innerText = "MODE: AUTOMATIC (ACOUSTIC DETECTION)";
+        lblActiveModeTitle.innerText = "MODE: AUTOMATIC (ACOUSTIC DETECTION - BETA)";
         lblBpmSubtext.innerText = "LIVE CADENCE";
         badgeVoiceVAD.innerText = "VOICE: REJECTED";
         badgeEchoLockout.innerText = "ECHO: LOCKED";
         headerStatusText.innerText = "AUTO MIC";
         headerStatusDot.className = isMicrophoneActive ? "w-2 h-2 rounded-full bg-signal animate-pulse" : "w-2 h-2 rounded-full bg-gray-400";
       } else if (newMode === "manual") {
-        lblActiveModeTitle.innerText = "MODE: MANUAL CLICKER (TAP STRIKE)";
+        lblActiveModeTitle.innerText = "MODE: MANUAL CLICKER (PRIMARY FIELD MODE)";
         lblBpmSubtext.innerText = "TAP TEMPO BPM";
         badgeVoiceVAD.innerText = "MANUAL TALLY";
         badgeEchoLockout.innerText = "ZERO MIC LAG";
-        headerStatusText.innerText = "MANUAL CLICKER";
+        headerStatusText.innerText = "MANUAL";
         headerStatusDot.className = "w-2 h-2 rounded-full bg-signal";
         startStopwatch();
       } else if (newMode === "recording") {
@@ -901,21 +1060,88 @@
         headerStatusDot.className = "w-2 h-2 rounded-full bg-signal animate-pulse";
       }
 
-      showToast(`Switched to ${newMode.toUpperCase()} mode.`);
+      if (showToastAlert) {
+        showToast(`Switched to ${newMode.toUpperCase()} mode.`);
+      }
+      saveSessionToLocalStorage();
     }
+
+    // Interval Unit Mode Switcher (FT vs IN)
+    function setMeasurementUnit(newUnit) {
+      currentIntervalUnit = newUnit;
+      updateDepthInterface();
+      saveSessionToLocalStorage();
+      showToast(`Switched interval logging to ${newUnit === 'ft' ? 'FEET (FT)' : 'INCHES (IN)'}.`);
+    }
+
+    btnUnitFeet.addEventListener("click", () => setMeasurementUnit("ft"));
+    btnUnitInches.addEventListener("click", () => setMeasurementUnit("in"));
+    btnStickyToggleUnit.addEventListener("click", () => {
+      setMeasurementUnit(currentIntervalUnit === "ft" ? "in" : "ft");
+    });
 
     // Depth Changes UI Handler
     function updateDepthInterface() {
       currentDepthFeet = parseInt(inputCurrentDepthFeet.value) || 0;
-      const targetNextDepth = currentDepthFeet + 1;
-      lblDepthIntervalBadge.innerText = `Foot ${currentDepthFeet}' &rarr; ${targetNextDepth}'`;
-      lblActiveFootBadge.innerText = `${currentDepthFeet}'`;
-      txtRecordNextFoot.innerText = `NEXT FOOT (${currentDepthFeet}' → ${targetNextDepth}')`;
-      
-      // Update sticky mobile bar depth badge
-      lblStickyDepthBadge.innerText = `${currentDepthFeet}' → ${targetNextDepth}'`;
+      currentDepthInches = parseInt(inputCurrentDepthInches.value) || 0;
+      if (currentDepthInches < 0) currentDepthInches = 0;
+      if (currentDepthInches > 11) currentDepthInches = 11;
+      inputCurrentDepthInches.value = currentDepthInches;
+
+      if (currentIntervalUnit === "ft") {
+        const targetNextDepth = currentDepthFeet + 1;
+        const intervalHtml = `${currentDepthFeet}' &rarr; ${targetNextDepth}'`;
+        
+        lblDepthIntervalBadge.innerHTML = intervalHtml;
+        lblActiveFootBadge.innerText = `${currentDepthFeet}'`;
+        lblActiveIntervalTitle.innerText = "ACTIVE FOOT BLOWS";
+        lblActiveIntervalSubtext.innerHTML = `Foot <span class="font-bold text-ink">${currentDepthFeet}'</span>`;
+        txtRecordNextFoot.innerHTML = `NEXT FOOT (${intervalHtml})`;
+        txtStickyNextFoot.innerText = "NEXT FOOT";
+        lblStickyDepthBadge.innerHTML = intervalHtml;
+        lblStickyActiveLap.innerHTML = intervalHtml;
+        lblStickyUnitPrefix.innerText = "Foot";
+        lblUnitHelperText.innerHTML = "LOGGING: <b>1 FOOT INTERVAL</b> (Standard Spec limit &le; 120 blows/ft)";
+        
+        containerInchInput.classList.add("hidden");
+        btnUnitFeet.className = "px-3.5 py-1 font-bold text-xs uppercase bg-ink text-white transition flex items-center space-x-1";
+        btnUnitInches.className = "px-3.5 py-1 font-bold text-xs uppercase text-ink hover:bg-black/10 transition flex items-center space-x-1";
+        txtStickyUnitToggle.innerText = "FT • TAP FOR INCHES";
+      } else {
+        // INCHES MODE
+        let nextFeet = currentDepthFeet;
+        let nextInches = currentDepthInches + 1;
+        if (nextInches >= 12) {
+          nextFeet = currentDepthFeet + 1;
+          nextInches = 0;
+        }
+        const intervalHtml = `${currentDepthFeet}' ${currentDepthInches}" &rarr; ${nextFeet}' ${nextInches}"`;
+        
+        lblDepthIntervalBadge.innerHTML = intervalHtml;
+        lblActiveFootBadge.innerText = `${currentDepthFeet}' ${currentDepthInches}"`;
+        lblActiveIntervalTitle.innerText = "ACTIVE INCH BLOWS";
+        lblActiveIntervalSubtext.innerHTML = `Inch <span class="font-bold text-signal">${currentDepthFeet}' ${currentDepthInches}"</span>`;
+        txtRecordNextFoot.innerHTML = `NEXT INCH (${intervalHtml})`;
+        txtStickyNextFoot.innerText = "NEXT INCH";
+        lblStickyDepthBadge.innerHTML = intervalHtml;
+        lblStickyActiveLap.innerHTML = intervalHtml;
+        lblStickyUnitPrefix.innerText = "Inch";
+        lblUnitHelperText.innerHTML = "LOGGING: <b>1 INCH INTERVAL</b> (Practical Refusal &ge; 20 blows/in)";
+        
+        containerInchInput.classList.remove("hidden");
+        btnUnitInches.className = "px-3.5 py-1 font-bold text-xs uppercase bg-signal text-white transition flex items-center space-x-1";
+        btnUnitFeet.className = "px-3.5 py-1 font-bold text-xs uppercase text-ink hover:bg-black/10 transition flex items-center space-x-1";
+        txtStickyUnitToggle.innerText = "IN • TAP FOR FEET";
+      }
     }
-    inputCurrentDepthFeet.addEventListener("input", updateDepthInterface);
+    inputCurrentDepthFeet.addEventListener("input", () => {
+      updateDepthInterface();
+      saveSessionToLocalStorage();
+    });
+    inputCurrentDepthInches.addEventListener("input", () => {
+      updateDepthInterface();
+      saveSessionToLocalStorage();
+    });
     updateDepthInterface();
 
     // Hammer Refractory Window Setup
@@ -925,7 +1151,7 @@
       else if (selectedType === "hydraulic") refractoryPeriodSeconds = 0.35;
       else if (selectedType === "breaker") refractoryPeriodSeconds = 0.10;
       else if (selectedType === "drop") refractoryPeriodSeconds = 0.65;
-      sheetHammerType.innerText = selectHammerType.options[selectHammerType.selectedIndex].text;
+      sheetHammerType.value = selectHammerType.options[selectHammerType.selectedIndex].text;
     });
 
     // MANUAL CLICKER STRIKE ACTION (Both in-page and sticky bottom bar)
@@ -959,47 +1185,88 @@
       startStopwatch();
     }
 
-    // RECORD NEXT FOOT / LAP ACTION (Both in-page button and sticky bottom bar)
+    // RECORD NEXT FOOT / INCH ACTION (Both in-page button and sticky bottom bar)
     btnRecordNextFoot.addEventListener("click", recordNextFootInterval);
     btnStickyNextFoot.addEventListener("click", recordNextFootInterval);
 
     function recordNextFootInterval() {
-      const startingDepth = currentDepthFeet;
-      const endingDepth = currentDepthFeet + 1;
-      const blowsInThisFoot = currentFootBlowCount;
-      
+      const blowsInThisInterval = currentFootBlowCount;
       const currentSeconds = performance.now() / 1000;
-      const footDurationSeconds = currentFootStartTime ? Math.max(1, Math.round(currentSeconds - currentFootStartTime)) : 0;
+      const intervalDurationSeconds = currentFootStartTime ? Math.max(1, Math.round(currentSeconds - currentFootStartTime)) : 0;
       currentFootStartTime = currentSeconds;
 
-      const footAverageBpm = footDurationSeconds > 0 && blowsInThisFoot > 1 ? ((blowsInThisFoot - 1) / (footDurationSeconds / 60)).toFixed(1) : (lblBlowsPerMinute.innerText || "0.0");
-      const isCompliancePassing = blowsInThisFoot <= 120;
-      const isPracticalRefusalReached = blowsInThisFoot >= 240; // ~20 blows/inch over 12 inches
+      const intervalAverageBpm = intervalDurationSeconds > 0 && blowsInThisInterval > 1 ? ((blowsInThisInterval - 1) / (intervalDurationSeconds / 60)).toFixed(1) : (lblBlowsPerMinute.innerText || "0.0");
 
+      let intervalDisplay = "";
       let complianceText = "PASS";
       let complianceBadgeClass = "bg-emerald/10 text-emerald border-emerald";
-      if (isPracticalRefusalReached) {
-        complianceText = "REFUSAL (>20 b/in)";
-        complianceBadgeClass = "bg-signal text-white border-signal font-black animate-pulse";
-      } else if (!isCompliancePassing) {
-        complianceText = "EXCEEDED (>120)";
-        complianceBadgeClass = "bg-amber-100 text-amber-900 border-amber-600 font-bold";
+      let endingDepthFeet = currentDepthFeet;
+      let endingDepthInches = currentDepthInches;
+
+      if (currentIntervalUnit === "ft") {
+        const startingDepth = currentDepthFeet;
+        endingDepthFeet = currentDepthFeet + 1;
+        intervalDisplay = `${startingDepth}' &rarr; ${endingDepthFeet}'`;
+        
+        const isCompliancePassing = blowsInThisInterval <= 120;
+        const isPracticalRefusalReached = blowsInThisInterval >= 240;
+
+        if (isPracticalRefusalReached) {
+          complianceText = "REFUSAL (>20 b/in)";
+          complianceBadgeClass = "bg-signal text-white border-signal font-black animate-pulse";
+        } else if (!isCompliancePassing) {
+          complianceText = "HIGH RESISTANCE (>120)";
+          complianceBadgeClass = "bg-amber-100 text-amber-900 border-amber-600 font-bold";
+        } else {
+          complianceText = "PASS (<= 120)";
+          complianceBadgeClass = "bg-emerald/10 text-emerald border-emerald";
+        }
+
+        // Advance Depth
+        currentDepthFeet = endingDepthFeet;
+        inputCurrentDepthFeet.value = currentDepthFeet;
+      } else {
+        // INCHES MODE
+        const startFeet = currentDepthFeet;
+        const startInches = currentDepthInches;
+        endingDepthFeet = currentDepthFeet;
+        endingDepthInches = currentDepthInches + 1;
+        if (endingDepthInches >= 12) {
+          endingDepthFeet = currentDepthFeet + 1;
+          endingDepthInches = 0;
+        }
+        intervalDisplay = `${startFeet}' ${startInches}" &rarr; ${endingDepthFeet}' ${endingDepthInches}"`;
+
+        // DelDOT 605.3.8 Refusal Criteria: 20 blows per inch!
+        const isPracticalRefusalReached = blowsInThisInterval >= 20;
+        if (isPracticalRefusalReached) {
+          complianceText = "REFUSAL (>= 20/in)";
+          complianceBadgeClass = "bg-signal text-white border-signal font-black animate-pulse";
+        } else {
+          complianceText = `DRIVING (${blowsInThisInterval}/in)`;
+          complianceBadgeClass = "bg-emerald/10 text-emerald border-emerald";
+        }
+
+        // Advance Depth
+        currentDepthFeet = endingDepthFeet;
+        currentDepthInches = endingDepthInches;
+        inputCurrentDepthFeet.value = currentDepthFeet;
+        inputCurrentDepthInches.value = currentDepthInches;
       }
 
       // Add to Log Entries Array
       footLogEntries.unshift({
-        intervalDisplay: `${startingDepth}' &rarr; ${endingDepth}'`,
-        blowsPerFoot: blowsInThisFoot,
+        intervalDisplay: intervalDisplay,
+        unit: currentIntervalUnit.toUpperCase(),
+        blowsPerFoot: blowsInThisInterval,
         cumulativeTotal: totalBlowCount,
-        averageBpm: footAverageBpm,
-        durationFormatted: footDurationSeconds > 0 ? `${footDurationSeconds}s` : "—",
+        averageBpm: intervalAverageBpm,
+        durationFormatted: intervalDurationSeconds > 0 ? `${intervalDurationSeconds}s` : "—",
         complianceText: complianceText,
         complianceBadgeClass: complianceBadgeClass,
-        depthNum: startingDepth
+        depthNum: currentDepthFeet
       });
 
-      // Advance Depth
-      inputCurrentDepthFeet.value = endingDepth;
       updateDepthInterface();
 
       // Reset Current Foot Counter
@@ -1012,12 +1279,16 @@
 
       // Render Tables
       renderFootLogTable();
+      saveSessionToLocalStorage();
 
-      showToast(`Recorded Foot ${startingDepth}' → ${endingDepth}': ${blowsInThisFoot} blows`);
+      showToast(`Recorded ${intervalDisplay.replace(/&rarr;/g, '→')}: ${blowsInThisInterval} blows`);
     }
 
     function renderFootLogTable() {
-      if (footLogEntries.length === 0) return;
+      if (footLogEntries.length === 0) {
+        footLogTableBody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-gray-400 font-mono text-xs">NO FEET LOGGED YET</td></tr>`;
+        return;
+      }
       const rowsHtml = footLogEntries.map(entry => `
         <tr class="hover:bg-chalk/80 font-mono text-xs">
           <td class="p-2 font-bold text-ink">${entry.intervalDisplay}</td>
@@ -1036,22 +1307,37 @@
     // DELDOT FORM 605 MULTI-COLUMN COMPACT SHEET GENERATOR
     function openDelDotSheetModal() {
       delDotSheetModal.classList.remove("hidden");
-      sheetInspectorDate.innerText = new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-      sheetTotalFeet.innerText = footLogEntries.length + " FT";
+      if (!sheetInspectorDate.value) {
+        sheetInspectorDate.value = new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      }
+      if (!sheetHammerType.value) {
+        sheetHammerType.value = selectHammerType.options[selectHammerType.selectedIndex].text;
+      }
+      
+      const feetEntries = footLogEntries.filter(e => e.unit === "FT").length;
+      const inchEntries = footLogEntries.filter(e => e.unit === "IN").length;
+      if (inchEntries > 0 && feetEntries > 0) {
+        sheetTotalFeet.innerText = `${feetEntries} FT + ${inchEntries} IN`;
+      } else if (inchEntries > 0) {
+        sheetTotalFeet.innerText = `${inchEntries} IN`;
+      } else {
+        sheetTotalFeet.innerText = `${feetEntries} FT`;
+      }
+
       sheetTotalBlows.innerText = totalBlowCount + " BLOWS";
       sheetAvgBpm.innerText = (lblBlowsPerMinute.innerText || "0.0") + " BPM";
 
       // Check if any refusal or exceeded
       const hasRefusal = footLogEntries.some(e => e.complianceText.includes("REFUSAL"));
-      const hasExceeded = footLogEntries.some(e => e.complianceText.includes("EXCEEDED"));
+      const hasExceeded = footLogEntries.some(e => e.complianceText.includes("HIGH") || e.complianceText.includes("EXCEEDED"));
       if (hasRefusal) {
         sheetComplianceBadge.innerText = "REFUSAL OBSERVED";
         sheetComplianceBadge.className = "font-bold text-sm px-2 py-0.5 rounded bg-signal text-white border border-signal inline-block mt-0.5";
       } else if (hasExceeded) {
-        sheetComplianceBadge.innerText = "RESISTANCE WARNING";
+        sheetComplianceBadge.innerText = "HIGH RESISTANCE";
         sheetComplianceBadge.className = "font-bold text-sm px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-600 inline-block mt-0.5";
       } else {
-        sheetComplianceBadge.innerText = "PASS (<= 120 BPF)";
+        sheetComplianceBadge.innerText = "PASS (NOMINAL)";
         sheetComplianceBadge.className = "font-bold text-sm px-2 py-0.5 rounded bg-emerald/10 text-emerald border border-emerald inline-block mt-0.5";
       }
 
@@ -1062,6 +1348,25 @@
       delDotSheetModal.classList.add("hidden");
     }
 
+    // Legal Framework Collapsible Accordion Logic
+    const btnToggleLegalFramework = document.getElementById("btnToggleLegalFramework");
+    const panelLegalFrameworkContent = document.getElementById("panelLegalFrameworkContent");
+    const lblLegalAccordionStatus = document.getElementById("lblLegalAccordionStatus");
+
+    function toggleLegalFramework() {
+      const isHidden = panelLegalFrameworkContent.classList.contains("hidden");
+      if (isHidden) {
+        panelLegalFrameworkContent.classList.remove("hidden");
+        lblLegalAccordionStatus.innerText = "[ COLLAPSE ▴ ]";
+        btnToggleLegalFramework.classList.add("bg-chalk");
+      } else {
+        panelLegalFrameworkContent.classList.add("hidden");
+        lblLegalAccordionStatus.innerText = "[ VIEW LEGAL NOTICE ▾ ]";
+        btnToggleLegalFramework.classList.remove("bg-chalk");
+      }
+    }
+    btnToggleLegalFramework.addEventListener("click", toggleLegalFramework);
+
     function renderDelDotSheetColumns() {
       // Sort chronological ascending (0-1', 1-2', etc.)
       const chronological = [...footLogEntries].reverse();
@@ -1069,7 +1374,7 @@
       if (chronological.length === 0) {
         sheetGridContainer.innerHTML = `
           <div class="col-span-3 p-6 text-center text-gray-400 font-mono text-xs border border-dashed border-black/20">
-            No feet recorded yet. Drive piles and tap "NEXT FOOT" to generate your DelDOT Form 605 table.
+            No penetration intervals recorded yet. Drive piles and tap "NEXT FOOT / NEXT INCH" to generate your IDR inspection sheet.
           </div>
         `;
         return;
@@ -1109,10 +1414,15 @@
     }
 
     function copyDelDotSheetMarkdown() {
-      let md = `DelDOT Section 605 Inspector's Daily Report (IDR) — Pile Driving Log\n`;
-      md += `Contract: T202007303 | Substructure: Pier 1 Cap P-104 | Date: ${new Date().toLocaleDateString()}\n`;
+      const contractVal = (sheetContractNo && sheetContractNo.value.trim()) || "Field Project";
+      const substructureVal = (sheetPileId && sheetPileId.value.trim()) || "General Pile Driving";
+      const hammerVal = (sheetHammerType && sheetHammerType.value.trim()) || selectHammerType.options[selectHammerType.selectedIndex].text;
+      const inspectorVal = (sheetInspectorDate && sheetInspectorDate.value.trim()) || new Date().toLocaleDateString();
+
+      let md = `Section 605 Inspector's Daily Report (IDR) — Pile Driving Log\n`;
+      md += `Contract: ${contractVal} | Substructure/Pile: ${substructureVal} | Equipment: ${hammerVal} | Date/Inspector: ${inspectorVal}\n`;
       md += `----------------------------------------------------------------------------------\n`;
-      md += `Depth Interval | Blows / Foot | Cumulative Total | Average BPM | Status\n`;
+      md += `Depth Interval | Blows / Intv | Cumulative Total | Average BPM | Status\n`;
       md += `----------------------------------------------------------------------------------\n`;
       const chronological = [...footLogEntries].reverse();
       chronological.forEach(entry => {
@@ -1123,11 +1433,11 @@
         md += `${intv} | ${b} | ${tot} | ${bpm} | ${entry.complianceText}\n`;
       });
       md += `----------------------------------------------------------------------------------\n`;
-      md += `Notice: Internal Field Evaluation Build. Designed by Julian Gomez-Rodriguez.\n`;
-      md += `Independent tool. Not affiliated with or endorsed by DelDOT, AASHTO, or any agency.\n`;
+      md += `Notice: Internal Field Evaluation Build • Independent calculation tool.\n`;
+      md += `Not affiliated with or endorsed by DelDOT, AASHTO, or any agency.\n`;
       md += `Official IDR records require certified field inspector manual verification.\n`;
       navigator.clipboard.writeText(md).then(() => {
-        showToast("DelDOT Sheet Table copied to clipboard!");
+        showToast("Field Inspection Sheet copied to clipboard!");
       });
     }
 
@@ -1346,14 +1656,16 @@
       // Earbud Confirmation Audio Click
       if (checkboxEarbudBeep.checked) playStrikeClickSound();
 
-      // DelDOT Section 605 Limit Evaluation
+      // Section 605 Limit Evaluation
       if (currentFootBlowCount > 120) {
-        lblDelDOTComplianceStatus.innerText = "WARNING: > 120 BLOWS/FT (DelDOT 605.3.8)";
+        lblDelDOTComplianceStatus.innerText = "WARNING: > 120 BLOWS/FT (Section 605.3.8)";
         lblDelDOTComplianceStatus.className = "font-bold px-2 py-0.5 bg-signal text-white border border-signal animate-pulse";
       } else {
         lblDelDOTComplianceStatus.innerText = "PASS (<= 120 blows/ft)";
         lblDelDOTComplianceStatus.className = "font-bold px-2 py-0.5 bg-emerald/10 border border-emerald text-emerald";
       }
+
+      saveSessionToLocalStorage();
     }
 
     // Audio Earbud Feedback Clicks
@@ -1415,11 +1727,28 @@
       stopwatchInterval = null;
     }
 
-    // Reset All Counters
-    document.getElementById("btnResetAllCounters").addEventListener("click", () => {
-      if (!confirm("Are you sure you want to reset all blow counts, depth logs, and timers?")) return;
+    // Start New Pile Modal & Permanent Reset Engine
+    const resetConfirmModal = document.getElementById("resetConfirmModal");
+    const resetModalBlowCount = document.getElementById("resetModalBlowCount");
+    const resetModalIntervalCount = document.getElementById("resetModalIntervalCount");
+
+    function openResetModal() {
+      if (resetModalBlowCount) resetModalBlowCount.innerText = totalBlowCount;
+      if (resetModalIntervalCount) resetModalIntervalCount.innerText = footLogEntries.length;
+      if (resetConfirmModal) resetConfirmModal.classList.remove("hidden");
+    }
+
+    function closeResetModal() {
+      if (resetConfirmModal) resetConfirmModal.classList.add("hidden");
+    }
+
+    function executePermanentReset() {
       totalBlowCount = 0;
       currentFootBlowCount = 0;
+      currentDepthFeet = 17;
+      currentDepthInches = 0;
+      if (inputCurrentDepthFeet) inputCurrentDepthFeet.value = 17;
+      if (inputCurrentDepthInches) inputCurrentDepthInches.value = 0;
       recentStrikeIntervals = [];
       footLogEntries = [];
       strikeMarkerPositions = [];
@@ -1433,8 +1762,17 @@
       footLogTableBody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-gray-400 font-mono text-xs">NO FEET LOGGED YET</td></tr>`;
       drivingStartTime = Date.now();
       currentFootStartTime = performance.now() / 1000;
-      showToast("All counters and logs reset.");
-    });
+      updateDepthInterface();
+      try {
+        localStorage.removeItem(SESSION_STORAGE_KEY);
+      } catch (e) {}
+      updateCacheIndicator(false);
+      closeResetModal();
+      showToast("Pile session erased. Ready for new pile!");
+    }
+
+    // Connect lower reset button to the warning modal
+    document.getElementById("btnResetAllCounters").addEventListener("click", openResetModal);
 
     // 60 FPS Oscilloscope Canvas Drawing (Editorial Brutalist Light Architecture)
     function drawLiveOscilloscope() {
@@ -1674,24 +2012,28 @@
 
     // EXPORTS: CSV, JSON & CLIPBOARD IDR
     document.getElementById("btnExportCsvFile").addEventListener("click", () => {
-      let csvContent = "Foot_Interval,Blows_Per_Foot,Cumulative_Blows,Avg_BPM,Duration_Sec,DelDOT_605_Status\n";
+      let csvContent = "Interval,Unit,Blows_Per_Interval,Cumulative_Blows,Avg_BPM,Duration_Sec,Resistance_Status\n";
       footLogEntries.forEach(entry => {
-        const cleanedInterval = entry.intervalDisplay.replace("&rarr;", "->");
-        csvContent += `"${cleanedInterval}",${entry.blowsPerFoot},${entry.cumulativeTotal},${entry.averageBpm},"${entry.durationFormatted}","${entry.complianceText}"\n`;
+        const cleanedInterval = entry.intervalDisplay.replace(/&rarr;/g, "->");
+        csvContent += `"${cleanedInterval}","${entry.unit}",${entry.blowsPerFoot},${entry.cumulativeTotal},${entry.averageBpm},"${entry.durationFormatted}","${entry.complianceText}"\n`;
       });
       const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
       const downloadLink = document.createElement("a");
       downloadLink.href = URL.createObjectURL(blob);
-      downloadLink.download = `DelDOT_Pile_Driving_FootLog_${Date.now()}.csv`;
+      downloadLink.download = `Pile_Driving_Log_${Date.now()}.csv`;
       downloadLink.click();
       showToast("CSV file exported successfully!");
     });
 
     document.getElementById("btnCopyIdrClipboard").addEventListener("click", () => {
-      let clipboardText = `DelDOT Section 605 Inspector's Daily Report (IDR) — Pile Driving Log\n`;
-      clipboardText += `Contract: T202007303 | Equipment: ${selectHammerType.value} | Total Blows: ${totalBlowCount} | Cadence: ${lblBlowsPerMinute.innerText} BPM\n`;
+      const contractVal = (sheetContractNo && sheetContractNo.value.trim()) || "Field Project";
+      const pileVal = (sheetPileId && sheetPileId.value.trim()) || "General Pile Driving";
+      const hammerVal = (sheetHammerType && sheetHammerType.value.trim()) || selectHammerType.options[selectHammerType.selectedIndex].text;
+
+      let clipboardText = `Section 605 Inspector's Daily Report (IDR) — Pile Driving Log\n`;
+      clipboardText += `Contract: ${contractVal} | Substructure/Pile: ${pileVal} | Equipment: ${hammerVal} | Total Blows: ${totalBlowCount} | Cadence: ${lblBlowsPerMinute.innerText} BPM\n`;
       clipboardText += `------------------------------------------------------------------------\n`;
-      clipboardText += `Interval     | Blows/Ft | Cumulative | Avg BPM | Duration | DelDOT Status\n`;
+      clipboardText += `Interval     | Blows/Ft | Cumulative | Avg BPM | Duration | Resistance Status\n`;
       clipboardText += `------------------------------------------------------------------------\n`;
       footLogEntries.forEach(entry => {
         const intervalCol = entry.intervalDisplay.replace("&rarr;", "->").padEnd(12, " ");
@@ -1702,13 +2044,165 @@
         clipboardText += `${intervalCol} | ${blowsCol} | ${totalCol} | ${bpmCol} | ${durationCol} | ${entry.complianceText}\n`;
       });
       clipboardText += `------------------------------------------------------------------------\n`;
-      clipboardText += `Notice: Internal Test Build developed by Julian Gomez-Rodriguez.\n`;
-      clipboardText += `Independent tool. Not affiliated with or endorsed by DelDOT, AASHTO, or any agency.\n`;
+      clipboardText += `Notice: Internal Test Build • Independent calculation tool.\n`;
+      clipboardText += `Not affiliated with or endorsed by DelDOT, AASHTO, or any agency.\n`;
       clipboardText += `Official IDR records require certified field inspector verification.\n`;
       navigator.clipboard.writeText(clipboardText).then(() => {
-        showToast("DelDOT IDR Log copied to clipboard!");
+        showToast("Field IDR Log copied to clipboard!");
       });
     });
+
+    // ================================================================
+    // LOCAL STORAGE PERSISTENCE ENGINE (ANTI-DATA-LOSS & F5 SHIELD)
+    // ================================================================
+    const SESSION_STORAGE_KEY = "pile_driving_field_session_v2";
+
+    function saveSessionToLocalStorage() {
+      try {
+        const sessionPayload = {
+          version: 2,
+          savedAt: new Date().toISOString(),
+          currentOperatingMode: currentOperatingMode,
+          totalBlowCount: totalBlowCount,
+          currentFootBlowCount: currentFootBlowCount,
+          currentDepthFeet: currentDepthFeet,
+          currentDepthInches: currentDepthInches,
+          currentIntervalUnit: currentIntervalUnit,
+          footLogEntries: footLogEntries,
+          recentStrikeIntervals: recentStrikeIntervals,
+          contractNo: sheetContractNo ? sheetContractNo.value : "",
+          pileId: sheetPileId ? sheetPileId.value : "",
+          hammerType: sheetHammerType ? sheetHammerType.value : "",
+          inspectorDate: sheetInspectorDate ? sheetInspectorDate.value : "",
+          selectedHammerValue: selectHammerType ? selectHammerType.value : "diesel",
+          earbudBeep: checkboxEarbudBeep ? checkboxEarbudBeep.checked : false,
+          drivingStartTime: drivingStartTime,
+          currentFootStartTime: currentFootStartTime
+        };
+        localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(sessionPayload));
+        updateCacheIndicator(true);
+      } catch (e) {
+        console.warn("Storage quota or error saving pile session:", e);
+      }
+    }
+
+    function restoreSessionFromLocalStorage() {
+      try {
+        const rawJson = localStorage.getItem(SESSION_STORAGE_KEY);
+        if (!rawJson) return false;
+        const data = JSON.parse(rawJson);
+        if (!data) return false;
+
+        const hasSubstantialData = (data.totalBlowCount && data.totalBlowCount > 0) ||
+                                  (data.footLogEntries && data.footLogEntries.length > 0) ||
+                                  (data.contractNo && data.contractNo.trim().length > 0) ||
+                                  (data.pileId && data.pileId.trim().length > 0);
+
+        if (!hasSubstantialData) return false;
+
+        totalBlowCount = Number(data.totalBlowCount) || 0;
+        currentFootBlowCount = Number(data.currentFootBlowCount) || 0;
+        currentDepthFeet = Number(data.currentDepthFeet) || 17;
+        currentDepthInches = Number(data.currentDepthInches) || 0;
+        currentIntervalUnit = data.currentIntervalUnit || "ft";
+        footLogEntries = Array.isArray(data.footLogEntries) ? data.footLogEntries : [];
+        recentStrikeIntervals = Array.isArray(data.recentStrikeIntervals) ? data.recentStrikeIntervals : [];
+        drivingStartTime = data.drivingStartTime || null;
+        currentFootStartTime = data.currentFootStartTime || null;
+
+        if (inputCurrentDepthFeet) inputCurrentDepthFeet.value = currentDepthFeet;
+        if (inputCurrentDepthInches) inputCurrentDepthInches.value = currentDepthInches;
+        if (sheetContractNo && data.contractNo) sheetContractNo.value = data.contractNo;
+        if (sheetPileId && data.pileId) sheetPileId.value = data.pileId;
+        if (sheetHammerType && data.hammerType) sheetHammerType.value = data.hammerType;
+        if (sheetInspectorDate && data.inspectorDate) sheetInspectorDate.value = data.inspectorDate;
+        if (selectHammerType && data.selectedHammerValue) selectHammerType.value = data.selectedHammerValue;
+        if (checkboxEarbudBeep && typeof data.earbudBeep === "boolean") checkboxEarbudBeep.checked = data.earbudBeep;
+
+        lblTotalBlowCount.innerText = totalBlowCount;
+        lblCurrentFootBlowCount.innerText = currentFootBlowCount;
+        lblStickyFootBlows.innerText = currentFootBlowCount;
+        lblStickyTotalBlows.innerText = totalBlowCount;
+
+        updateDepthInterface();
+        renderFootLogTable();
+        updateCacheIndicator(true);
+
+        const timeStr = data.savedAt ? new Date(data.savedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
+        showToast(`Auto-restored cached session: ${totalBlowCount} blows across ${footLogEntries.length} intervals (${timeStr})`);
+        return true;
+      } catch (err) {
+        console.error("Failed to restore session from localStorage:", err);
+        return false;
+      }
+    }
+
+    function updateCacheIndicator(isSaved) {
+      const badgeCacheStatus = document.getElementById("badgeCacheStatus");
+      const headerCacheBadge = document.getElementById("headerCacheBadge");
+      const headerCacheText = document.getElementById("headerCacheText");
+      if (badgeCacheStatus) {
+        badgeCacheStatus.innerHTML = isSaved ? `<span class="w-1.5 h-1.5 rounded-full bg-emerald"></span><span>CACHE: SAVED</span>` : `<span class="w-1.5 h-1.5 rounded-full bg-signal"></span><span>CACHE: RESET</span>`;
+      }
+      if (headerCacheBadge && headerCacheText) {
+        headerCacheBadge.classList.remove("hidden");
+        headerCacheText.innerText = isSaved ? "SAVED" : "RESET";
+      }
+    }
+
+    // Instant JSON Snapshot Downloader
+    function downloadSessionBackupJson() {
+      const backupData = {
+        title: "Acoustic Pile Driving Field Inspection Backup",
+        savedAt: new Date().toISOString(),
+        contractNumber: sheetContractNo ? sheetContractNo.value : "",
+        substructurePileId: sheetPileId ? sheetPileId.value : "",
+        equipment: sheetHammerType ? sheetHammerType.value : "",
+        inspector: sheetInspectorDate ? sheetInspectorDate.value : "",
+        totalBlowCount: totalBlowCount,
+        currentDepthFeet: currentDepthFeet,
+        currentDepthInches: currentDepthInches,
+        currentIntervalUnit: currentIntervalUnit,
+        footLogEntries: footLogEntries
+      };
+      const jsonStr = JSON.stringify(backupData, null, 2);
+      const blob = new Blob([jsonStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const dateStr = new Date().toISOString().slice(0, 10);
+      const pileName = sheetPileId && sheetPileId.value ? sheetPileId.value.replace(/[^a-zA-Z0-9_-]/g, '_') : 'pile';
+      a.href = url;
+      a.download = `pile-log-${pileName}-${dateStr}-${totalBlowCount}blows.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast("Session JSON snapshot backup downloaded!");
+    }
+
+    // Browser Refresh (F5) / Unload Protection
+    window.addEventListener("beforeunload", (event) => {
+      if (totalBlowCount > 0 || (footLogEntries && footLogEntries.length > 0)) {
+        saveSessionToLocalStorage();
+        event.preventDefault();
+        event.returnValue = "You have an active pile driving log in progress. Your data is safely stored in local cache, but do you want to reload?";
+        return event.returnValue;
+      }
+    });
+
+    // Auto-save metadata fields when inspector edits them in the sheet modal
+    if (sheetContractNo) sheetContractNo.addEventListener("input", saveSessionToLocalStorage);
+    if (sheetPileId) sheetPileId.addEventListener("input", saveSessionToLocalStorage);
+    if (sheetHammerType) sheetHammerType.addEventListener("input", saveSessionToLocalStorage);
+    if (sheetInspectorDate) sheetInspectorDate.addEventListener("input", saveSessionToLocalStorage);
+    if (selectHammerType) selectHammerType.addEventListener("change", saveSessionToLocalStorage);
+
+    // Bootstrapping: Set Manual Mode as Default & Auto-Restore Previous Session Cache
+    setOperatingMode("manual", false);
+    const restored = restoreSessionFromLocalStorage();
+    if (!restored) {
+      updateDepthInterface();
+    }
 
     // Toast Notification System
     function showToast(message) {
