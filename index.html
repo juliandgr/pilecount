@@ -147,7 +147,7 @@
         color: #000000 !important;
         padding: 0 !important;
       }
-      header, #mainWorkflowContainer, #mobileStickyCockpit, #toastContainer, .no-print {
+      header, #mainWorkflowContainer, #mobileStickyCockpit, #toastContainer, #resetConfirmModal, .no-print {
         display: none !important;
       }
       #delDotSheetModal {
@@ -520,20 +520,24 @@
           <span class="font-bold text-ink uppercase">RECORDED FOOT RESISTANCE</span>
         </div>
         
-        <div class="flex items-center space-x-2">
+        <div class="flex flex-wrap items-center gap-1.5 font-mono text-xs">
           <button onclick="openDelDotSheetModal()" class="bg-deldot text-white hover:bg-black px-3 py-1 font-bold uppercase transition text-[11px] flex items-center space-x-1">
             <i class="ph-bold ph-table"></i>
-            <span>OPEN FIELD SHEET</span>
+            <span>FIELD SHEET</span>
           </button>
-          <button id="btnBackupJson" onclick="downloadSessionBackupJson()" class="bg-white hover:bg-black hover:text-white border border-black/30 text-ink px-2.5 py-1 font-bold uppercase transition text-[11px] flex items-center space-x-1" title="Download instant JSON backup file">
-            <i class="ph-bold ph-floppy-disk"></i>
-            <span>BACKUP</span>
+          <button onclick="exportLogAsCsvFile()" class="bg-white hover:bg-emerald hover:text-white border border-black/30 text-ink px-2.5 py-1 font-bold uppercase transition text-[11px] flex items-center space-x-1" title="Download CSV spreadsheet for Microsoft Excel">
+            <i class="ph-bold ph-file-csv text-emerald"></i>
+            <span>CSV (EXCEL)</span>
           </button>
-          <button id="btnExportCsvFile" class="bg-white hover:bg-black hover:text-white border border-black/30 text-ink px-2.5 py-1 font-bold uppercase transition text-[11px] flex items-center space-x-1">
-            <i class="ph-bold ph-file-csv"></i>
-            <span>CSV</span>
+          <button onclick="exportLogAsPdfOrPrint()" class="bg-white hover:bg-signal hover:text-white border border-black/30 text-ink px-2.5 py-1 font-bold uppercase transition text-[11px] flex items-center space-x-1" title="Print or save DelDOT Field Sheet as PDF">
+            <i class="ph-bold ph-printer text-signal"></i>
+            <span>PDF</span>
           </button>
-          <button id="btnCopyIdrClipboard" class="bg-ink hover:bg-signal text-white px-2.5 py-1 font-bold uppercase transition text-[11px] flex items-center space-x-1">
+          <button onclick="downloadSessionBackupJson()" class="bg-white hover:bg-black hover:text-white border border-black/30 text-ink px-2.5 py-1 font-bold uppercase transition text-[11px] flex items-center space-x-1" title="Download instant JSON backup file for developers">
+            <i class="ph-bold ph-code text-blue-600"></i>
+            <span>JSON</span>
+          </button>
+          <button id="btnCopyIdrClipboard" class="bg-ink hover:bg-signal text-white px-2.5 py-1 font-bold uppercase transition text-[11px] flex items-center space-x-1" title="Copy formatted IDR text to clipboard">
             <i class="ph-bold ph-copy"></i>
             <span>COPY</span>
           </button>
@@ -717,8 +721,8 @@
   <!-- START NEW PILE & PERMANENT RESET CONFIRMATION MODAL            -->
   <!-- Protects against accidental data loss with explicit warning    -->
   <!-- ============================================================== -->
-  <div id="resetConfirmModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-sm p-4 flex items-center justify-center">
-    <div class="bg-white border-4 border-signal max-w-lg w-full p-6 space-y-5 shadow-[10px_10px_0px_0px_rgba(255,68,0,1)]">
+  <div id="resetConfirmModal" class="hidden no-print fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-sm p-4 flex items-center justify-center">
+    <div class="bg-white border-4 border-signal max-w-lg w-full p-6 space-y-4 shadow-[10px_10px_0px_0px_rgba(255,68,0,1)]">
       
       <div class="flex items-center space-x-3 text-signal">
         <i class="ph-bold ph-warning-octagon text-3xl"></i>
@@ -739,25 +743,71 @@
           <li>Browser offline storage (`localStorage`) will be reset for the new pile</li>
         </ul>
         <p class="text-[10px] text-gray-600 italic">
-          If you need these numbers for your DWR/IDR report, please download a backup first.
+          Before erasing, choose your preferred format below to save a copy for your inspection records.
         </p>
       </div>
 
-      <div class="flex flex-col sm:flex-row gap-2 font-mono text-xs pt-1">
-        <!-- Safety Download Backup Button -->
-        <button onclick="downloadSessionBackupJson();" class="px-3 py-2.5 bg-chalk hover:bg-black hover:text-white border border-black/30 text-ink font-bold uppercase transition flex items-center justify-center space-x-1 flex-1 text-[11px]">
-          <i class="ph-bold ph-floppy-disk"></i>
-          <span>DOWNLOAD BACKUP</span>
-        </button>
+      <!-- FORMAT SELECTION: CSV (Excel), PDF (DelDOT IDR), or RAW (JSON) -->
+      <div class="space-y-2 bg-chalk p-3 border-2 border-black/20 font-mono text-xs">
+        <div class="flex items-center justify-between border-b border-black/10 pb-1.5">
+          <span class="text-[10px] text-gray-700 font-bold uppercase tracking-wider flex items-center space-x-1.5">
+            <i class="ph-bold ph-floppy-disk text-signal"></i>
+            <span>SAVE A COPY BEFORE ERASING:</span>
+          </span>
+          <span class="text-[9px] bg-emerald/10 text-emerald border border-emerald/30 font-bold px-1.5 py-0.5 uppercase">
+            CHOOSE FORMAT
+          </span>
+        </div>
 
+        <!-- 3 Quick Format Action Cards (100% Inspector Friendly!) -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+          
+          <!-- Option 1: CSV for Microsoft Excel / Google Sheets / Numbers -->
+          <button type="button" onclick="exportLogAsCsvFile();" class="p-2.5 bg-white hover:bg-emerald hover:text-white border-2 border-ink text-ink font-bold uppercase transition flex flex-col items-center justify-center space-y-1 text-center shadow-sm active:translate-x-0.5 active:translate-y-0.5 group" title="Download spreadsheet file for Microsoft Excel, Apple Numbers, or Google Sheets">
+            <div class="flex items-center space-x-1.5">
+              <i class="ph-bold ph-file-csv text-xl text-emerald group-hover:text-white"></i>
+              <span class="text-[11px] font-black">CSV (EXCEL)</span>
+            </div>
+            <span class="text-[9px] text-gray-500 group-hover:text-white/90 normal-case block leading-tight font-sans">
+              Spreadsheet (.csv)
+            </span>
+          </button>
+
+          <!-- Option 2: PDF / DelDOT Section 605 Print Sheet -->
+          <button type="button" onclick="exportLogAsPdfOrPrint();" class="p-2.5 bg-white hover:bg-deldot hover:text-white border-2 border-ink text-ink font-bold uppercase transition flex flex-col items-center justify-center space-y-1 text-center shadow-sm active:translate-x-0.5 active:translate-y-0.5 group" title="Print or save official DelDOT Section 605 Field Sheet as PDF">
+            <div class="flex items-center space-x-1.5">
+              <i class="ph-bold ph-printer text-xl text-signal group-hover:text-white"></i>
+              <span class="text-[11px] font-black">PDF / PRINT</span>
+            </div>
+            <span class="text-[9px] text-gray-500 group-hover:text-white/90 normal-case block leading-tight font-sans">
+              Inspection Form (.pdf)
+            </span>
+          </button>
+
+          <!-- Option 3: Raw JSON Snapshot (Developers / System Backup) -->
+          <button type="button" onclick="downloadSessionBackupJson();" class="p-2.5 bg-white hover:bg-black hover:text-white border-2 border-ink text-ink font-bold uppercase transition flex flex-col items-center justify-center space-y-1 text-center shadow-sm active:translate-x-0.5 active:translate-y-0.5 group" title="Download raw JSON data backup file for developers">
+            <div class="flex items-center space-x-1.5">
+              <i class="ph-bold ph-code text-xl text-blue-600 group-hover:text-white"></i>
+              <span class="text-[11px] font-black">RAW (JSON)</span>
+            </div>
+            <span class="text-[9px] text-gray-500 group-hover:text-white/90 normal-case block leading-tight font-sans">
+              Raw Data (.json)
+            </span>
+          </button>
+
+        </div>
+      </div>
+
+      <!-- Final Actions: Cancel (Keep Data) vs Erase & Start New -->
+      <div class="grid grid-cols-2 gap-2 font-mono text-xs pt-1 border-t border-black/15">
         <!-- Cancel Button -->
-        <button onclick="closeResetModal()" class="px-3 py-2.5 bg-ink text-white hover:bg-black font-bold uppercase transition flex items-center justify-center space-x-1 flex-1 text-[11px]">
-          <i class="ph-bold ph-x"></i>
+        <button onclick="closeResetModal()" class="w-full py-3 px-3 bg-white border-2 border-ink hover:bg-black hover:text-white text-ink font-bold uppercase transition flex items-center justify-center space-x-1.5 text-xs shadow-sm active:translate-x-0.5 active:translate-y-0.5">
+          <i class="ph-bold ph-arrow-u-up-left"></i>
           <span>CANCEL (KEEP)</span>
         </button>
 
         <!-- Red Erase Confirm Button -->
-        <button onclick="executePermanentReset()" class="px-3 py-2.5 bg-signal text-white hover:bg-black font-black uppercase transition flex items-center justify-center space-x-1 border-2 border-signal flex-1 text-[11px]">
+        <button onclick="executePermanentReset()" class="w-full py-3 px-3 bg-signal text-white hover:bg-black font-black uppercase transition flex items-center justify-center space-x-1.5 border-2 border-signal hover:border-black text-xs shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] active:translate-x-0.5 active:translate-y-0.5">
           <i class="ph-bold ph-trash"></i>
           <span>ERASE &amp; START</span>
         </button>
@@ -792,9 +842,13 @@
           </span>
         </div>
         <div class="flex items-center space-x-2 font-mono text-xs no-print">
-          <button onclick="window.print()" class="bg-ink hover:bg-signal text-white font-bold px-3 py-1.5 uppercase transition flex items-center space-x-1">
+          <button onclick="exportLogAsCsvFile()" class="bg-white hover:bg-emerald hover:text-white border border-black/30 text-ink font-bold px-2.5 py-1.5 uppercase transition flex items-center space-x-1" title="Export table to CSV spreadsheet for Microsoft Excel">
+            <i class="ph-bold ph-file-csv text-emerald"></i>
+            <span>CSV (EXCEL)</span>
+          </button>
+          <button onclick="window.print()" class="bg-ink hover:bg-signal text-white font-bold px-3 py-1.5 uppercase transition flex items-center space-x-1" title="Print or save as PDF">
             <i class="ph-bold ph-printer"></i>
-            <span>PRINT SHEET</span>
+            <span>PRINT / SAVE PDF</span>
           </button>
           <button onclick="closeDelDotSheetModal()" class="bg-white border border-black/30 text-ink font-bold px-3 py-1.5 uppercase hover:bg-gray-100 transition">
             CLOSE [X]
@@ -2042,20 +2096,107 @@
       showToast("Simulator demo paused.");
     }
 
-    // EXPORTS: CSV, JSON & CLIPBOARD IDR
-    document.getElementById("btnExportCsvFile").addEventListener("click", () => {
-      let csvContent = "Interval,Unit,Blows_Per_Interval,Cumulative_Blows,Avg_BPM,Duration_Sec,Resistance_Status\n";
-      footLogEntries.forEach(entry => {
-        const cleanedInterval = entry.intervalDisplay.replace(/&rarr;/g, "->");
-        csvContent += `"${cleanedInterval}","${entry.unit}",${entry.blowsPerFoot},${entry.cumulativeTotal},${entry.averageBpm},"${entry.durationFormatted}","${entry.complianceText}"\n`;
+    // ================================================================
+    // EXPORTS & BACKUPS ENGINE: CSV (EXCEL), PDF (PRINT) & JSON
+    // Tailored specifically for Civil Infrastructure Field Inspectors
+    // ================================================================
+    function exportLogAsCsvFile() {
+      const contractVal = (sheetContractNo && sheetContractNo.value.trim()) || "Field-Project";
+      const pileVal = (sheetPileId && sheetPileId.value.trim()) || "Pile-Driven";
+      const hammerVal = (sheetHammerType && sheetHammerType.value.trim()) || (selectHammerType ? selectHammerType.options[selectHammerType.selectedIndex].text : "Diesel Hammer");
+      const inspectorVal = (sheetInspectorDate && sheetInspectorDate.value.trim()) || (new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}));
+      const dateStr = new Date().toISOString().slice(0, 10);
+      const pileName = (sheetPileId && sheetPileId.value ? sheetPileId.value.replace(/[^a-zA-Z0-9_-]/g, '_') : 'pile');
+
+      let csvRows = [];
+      // IDR Header block for Excel / Numbers
+      csvRows.push(["DELDOT SECTION 605 - PILE DRIVING INSPECTION LOG (IDR)"]);
+      csvRows.push(["Contract Number", contractVal]);
+      csvRows.push(["Substructure / Pile ID", pileVal]);
+      csvRows.push(["Hammer Equipment", hammerVal]);
+      csvRows.push(["Date / Inspector", inspectorVal]);
+      csvRows.push(["Total Cumulative Blows", totalBlowCount]);
+      csvRows.push(["Total Driven Depth", `${currentDepthFeet} ft ${currentDepthInches} in`]);
+      csvRows.push(["Average Cadence (BPM)", lblBlowsPerMinute ? lblBlowsPerMinute.innerText : "0.0"]);
+      csvRows.push(["Export Timestamp", new Date().toLocaleString()]);
+      csvRows.push([]); // blank line separator
+
+      // Table Column Headers
+      csvRows.push([
+        "Entry_No",
+        "Interval",
+        "Unit",
+        "Blows_Per_Interval",
+        "Cumulative_Blows",
+        "Avg_BPM",
+        "Duration",
+        "Resistance_Compliance_Status"
+      ]);
+
+      // Chronological order from surface down to tip
+      const chronological = [...footLogEntries].reverse();
+      chronological.forEach((entry, idx) => {
+        const cleanedInterval = (entry.intervalDisplay || "").replace(/&rarr;/g, "->");
+        csvRows.push([
+          idx + 1,
+          cleanedInterval,
+          entry.unit,
+          entry.blowsPerFoot,
+          entry.cumulativeTotal,
+          entry.averageBpm,
+          entry.durationFormatted,
+          entry.complianceText
+        ]);
       });
-      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-      const downloadLink = document.createElement("a");
-      downloadLink.href = URL.createObjectURL(blob);
-      downloadLink.download = `Pile_Driving_Log_${Date.now()}.csv`;
-      downloadLink.click();
-      showToast("CSV file exported successfully!");
-    });
+
+      // If there are uncommitted active blows in the active interval, include active row
+      if (currentFootBlowCount > 0) {
+        const activeIntervalText = currentIntervalUnit === 'ft' 
+          ? `${currentDepthFeet}' -> ${currentDepthFeet + 1}' (Active)`
+          : `${currentDepthFeet}' ${currentDepthInches}" -> ${currentDepthFeet}' ${currentDepthInches + 1}" (Active)`;
+        csvRows.push([
+          chronological.length + 1,
+          activeIntervalText,
+          currentIntervalUnit.toUpperCase(),
+          currentFootBlowCount,
+          totalBlowCount,
+          lblBlowsPerMinute ? lblBlowsPerMinute.innerText : "0.0",
+          "In Progress",
+          "ACTIVE UNLOGGED BLOWS"
+        ]);
+      }
+
+      // Convert array of rows to properly escaped CSV string with RFC 4180 rules
+      const csvString = csvRows.map(row => 
+        row.map(cell => {
+          const cellStr = cell === null || cell === undefined ? "" : String(cell);
+          if (cellStr.includes(",") || cellStr.includes('"') || cellStr.includes("\n") || cellStr.includes("\r")) {
+            return `"${cellStr.replace(/"/g, '""')}"`;
+          }
+          return cellStr;
+        }).join(",")
+      ).join("\r\n");
+
+      // Prepend UTF-8 BOM (\uFEFF) so Excel on Windows & Mac instantly opens with correct UTF-8 encoding
+      const blob = new Blob(["\uFEFF" + csvString], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `pile-log-${pileName}-${dateStr}-${totalBlowCount}blows.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast("CSV spreadsheet downloaded for Microsoft Excel / Sheets!");
+    }
+
+    function exportLogAsPdfOrPrint() {
+      openDelDotSheetModal();
+      showToast("Preparing DelDOT 605 Field Sheet for PDF export...");
+      setTimeout(() => {
+        window.print();
+      }, 250);
+    }
 
     document.getElementById("btnCopyIdrClipboard").addEventListener("click", () => {
       const contractVal = (sheetContractNo && sheetContractNo.value.trim()) || "Field Project";
@@ -2229,6 +2370,7 @@
         equipment: sheetHammerType ? sheetHammerType.value : "",
         inspector: sheetInspectorDate ? sheetInspectorDate.value : "",
         totalBlowCount: totalBlowCount,
+        currentFootBlowCount: currentFootBlowCount,
         currentDepthFeet: currentDepthFeet,
         currentDepthInches: currentDepthInches,
         currentIntervalUnit: currentIntervalUnit,
