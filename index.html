@@ -178,52 +178,57 @@
 <body class="bg-chalk text-ink min-h-screen flex flex-col font-sans antialiased selection:bg-ink selection:text-white pb-32 sm:pb-12">
 
   <!-- ============================================================== -->
-  <!-- HEADER: PURE MODERN EDITORIAL BRUTALISM                        -->
+  <!-- HEADER: TWO-TIER STRUCTURED INDUSTRIAL TOOLBAR (OPTION B)      -->
+  <!-- Tier 1: Brand & Consolidated Status Pill (Manual + Saved)      -->
+  <!-- Tier 2: Symmetrical 3-Part Field Toolbar (Sheet, Hammer, New)  -->
   <!-- ============================================================== -->
-  <header class="grid-line-b px-4 sm:px-12 py-4 sticky top-0 z-40 bg-chalk/90 backdrop-blur-md">
-    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+  <header class="grid-line-b px-3 sm:px-12 py-2.5 sticky top-0 z-40 bg-chalk/95 backdrop-blur-md shadow-sm">
+    <div class="max-w-6xl mx-auto space-y-2">
       
-      <!-- Brand Logo: PILECOUNT. with signal orange dot -->
-      <div class="flex flex-wrap items-baseline gap-2 sm:gap-3">
-        <span class="editorial-title text-3xl sm:text-5xl uppercase tracking-tight text-ink">
-          PILECOUNT<span class="text-signal">.</span>
-        </span>
-        <span class="text-[9px] font-mono font-bold uppercase tracking-widest bg-white border border-black/20 text-ink px-2 py-0.5">
-          INTERNAL TEST BUILD
-        </span>
-        <span class="text-[10px] font-mono tracking-wider text-gray-500 uppercase hidden lg:inline">
-          [ SEC. 605 DRIVEN PILES • MOBILE COCKPIT ]
-        </span>
-      </div>
-
-      <!-- Quick Action: Field Sheet Modal, New Pile & Equipment -->
-      <div class="flex flex-wrap items-center gap-2 font-mono text-xs w-full sm:w-auto justify-between sm:justify-end">
-        <button onclick="openDelDotSheetModal()" class="px-3 py-1.5 bg-ink text-white hover:bg-signal font-bold uppercase transition flex items-center space-x-1.5 border border-ink text-[11px]">
-          <i class="ph-bold ph-table text-sm"></i>
-          <span>FIELD SHEET VIEW</span>
-        </button>
-
-        <!-- Prominent Top Start New Pile Button -->
-        <button onclick="openResetModal()" class="px-2.5 py-1.5 bg-white border-2 border-black/30 hover:bg-signal hover:text-white hover:border-signal text-ink font-bold uppercase transition flex items-center space-x-1.5 text-[11px] shadow-sm" title="Erase current data and start a new pile">
-          <i class="ph-bold ph-arrow-counter-clockwise text-xs"></i>
-          <span>START NEW PILE</span>
-        </button>
-
-        <select id="selectHammerType" class="bg-white border-2 border-ink text-xs font-bold text-ink px-2.5 py-1 focus:outline-none shadow-sm">
-          <option value="diesel">DIESEL (35-65 BPM, 0.45s)</option>
-          <option value="hydraulic">HYDRAULIC (40-100 BPM, 0.35s)</option>
-          <option value="breaker">BREAKER (200-600 BPM, 0.10s)</option>
-          <option value="drop">DROP (20-45 BPM, 0.65s)</option>
-        </select>
-
-        <div id="headerStatusBadge" class="flex items-center space-x-1.5 px-2.5 py-1 bg-white border border-black/20 text-ink font-bold text-[11px]">
-          <span class="w-2 h-2 rounded-full bg-signal" id="headerStatusDot"></span>
-          <span id="headerStatusText">MANUAL</span>
+      <!-- TIER 1: BRAND IDENTITY & CONSOLIDATED STATUS PILL -->
+      <div class="flex items-center justify-between gap-2">
+        <!-- Left: Brand Logo & Spec Ref -->
+        <div class="flex items-center space-x-2">
+          <span class="editorial-title text-2xl sm:text-4xl uppercase tracking-tight text-ink">
+            PILECOUNT<span class="text-signal">.</span>
+          </span>
+          <span class="text-[9px] font-mono font-bold uppercase tracking-wider bg-white border border-black/20 text-ink px-1.5 py-0.5">
+            SEC. 605
+          </span>
+          <span class="text-[10px] font-mono tracking-wider text-gray-500 uppercase hidden lg:inline">
+            [ DRIVEN PILES MOBILE COCKPIT ]
+          </span>
         </div>
 
-        <div id="headerCacheBadge" class="flex items-center space-x-1 px-2 py-1 bg-emerald/10 border border-emerald/30 text-emerald text-[10px] font-mono font-bold" title="Logs and counts auto-saved in browser local cache">
-          <i class="ph-bold ph-hard-drive"></i>
-          <span id="headerCacheText">SAVED</span>
+        <!-- Right: Single Consolidated Telemetry Pill (No loose badges!) -->
+        <div class="flex items-center font-mono text-[11px] bg-white border-2 border-ink shadow-sm divide-x divide-black/20">
+          <div id="headerStatusBadge" class="flex items-center space-x-1.5 px-2.5 py-1 text-ink font-bold">
+            <span class="w-2 h-2 rounded-full bg-signal" id="headerStatusDot"></span>
+            <span id="headerStatusText">MANUAL</span>
+          </div>
+          <div id="headerCacheBadge" class="flex items-center space-x-1 px-2.5 py-1 text-emerald font-bold" title="Logs auto-saved in local cache">
+            <i class="ph-bold ph-hard-drive text-xs"></i>
+            <span id="headerCacheText">SAVED</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TIER 2: BALANCED TWO-ACTION EXECUTIVE TOOLBAR (50/50 SYMMETRICAL SPLIT) -->
+      <div class="grid grid-cols-2 gap-2 font-mono text-xs items-center">
+        <!-- Action 1: Field Sheet View Modal -->
+        <div>
+          <button onclick="openDelDotSheetModal()" class="w-full h-8 px-3 bg-ink text-white hover:bg-signal font-bold uppercase transition flex items-center justify-center space-x-1.5 text-[11px] border-2 border-ink shadow-sm">
+            <i class="ph-bold ph-table text-xs"></i>
+            <span class="truncate font-bold">FIELD SHEET VIEW</span>
+          </button>
+        </div>
+
+        <!-- Action 2: Start New Pile (with Warning Modal) -->
+        <div>
+          <button onclick="openResetModal()" class="w-full h-8 px-3 bg-white border-2 border-black/30 hover:bg-signal hover:text-white hover:border-signal text-ink font-bold uppercase transition flex items-center justify-center space-x-1.5 text-[11px] shadow-sm" title="Erase current data and start a new pile">
+            <i class="ph-bold ph-arrow-counter-clockwise text-xs"></i>
+            <span class="truncate font-bold">START NEW PILE</span>
+          </button>
         </div>
       </div>
 
@@ -236,16 +241,34 @@
   <main id="mainWorkflowContainer" class="flex-1 max-w-6xl w-full mx-auto p-3 sm:p-8 space-y-6">
 
     <!-- ========================================================== -->
-    <!-- STEP 01: OPERATING MODE SELECTION (AUTO / MANUAL / FILE)   -->
+    <!-- STEP 01: EQUIPMENT & OPERATING MODE CONFIGURATION          -->
     <!-- ========================================================== -->
     <section class="space-y-2">
       <div class="flex items-center justify-between font-mono text-xs">
-        <span class="text-gray-500 uppercase tracking-widest">[ STEP 01 / OPERATING MODE ]</span>
+        <span class="text-gray-500 uppercase tracking-widest">[ STEP 01 / EQUIPMENT & OPERATING MODE ]</span>
         <span class="font-bold text-ink uppercase text-[11px]" id="lblActiveModeTitle">MODE: MANUAL CLICKER (PRIMARY FIELD MODE)</span>
       </div>
 
       <div class="bg-white border border-black/15 p-3 sm:p-4 space-y-3 shadow-sm">
         
+        <!-- Hammer Equipment Calibration Strip (No Emojis • Industrial Vector Icon) -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-chalk border border-black/20 p-2 gap-2 font-mono text-xs">
+          <div class="flex items-center space-x-2">
+            <span class="flex items-center space-x-1.5 text-ink font-bold uppercase text-[11px]">
+              <i class="ph-bold ph-wrench text-signal"></i>
+              <span>HAMMER EQUIPMENT:</span>
+            </span>
+          </div>
+          <div class="flex-1 sm:max-w-md">
+            <select id="selectHammerType" class="w-full bg-white border border-ink text-[11px] font-bold text-ink px-2 py-1.5 focus:outline-none shadow-sm cursor-pointer">
+              <option value="diesel">DIESEL HAMMER (35-65 BPM, 0.45s REFRACTORY)</option>
+              <option value="hydraulic">HYDRAULIC HAMMER (40-100 BPM, 0.30s REFRACTORY)</option>
+              <option value="breaker">EXCAVATOR BREAKER (200-600 BPM, 0.12s REFRACTORY)</option>
+              <option value="drop">GRAVITY DROP HAMMER (20-45 BPM, 0.60s REFRACTORY)</option>
+            </select>
+          </div>
+        </div>
+
         <!-- 4 Mode Switcher Tabs (2x2 Grid on Mobile, 1x4 on Desktop) -->
         <!-- MANUAL CLICKER IS #1 AND ACTIVE BY DEFAULT -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-xs">
@@ -283,14 +306,14 @@
         </div>
 
         <!-- Automatic Mic Settings Bar (Hidden by default in Manual Mode) -->
-        <div id="panelAutoMode" class="hidden grid-cols-1 sm:grid-cols-12 gap-2 pt-1">
-          <div class="sm:col-span-5 font-mono text-xs">
-            <select id="selectAudioInputDevice" class="w-full bg-chalk border border-black/20 text-ink text-xs font-bold p-2 focus:outline-none">
+        <div id="panelAutoMode" class="hidden grid-cols-1 sm:grid-cols-12 gap-1.5 pt-1 font-mono text-xs">
+          <div class="sm:col-span-5">
+            <select id="selectAudioInputDevice" class="w-full bg-chalk border border-black/20 text-ink text-xs font-bold p-1.5 focus:outline-none">
               <option value="">Default Smartphone Microphone</option>
             </select>
           </div>
-          <div class="sm:col-span-7 font-mono text-xs">
-            <button id="btnToggleMicrophone" class="w-full brutalist-btn py-2 px-4 text-xs flex items-center justify-center space-x-2">
+          <div class="sm:col-span-7">
+            <button id="btnToggleMicrophone" class="w-full brutalist-btn py-1.5 px-3 text-xs flex items-center justify-center space-x-1.5">
               <i class="ph-bold ph-microphone text-sm" id="iconMic"></i>
               <span id="txtToggleMicrophone">START LIVE MICROPHONE STREAM</span>
             </button>
@@ -298,16 +321,16 @@
         </div>
 
         <!-- Recording Upload Panel -->
-        <div id="panelRecordingMode" class="hidden space-y-2 pt-1">
-          <div id="audioDropZone" class="border-2 border-dashed border-black/30 hover:border-signal p-4 text-center cursor-pointer transition bg-chalk group">
+        <div id="panelRecordingMode" class="hidden space-y-1.5 pt-1">
+          <div id="audioDropZone" class="border-2 border-dashed border-black/30 hover:border-signal p-3 text-center cursor-pointer transition bg-chalk group">
             <input type="file" id="audioFileInput" accept="audio/*,.m4a,.wav,.mp3,.aac,.ogg,.flac" class="hidden">
-            <div class="space-y-1">
-              <i class="ph-bold ph-waveform text-2xl text-gray-400 group-hover:text-signal transition"></i>
-              <h3 class="editorial-title text-xl uppercase text-ink">DROP FIELD VOICE MEMO (.M4A / .WAV / .MP3)</h3>
-              <p class="text-[11px] font-mono text-gray-500">100% processed client-side. Automatically extracts total blows, BPM, and duration.</p>
+            <div class="space-y-0.5">
+              <i class="ph-bold ph-waveform text-xl text-gray-400 group-hover:text-signal transition"></i>
+              <h3 class="editorial-title text-base uppercase text-ink">DROP FIELD VOICE MEMO (.M4A / .WAV / .MP3)</h3>
+              <p class="text-[10px] font-mono text-gray-500">100% processed client-side. Automatically extracts total blows, BPM, and duration.</p>
             </div>
           </div>
-          <div id="fileUploadInfoBar" class="hidden flex flex-wrap justify-between items-center bg-chalk border border-black/20 p-2 font-mono text-xs">
+          <div id="fileUploadInfoBar" class="hidden flex flex-wrap justify-between items-center bg-chalk border border-black/20 p-1.5 font-mono text-xs">
             <span id="lblSelectedFileName" class="font-bold text-ink truncate max-w-xs">No file chosen</span>
             <button id="btnProcessUploadedFile" class="bg-ink hover:bg-signal text-white font-bold px-3 py-1 uppercase transition text-[11px]">
               Process Audio File
@@ -316,11 +339,11 @@
         </div>
 
         <!-- Simulator Panel -->
-        <div id="panelSimulatorMode" class="hidden space-y-1 pt-1">
-          <div class="flex flex-wrap justify-between items-center p-2.5 bg-chalk border border-black/20 font-mono text-xs gap-2">
-            <span class="text-gray-600">Simulate physical diesel hammer strikes at ~52 BPM with background noise:</span>
-            <button id="btnToggleSimulator" class="bg-ink hover:bg-signal text-white font-bold px-4 py-1 uppercase transition text-[11px]">
-              ▶ START SIMULATOR DEMO
+        <div id="panelSimulatorMode" class="hidden pt-1 font-mono text-xs">
+          <div class="flex items-center justify-between p-2 bg-chalk border border-black/20 gap-2">
+            <span class="text-gray-600 truncate text-[11px]">Physical hammer sim at ~52 BPM:</span>
+            <button id="btnToggleSimulator" class="bg-ink hover:bg-signal text-white font-bold px-3 py-1 uppercase transition text-[11px] whitespace-nowrap">
+              ▶ START DEMO
             </button>
           </div>
         </div>
@@ -649,13 +672,13 @@
   <!-- Pinned to bottom of phone viewport so thumb is always ready!   -->
   <!-- ============================================================== -->
   <div id="mobileStickyCockpit" class="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-chalk/95 backdrop-blur-md border-t-2 border-ink p-2 shadow-[0_-4px_10px_rgba(0,0,0,0.15)]">
-    <!-- Mobile Mini Unit Switcher & Active Lap Status -->
+    <!-- Mobile Telemetry Bar: Read-Only Interval Display (Accidental Switching Prevented) -->
     <div class="flex items-center justify-between pb-1 px-1 font-mono text-[10px] border-b border-black/10 mb-1.5">
-      <div class="flex items-center space-x-1 font-bold">
-        <span class="text-gray-500 uppercase">UNIT:</span>
-        <button id="btnStickyToggleUnit" type="button" class="px-2 py-0.5 bg-ink active:bg-signal text-white font-bold border border-black text-[9px] uppercase tracking-wider">
-          <span id="txtStickyUnitToggle">FT &bull; TAP FOR INCHES</span>
-        </button>
+      <div class="flex items-center space-x-1.5 font-bold">
+        <span class="text-gray-500 uppercase text-[9px]">INTERVAL:</span>
+        <span id="lblStickyUnitBadge" class="px-2 py-0.5 bg-white border border-ink text-ink font-bold text-[9px] uppercase tracking-wider shadow-sm">
+          1 FOOT (FT)
+        </span>
       </div>
       <span class="font-bold text-ink" id="lblStickyActiveLap">17' &rarr; 18'</span>
     </div>
@@ -958,8 +981,7 @@
     const lblStickyFootBlows = document.getElementById("lblStickyFootBlows");
     const lblStickyTotalBlows = document.getElementById("lblStickyTotalBlows");
     const lblStickyDepthBadge = document.getElementById("lblStickyDepthBadge");
-    const btnStickyToggleUnit = document.getElementById("btnStickyToggleUnit");
-    const txtStickyUnitToggle = document.getElementById("txtStickyUnitToggle");
+    const lblStickyUnitBadge = document.getElementById("lblStickyUnitBadge");
     const lblStickyActiveLap = document.getElementById("lblStickyActiveLap");
     const lblStickyUnitPrefix = document.getElementById("lblStickyUnitPrefix");
 
@@ -1079,9 +1101,6 @@
 
     btnUnitFeet.addEventListener("click", () => setMeasurementUnit("ft"));
     btnUnitInches.addEventListener("click", () => setMeasurementUnit("in"));
-    btnStickyToggleUnit.addEventListener("click", () => {
-      setMeasurementUnit(currentIntervalUnit === "ft" ? "in" : "ft");
-    });
 
     // Depth Changes UI Handler
     function updateDepthInterface() {
@@ -1109,7 +1128,10 @@
         containerInchInput.classList.add("hidden");
         btnUnitFeet.className = "px-2.5 py-0.5 font-bold text-[10px] uppercase bg-ink text-white transition flex items-center space-x-1";
         btnUnitInches.className = "px-2.5 py-0.5 font-bold text-[10px] uppercase text-ink hover:bg-black/10 transition flex items-center space-x-1";
-        txtStickyUnitToggle.innerText = "FT • TAP FOR INCHES";
+        if (lblStickyUnitBadge) {
+          lblStickyUnitBadge.innerText = "1 FOOT (FT)";
+          lblStickyUnitBadge.className = "px-2 py-0.5 bg-white border border-ink text-ink font-bold text-[9px] uppercase tracking-wider shadow-sm";
+        }
       } else {
         // INCHES MODE
         let nextFeet = currentDepthFeet;
@@ -1134,7 +1156,10 @@
         containerInchInput.classList.remove("hidden");
         btnUnitInches.className = "px-2.5 py-0.5 font-bold text-[10px] uppercase bg-signal text-white transition flex items-center space-x-1";
         btnUnitFeet.className = "px-2.5 py-0.5 font-bold text-[10px] uppercase text-ink hover:bg-black/10 transition flex items-center space-x-1";
-        txtStickyUnitToggle.innerText = "IN • TAP FOR FEET";
+        if (lblStickyUnitBadge) {
+          lblStickyUnitBadge.innerText = "1 INCH (IN)";
+          lblStickyUnitBadge.className = "px-2 py-0.5 bg-signal text-white border border-ink font-bold text-[9px] uppercase tracking-wider shadow-sm";
+        }
       }
     }
     inputCurrentDepthFeet.addEventListener("input", () => {
