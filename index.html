@@ -559,27 +559,27 @@
         </div>
       </div>
 
-      <!-- Hairline Table -->
-      <div class="border border-black/20 bg-white">
-        <div class="overflow-x-auto max-h-56 overflow-y-auto">
-          <table class="w-full text-left font-mono text-xs">
-            <thead class="bg-black text-white text-[10px] uppercase sticky top-0 z-10">
+      <!-- Hairline Table (Ultra-Compact, Non-Wrapping Rows for Mobile Viewports) -->
+      <div class="border border-black/20 bg-white shadow-sm overflow-hidden">
+        <div class="overflow-x-auto max-h-64 sm:max-h-80 overflow-y-auto">
+          <table class="w-full text-left font-mono text-[11px] sm:text-xs">
+            <thead class="bg-black text-white text-[9px] sm:text-[10px] uppercase sticky top-0 z-10 select-none">
               <tr>
-                <th class="p-2">Foot Interval</th>
-                <th class="p-2 text-center">Blows / Foot</th>
-                <th class="p-2 text-center">Cumulative</th>
-                <th class="p-2 text-center">Avg BPM</th>
-                <th class="p-2 text-center">Duration</th>
-                <th class="p-2 text-right">Driving Status</th>
+                <th class="p-1.5 sm:p-2 text-left whitespace-nowrap">Interval</th>
+                <th class="p-1.5 sm:p-2 text-center whitespace-nowrap">Blows</th>
+                <th class="p-1.5 sm:p-2 text-center whitespace-nowrap">Total</th>
+                <th class="p-1.5 sm:p-2 text-center whitespace-nowrap">BPM</th>
+                <th class="p-1.5 sm:p-2 text-center whitespace-nowrap">Time</th>
+                <th class="p-1.5 sm:p-2 text-right whitespace-nowrap">Status (605)</th>
               </tr>
             </thead>
             <tbody id="footLogTableBody" class="divide-y divide-black/10">
               <tr>
-                <td colspan="6" class="p-6 text-center text-gray-400 font-mono text-xs">
+                <td colspan="6" class="p-4 sm:p-6 text-center text-gray-400 font-mono text-xs">
                   <i class="ph-bold ph-clipboard-text text-xl mb-1 block text-gray-300"></i>
                   <span>NO FEET LOGGED YET</span>
                   <span class="block text-[10px] text-gray-400 mt-0.5">
-                    Tap "NEXT FOOT" as each pile mark passes to populate your Daily Work Report (IDR) table.
+                    Tap "NEXT FOOT / NEXT INCH" as each pile mark passes to populate your IDR table.
                   </span>
                 </td>
               </tr>
@@ -731,6 +731,12 @@
 
     </div>
   </div>
+
+  <!-- ============================================================== -->
+  <!-- SIGNAL ORANGE PERIMETER ALERT FLASH ON REFUSAL / RESISTANCE    -->
+  <!-- Unobtrusive visual perimeter warning that catches eye off-screen -->
+  <!-- ============================================================== -->
+  <div id="refusalAlertOverlay" class="no-print pointer-events-none fixed inset-0 z-50 border-4 sm:border-8 border-signal bg-signal/15 opacity-0 transition-opacity duration-200"></div>
 
   <!-- ============================================================== -->
   <!-- START NEW PILE & PERMANENT RESET CONFIRMATION MODAL            -->
@@ -1230,6 +1236,7 @@
           lblStickyUnitBadge.className = "px-2 py-0.5 bg-signal text-white border border-ink font-bold text-[9px] uppercase tracking-wider shadow-sm";
         }
       }
+      updateComplianceBadge(currentFootBlowCount);
     }
     inputCurrentDepthFeet.addEventListener("input", () => {
       updateDepthInterface();
@@ -1309,14 +1316,14 @@
         const isPracticalRefusalReached = blowsInThisInterval >= 240;
 
         if (isPracticalRefusalReached) {
-          complianceText = "REFUSAL (>20 b/in)";
+          complianceText = "REFUSAL";
           complianceBadgeClass = "bg-signal text-white border-signal font-black animate-pulse";
         } else if (!isCompliancePassing) {
-          complianceText = "HIGH RESISTANCE (>120)";
+          complianceText = "HIGH RESIST";
           complianceBadgeClass = "bg-amber-100 text-amber-900 border-amber-600 font-bold";
         } else {
-          complianceText = "PASS (<= 120)";
-          complianceBadgeClass = "bg-emerald/10 text-emerald border-emerald";
+          complianceText = "PASS";
+          complianceBadgeClass = "bg-emerald/10 text-emerald border-emerald font-bold";
         }
 
         // Advance Depth
@@ -1334,14 +1341,14 @@
         }
         intervalDisplay = `${startFeet}' ${startInches}" &rarr; ${endingDepthFeet}' ${endingDepthInches}"`;
 
-        // DelDOT 605.3.8 Refusal Criteria: 20 blows per inch!
+        // DelDOT 605.3.8 Practical Refusal Criteria: 20 blows per 1 inch!
         const isPracticalRefusalReached = blowsInThisInterval >= 20;
         if (isPracticalRefusalReached) {
-          complianceText = "REFUSAL (>= 20/in)";
+          complianceText = "REFUSAL";
           complianceBadgeClass = "bg-signal text-white border-signal font-black animate-pulse";
         } else {
-          complianceText = `DRIVING (${blowsInThisInterval}/in)`;
-          complianceBadgeClass = "bg-emerald/10 text-emerald border-emerald";
+          complianceText = "PASS";
+          complianceBadgeClass = "bg-emerald/10 text-emerald border-emerald font-bold";
         }
 
         // Advance Depth
@@ -1366,10 +1373,11 @@
 
       updateDepthInterface();
 
-      // Reset Current Foot Counter
+      // Reset Current Foot Counter & Update Live Compliance Status
       currentFootBlowCount = 0;
       lblCurrentFootBlowCount.innerText = "0";
       lblStickyFootBlows.innerText = "0";
+      updateComplianceBadge(0);
 
       // Audible Confirmation Chime & Tactile Haptic Vibration (2 distinct pulses for foot change)
       playFootAdvanceChime();
@@ -1384,18 +1392,18 @@
 
     function renderFootLogTable() {
       if (footLogEntries.length === 0) {
-        footLogTableBody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-gray-400 font-mono text-xs">NO FEET LOGGED YET</td></tr>`;
+        footLogTableBody.innerHTML = `<tr><td colspan="6" class="p-4 sm:p-6 text-center text-gray-400 font-mono text-xs"><i class="ph-bold ph-clipboard-text text-xl mb-1 block text-gray-300"></i><span>NO FEET LOGGED YET</span><span class="block text-[10px] text-gray-400 mt-0.5">Tap "NEXT FOOT / NEXT INCH" as each pile mark passes to populate your IDR table.</span></td></tr>`;
         return;
       }
       const rowsHtml = footLogEntries.map(entry => `
-        <tr class="hover:bg-chalk/80 font-mono text-xs">
-          <td class="p-2 font-bold text-ink">${entry.intervalDisplay}</td>
-          <td class="p-2 text-center font-bold text-signal">${entry.blowsPerFoot} blows</td>
-          <td class="p-2 text-center font-bold text-ink">${entry.cumulativeTotal}</td>
-          <td class="p-2 text-center text-deldot font-bold">${entry.averageBpm}</td>
-          <td class="p-2 text-center text-gray-500">${entry.durationFormatted}</td>
-          <td class="p-2 text-right">
-            <span class="px-2 py-0.5 rounded text-[10px] font-bold border ${entry.complianceBadgeClass}">${entry.complianceText}</span>
+        <tr class="hover:bg-chalk/80 font-mono text-[11px] sm:text-xs border-b border-black/10 transition-colors">
+          <td class="p-1.5 sm:p-2 font-bold text-ink whitespace-nowrap">${entry.intervalDisplay}</td>
+          <td class="p-1.5 sm:p-2 text-center font-bold text-signal whitespace-nowrap tabular-num">${entry.blowsPerFoot} <span class="text-[9px] text-gray-400 font-normal">b</span></td>
+          <td class="p-1.5 sm:p-2 text-center font-bold text-ink whitespace-nowrap tabular-num">${entry.cumulativeTotal}</td>
+          <td class="p-1.5 sm:p-2 text-center text-deldot font-bold whitespace-nowrap tabular-num">${entry.averageBpm}</td>
+          <td class="p-1.5 sm:p-2 text-center text-gray-500 whitespace-nowrap tabular-num">${entry.durationFormatted}</td>
+          <td class="p-1.5 sm:p-2 text-right whitespace-nowrap">
+            <span class="px-1.5 py-0.5 rounded text-[9px] sm:text-[10px] font-bold uppercase whitespace-nowrap border ${entry.complianceBadgeClass}">${entry.complianceText}</span>
           </td>
         </tr>
       `).join("");
@@ -1757,16 +1765,62 @@
       // Tactile Haptic Vibration Feedback (1 pulse for blow)
       triggerHapticFeedback('strike');
 
-      // Section 605 Limit Evaluation
-      if (currentFootBlowCount > 120) {
-        lblDelDOTComplianceStatus.innerText = "WARNING: > 120 BLOWS/FT (Section 605.3.8)";
-        lblDelDOTComplianceStatus.className = "font-bold px-1.5 py-0.5 bg-signal text-white border border-signal animate-pulse text-[10px]";
-      } else {
-        lblDelDOTComplianceStatus.innerText = "PASS (<= 120 blows/ft)";
-        lblDelDOTComplianceStatus.className = "font-bold px-1.5 py-0.5 bg-emerald/10 border border-emerald text-emerald text-[10px]";
-      }
+      // Real-Time DelDOT Section 605 Refusal & Resistance Evaluation
+      updateComplianceBadge(currentFootBlowCount);
 
       saveSessionToLocalStorage();
+    }
+
+    // ================================================================
+    // DELDOT SECTION 605 COMPLIANCE & REAL-TIME REFUSAL ENGINE
+    // Evaluates practical refusal (>=20 b/in) and resistance (<=120 b/ft)
+    // Triggers Signal Orange perimeter alert flash on refusal limits
+    // ================================================================
+    let refusalFlashTimeout = null;
+    function triggerRefusalFlash() {
+      const refusalOverlay = document.getElementById("refusalAlertOverlay");
+      if (!refusalOverlay) return;
+      refusalOverlay.classList.remove("opacity-0");
+      refusalOverlay.classList.add("opacity-100");
+      if (refusalFlashTimeout) clearTimeout(refusalFlashTimeout);
+      refusalFlashTimeout = setTimeout(() => {
+        refusalOverlay.classList.remove("opacity-100");
+        refusalOverlay.classList.add("opacity-0");
+      }, 450);
+    }
+
+    function updateComplianceBadge(blowsInInterval) {
+      if (!lblDelDOTComplianceStatus) return;
+      const count = typeof blowsInInterval === "number" ? blowsInInterval : currentFootBlowCount;
+
+      if (currentIntervalUnit === "in") {
+        // DelDOT Section 605.3.8 Practical Refusal Limit: 20 blows per 1 inch
+        if (count >= 20) {
+          lblDelDOTComplianceStatus.innerText = `REFUSAL: \u2265 20/IN (${count} BLOWS)`;
+          lblDelDOTComplianceStatus.className = "font-black px-1.5 py-0.5 bg-signal text-white border-2 border-black animate-pulse text-[10px]";
+          triggerRefusalFlash();
+          if (count === 20) triggerHapticFeedback('foot');
+        } else {
+          lblDelDOTComplianceStatus.innerText = `PASS (${count}/20 IN)`;
+          lblDelDOTComplianceStatus.className = "font-bold px-1.5 py-0.5 bg-emerald/10 border border-emerald text-emerald text-[10px]";
+        }
+      } else {
+        // DelDOT Section 605.3.8 Driving Resistance Limit: 120 blows per 1 foot
+        if (count >= 240) {
+          lblDelDOTComplianceStatus.innerText = `REFUSAL: \u2265 240/FT (${count} BLOWS)`;
+          lblDelDOTComplianceStatus.className = "font-black px-1.5 py-0.5 bg-signal text-white border-2 border-black animate-pulse text-[10px]";
+          triggerRefusalFlash();
+          if (count === 240) triggerHapticFeedback('foot');
+        } else if (count > 120) {
+          lblDelDOTComplianceStatus.innerText = `HIGH RESIST: > 120/FT (${count} BLOWS)`;
+          lblDelDOTComplianceStatus.className = "font-bold px-1.5 py-0.5 bg-amber-500 text-white border border-amber-700 animate-pulse text-[10px]";
+          triggerRefusalFlash();
+          if (count === 121) triggerHapticFeedback('foot');
+        } else {
+          lblDelDOTComplianceStatus.innerText = `PASS (${count} \u2264 120 FT)`;
+          lblDelDOTComplianceStatus.className = "font-bold px-1.5 py-0.5 bg-emerald/10 border border-emerald text-emerald text-[10px]";
+        }
+      }
     }
 
     // Audio Earbud Feedback Clicks
@@ -1915,9 +1969,8 @@
       lblStickyFootBlows.innerText = "0";
       lblStickyTotalBlows.innerText = "0";
       lblBlowsPerMinute.innerText = "0.0";
-      lblDelDOTComplianceStatus.innerText = "PASS (<= 120 blows/ft)";
-      lblDelDOTComplianceStatus.className = "font-bold px-1.5 py-0.5 bg-emerald/10 border border-emerald text-emerald text-[10px]";
-      footLogTableBody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-gray-400 font-mono text-xs">NO FEET LOGGED YET</td></tr>`;
+      updateComplianceBadge(0);
+      renderFootLogTable();
       drivingStartTime = Date.now();
       currentFootStartTime = performance.now() / 1000;
       updateDepthInterface();
