@@ -464,16 +464,21 @@
 
         </div>
 
-        <!-- Real-Time Spec 605 Compliance Bar & Audio Click Feedback Strip -->
-        <div class="flex flex-wrap justify-between items-center text-xs font-mono pt-2 border-t border-black/15 gap-2">
-          <div class="flex items-center space-x-2">
-            <span class="text-gray-500 font-bold uppercase text-[10px]">SPEC 605.3.8:</span>
-            <span id="lblDelDOTComplianceStatus" class="font-bold px-2 py-0.5 bg-emerald/10 border border-emerald text-emerald text-[11px]">PASS (&le; 120 BLOWS/FT)</span>
+        <!-- Real-Time Spec 605 Compliance Bar & Audio/Haptic Feedback Controls -->
+        <div class="flex flex-wrap justify-between items-center text-[10px] sm:text-xs font-mono pt-2 border-t border-black/15 gap-2">
+          <div class="flex items-center space-x-1.5">
+            <span class="text-gray-500 font-bold uppercase text-[9px] hidden xs:inline">SPEC 605:</span>
+            <span id="lblDelDOTComplianceStatus" class="font-bold px-1.5 py-0.5 bg-emerald/10 border border-emerald text-emerald text-[10px]">PASS (&le; 120 BLOWS/FT)</span>
           </div>
-          <div class="flex items-center space-x-3">
-            <label class="flex items-center space-x-1.5 cursor-pointer text-ink font-bold text-xs">
-              <input id="checkboxEarbudBeep" type="checkbox" checked class="accent-ink">
-              <span>Audio Click Feedback</span>
+          <!-- Compact Audio & Haptic Feedback Checkboxes (Both fit neatly in one line, ON by default) -->
+          <div class="flex items-center space-x-2.5 font-bold text-ink">
+            <label class="flex items-center space-x-1 cursor-pointer select-none text-[10px] sm:text-xs hover:text-signal transition" title="Sound beep in earbuds on each strike">
+              <input id="checkboxEarbudBeep" type="checkbox" checked class="w-3.5 h-3.5 accent-ink rounded cursor-pointer">
+              <span>Sound</span>
+            </label>
+            <label class="flex items-center space-x-1 cursor-pointer select-none text-[10px] sm:text-xs hover:text-signal transition" title="Haptic vibration feedback (1 pulse on blow, 2 pulses on next foot)">
+              <input id="checkboxHapticFeedback" type="checkbox" checked class="w-3.5 h-3.5 accent-signal rounded cursor-pointer">
+              <span>Haptic</span>
             </label>
           </div>
         </div>
@@ -1002,6 +1007,7 @@
     const strikeAlertBadge = document.getElementById("strikeAlertBadge");
     const mainKpiDashboard = document.getElementById("mainKpiDashboard");
     const checkboxEarbudBeep = document.getElementById("checkboxEarbudBeep");
+    const checkboxHapticFeedback = document.getElementById("checkboxHapticFeedback");
     const selectHammerType = document.getElementById("selectHammerType");
     const selectAudioInputDevice = document.getElementById("selectAudioInputDevice");
     const liveOscilloscopeCanvas = document.getElementById("liveOscilloscopeCanvas");
@@ -1365,8 +1371,9 @@
       lblCurrentFootBlowCount.innerText = "0";
       lblStickyFootBlows.innerText = "0";
 
-      // Audible Confirmation Chime
+      // Audible Confirmation Chime & Tactile Haptic Vibration (2 distinct pulses for foot change)
       playFootAdvanceChime();
+      triggerHapticFeedback('foot');
 
       // Render Tables
       renderFootLogTable();
@@ -1745,15 +1752,18 @@
       strikeMarkerPositions.push({ xPosition: historyWavePointsCount - 1, strikeNumber: totalBlowCount });
 
       // Earbud Confirmation Audio Click
-      if (checkboxEarbudBeep.checked) playStrikeClickSound();
+      if (checkboxEarbudBeep && checkboxEarbudBeep.checked) playStrikeClickSound();
+
+      // Tactile Haptic Vibration Feedback (1 pulse for blow)
+      triggerHapticFeedback('strike');
 
       // Section 605 Limit Evaluation
       if (currentFootBlowCount > 120) {
         lblDelDOTComplianceStatus.innerText = "WARNING: > 120 BLOWS/FT (Section 605.3.8)";
-        lblDelDOTComplianceStatus.className = "font-bold px-2 py-0.5 bg-signal text-white border border-signal animate-pulse";
+        lblDelDOTComplianceStatus.className = "font-bold px-1.5 py-0.5 bg-signal text-white border border-signal animate-pulse text-[10px]";
       } else {
         lblDelDOTComplianceStatus.innerText = "PASS (<= 120 blows/ft)";
-        lblDelDOTComplianceStatus.className = "font-bold px-2 py-0.5 bg-emerald/10 border border-emerald text-emerald";
+        lblDelDOTComplianceStatus.className = "font-bold px-1.5 py-0.5 bg-emerald/10 border border-emerald text-emerald text-[10px]";
       }
 
       saveSessionToLocalStorage();
@@ -1798,6 +1808,63 @@
         osc2.start(timeNow + 0.08);
         osc2.stop(timeNow + 0.25);
       } catch (e) {}
+    }
+
+    // ================================================================
+    // DUAL-ENGINE HAPTIC FEEDBACK (ANDROID VIBRATION + IOS TAPTIC ENGINE)
+    // 1 pulse on pile strike | 2 pulses on foot interval change
+    // ================================================================
+    let iosHapticSwitch = null;
+    let iosHapticLabel = null;
+
+    function initIosHapticFallback() {
+      if (iosHapticLabel) return;
+      try {
+        iosHapticLabel = document.createElement("label");
+        iosHapticLabel.setAttribute("aria-hidden", "true");
+        iosHapticLabel.style.cssText = "position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;";
+        
+        iosHapticSwitch = document.createElement("input");
+        iosHapticSwitch.type = "checkbox";
+        iosHapticSwitch.setAttribute("switch", ""); // Native Apple iOS 17.4+ switch element
+        iosHapticSwitch.style.cssText = "opacity:0;width:1px;height:1px;position:absolute;";
+        
+        iosHapticLabel.appendChild(iosHapticSwitch);
+        document.body.appendChild(iosHapticLabel);
+      } catch (e) {
+        console.warn("iOS haptic switch init skipped:", e);
+      }
+    }
+
+    function triggerHapticFeedback(patternType = 'strike') {
+      if (!checkboxHapticFeedback || !checkboxHapticFeedback.checked) return;
+
+      const hasNavigatorVibrate = typeof navigator !== "undefined" && typeof navigator.vibrate === "function";
+
+      if (patternType === 'strike') {
+        // 1. Single crisp pulse for pile impact strike (~35ms)
+        if (hasNavigatorVibrate) {
+          try { navigator.vibrate(35); } catch (e) {}
+        }
+        // iOS Safari Taptic Engine mechanical tick
+        if (iosHapticLabel) {
+          try { iosHapticLabel.click(); } catch (e) {}
+        }
+      } else if (patternType === 'foot' || patternType === 'lap') {
+        // 2. Double distinct pulse for saving and advancing a foot/lap
+        if (hasNavigatorVibrate) {
+          try { navigator.vibrate([70, 60, 70]); } catch (e) {}
+        }
+        // iOS Safari Taptic Engine double mechanical tick
+        if (iosHapticLabel) {
+          try {
+            iosHapticLabel.click();
+            setTimeout(() => {
+              try { iosHapticLabel.click(); } catch (e) {}
+            }, 90);
+          } catch (e) {}
+        }
+      }
     }
 
     // Stopwatch Timer
@@ -1849,7 +1916,7 @@
       lblStickyTotalBlows.innerText = "0";
       lblBlowsPerMinute.innerText = "0.0";
       lblDelDOTComplianceStatus.innerText = "PASS (<= 120 blows/ft)";
-      lblDelDOTComplianceStatus.className = "font-bold px-2 py-0.5 bg-emerald/10 border border-emerald text-emerald";
+      lblDelDOTComplianceStatus.className = "font-bold px-1.5 py-0.5 bg-emerald/10 border border-emerald text-emerald text-[10px]";
       footLogTableBody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-gray-400 font-mono text-xs">NO FEET LOGGED YET</td></tr>`;
       drivingStartTime = Date.now();
       currentFootStartTime = performance.now() / 1000;
@@ -2301,7 +2368,8 @@
           hammerType: sheetHammerType ? sheetHammerType.value : "",
           inspectorDate: sheetInspectorDate ? sheetInspectorDate.value : "",
           selectedHammerValue: selectHammerType ? selectHammerType.value : "diesel",
-          earbudBeep: checkboxEarbudBeep ? checkboxEarbudBeep.checked : false,
+          earbudBeep: checkboxEarbudBeep ? checkboxEarbudBeep.checked : true,
+          hapticFeedback: checkboxHapticFeedback ? checkboxHapticFeedback.checked : true,
           drivingStartTime: drivingStartTime,
           currentFootStartTime: currentFootStartTime
         };
@@ -2332,6 +2400,7 @@
       if (sheetInspectorDate && data.inspectorDate) sheetInspectorDate.value = data.inspectorDate;
       if (selectHammerType && data.selectedHammerValue) selectHammerType.value = data.selectedHammerValue;
       if (checkboxEarbudBeep && typeof data.earbudBeep === "boolean") checkboxEarbudBeep.checked = data.earbudBeep;
+      if (checkboxHapticFeedback && typeof data.hapticFeedback === "boolean") checkboxHapticFeedback.checked = data.hapticFeedback;
 
       lblTotalBlowCount.innerText = totalBlowCount;
       lblCurrentFootBlowCount.innerText = currentFootBlowCount;
@@ -2436,6 +2505,11 @@
     if (sheetHammerType) sheetHammerType.addEventListener("input", saveSessionToLocalStorage);
     if (sheetInspectorDate) sheetInspectorDate.addEventListener("input", saveSessionToLocalStorage);
     if (selectHammerType) selectHammerType.addEventListener("change", saveSessionToLocalStorage);
+    if (checkboxEarbudBeep) checkboxEarbudBeep.addEventListener("change", saveSessionToLocalStorage);
+    if (checkboxHapticFeedback) checkboxHapticFeedback.addEventListener("change", saveSessionToLocalStorage);
+
+    // Initialize iOS Safari Taptic Engine Fallback Element
+    initIosHapticFallback();
 
     // Bootstrapping: 1. FIRST restore any previous session data from local storage!
     const restored = restoreSessionFromLocalStorage();
