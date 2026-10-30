@@ -437,8 +437,8 @@
           
           <!-- BUTTON 1: TAP STRIKE (+1) -->
           <div id="colManualStrikeBtn" class="col-span-1">
-            <button id="btnManualStrikeClick" class="w-full brutalist-btn p-3 sm:p-5 text-center flex flex-col items-center justify-center space-y-0.5 cursor-pointer bg-ink hover:bg-signal border-2 border-ink shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] active:translate-x-0.5 active:translate-y-0.5 transition-all min-h-[58px] sm:min-h-[76px]">
-              <span class="editorial-title text-lg sm:text-3xl uppercase text-white tracking-wide flex items-center justify-center space-x-1.5">
+            <button id="btnManualStrikeClick" class="w-full brutalist-btn p-3.5 sm:p-6 text-center flex flex-col items-center justify-center space-y-0.5 cursor-pointer bg-ink hover:bg-signal border-2 border-ink shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] active:translate-x-0.5 active:translate-y-0.5 transition-all min-h-[68px] sm:min-h-[84px]">
+              <span class="editorial-title text-xl sm:text-3xl uppercase text-white tracking-wide flex items-center justify-center space-x-1.5">
                 <i class="ph-bold ph-hand-tap"></i>
                 <span>TAP BLOW (+1)</span>
               </span>
@@ -451,7 +451,7 @@
 
           <!-- BUTTON 2: RECORD FOOT & NEXT (Directly adjacent on mobile!) -->
           <div id="colNextFootBtn" class="col-span-1">
-            <button id="btnRecordNextFoot" class="w-full brutalist-btn p-3 sm:p-5 text-center flex flex-col items-center justify-center space-y-0.5 cursor-pointer bg-white text-ink hover:bg-ink hover:text-white border-2 border-ink shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] active:translate-x-0.5 active:translate-y-0.5 transition-all min-h-[58px] sm:min-h-[76px]">
+            <button id="btnRecordNextFoot" class="w-full brutalist-btn p-3.5 sm:p-6 text-center flex flex-col items-center justify-center space-y-0.5 cursor-pointer bg-white text-ink hover:bg-ink hover:text-white border-2 border-ink shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] active:translate-x-0.5 active:translate-y-0.5 transition-all min-h-[68px] sm:min-h-[84px]">
               <span class="editorial-title text-base sm:text-2xl uppercase tracking-normal" id="txtRecordNextFoot">
                 NEXT FOOT (17' &rarr; 18')
               </span>
@@ -464,21 +464,32 @@
 
         </div>
 
+        <!-- Real-Time Spec 605 Compliance Bar & Audio Click Feedback Strip -->
+        <div class="flex flex-wrap justify-between items-center text-xs font-mono pt-2 border-t border-black/15 gap-2">
+          <div class="flex items-center space-x-2">
+            <span class="text-gray-500 font-bold uppercase text-[10px]">SPEC 605.3.8:</span>
+            <span id="lblDelDOTComplianceStatus" class="font-bold px-2 py-0.5 bg-emerald/10 border border-emerald text-emerald text-[11px]">PASS (&le; 120 BLOWS/FT)</span>
+          </div>
+          <div class="flex items-center space-x-3">
+            <label class="flex items-center space-x-1.5 cursor-pointer text-ink font-bold text-xs">
+              <input id="checkboxEarbudBeep" type="checkbox" checked class="accent-ink">
+              <span>Audio Click Feedback</span>
+            </label>
+          </div>
+        </div>
+
       </div>
     </section>
 
     <!-- ========================================================== -->
-    <!-- STEP 03: LIVE OSCILLOSCOPE & ACOUSTIC FILTER STATUS        -->
+    <!-- LIVE OSCILLOSCOPE & ACOUSTIC FILTER STATUS                 -->
+    <!-- Auto-hidden in Manual Clicker Mode (Zero Lag / Pure Table) -->
+    <!-- STEP 03 in Automated Modes                                 -->
     <!-- ========================================================== -->
-    <section class="space-y-2">
+    <section id="sectionOscilloscope" class="space-y-2 hidden">
       <div class="flex items-center justify-between font-mono text-xs">
         <span class="text-gray-500 uppercase tracking-widest">[ STEP 03 / ACOUSTIC OSCILLOSCOPE ]</span>
-        <div class="flex items-center space-x-3">
-          <label class="flex items-center space-x-1.5 cursor-pointer text-ink font-bold text-xs">
-            <input id="checkboxEarbudBeep" type="checkbox" checked class="accent-ink">
-            <span>Audio Click Feedback</span>
-          </label>
-        </div>
+        <span class="font-bold text-signal uppercase text-[10px]">[ LIVE ACOUSTIC DSP ]</span>
       </div>
 
       <div id="mainKpiDashboard" class="brutalist-card p-4 space-y-3 relative overflow-hidden">
@@ -489,15 +500,13 @@
           BLOW DETECTED!
         </div>
 
-        <!-- Filter Badges & Spec 605 Status Bar -->
+        <!-- Filter Badges & Status Bar -->
         <div class="pt-2 border-t border-black/15 flex flex-wrap justify-between items-center text-xs font-mono gap-2">
-          <div class="flex items-center space-x-2">
-            <span class="text-gray-500 font-bold uppercase text-[10px]">SPEC 605.3.8:</span>
-            <span id="lblDelDOTComplianceStatus" class="font-bold px-2 py-0.5 bg-emerald/10 border border-emerald text-emerald text-[11px]">PASS (&le; 120 BLOWS/FT)</span>
-          </div>
           <div class="flex items-center space-x-2">
             <span id="badgeVoiceVAD" class="px-2 py-0.5 text-[9px] font-bold bg-white border border-black/20 text-gray-400">MANUAL TALLY</span>
             <span id="badgeEchoLockout" class="px-2 py-0.5 text-[9px] font-bold bg-white border border-black/20 text-gray-400">ZERO MIC LAG</span>
+          </div>
+          <div class="flex items-center space-x-2">
             <span id="badgeCacheStatus" class="px-2 py-0.5 text-[9px] font-bold bg-emerald/10 border border-emerald text-emerald flex items-center space-x-1" title="Data is cached in browser local storage">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald"></span>
               <span>CACHE: SAVED</span>
@@ -511,12 +520,13 @@
     </section>
 
     <!-- ========================================================== -->
-    <!-- STEP 04: REAL-TIME FOOT-BY-FOOT TABLE (SUMMARY VIEW)       -->
+    <!-- REAL-TIME FOOT-BY-FOOT TABLE (SUMMARY VIEW)                -->
+    <!-- STEP 03 in Manual Mode / STEP 04 in Automated Modes        -->
     <!-- ========================================================== -->
     <section class="space-y-2">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 font-mono text-xs">
         <div>
-          <span class="text-gray-500 uppercase tracking-widest block">[ STEP 04 / IDR FOOT LOG ]</span>
+          <span id="lblStepLogHeader" class="text-gray-500 uppercase tracking-widest block">[ STEP 03 / IDR FOOT LOG ]</span>
           <span class="font-bold text-ink uppercase">RECORDED FOOT RESISTANCE</span>
         </div>
         
@@ -719,95 +729,83 @@
 
   <!-- ============================================================== -->
   <!-- START NEW PILE & PERMANENT RESET CONFIRMATION MODAL            -->
-  <!-- Protects against accidental data loss with explicit warning    -->
+  <!-- Ultra-compact & responsive across all mobile viewports         -->
   <!-- ============================================================== -->
-  <div id="resetConfirmModal" class="hidden no-print fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-sm p-4 flex items-center justify-center">
-    <div class="bg-white border-4 border-signal max-w-lg w-full p-6 space-y-4 shadow-[10px_10px_0px_0px_rgba(255,68,0,1)]">
+  <div id="resetConfirmModal" class="hidden no-print fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-sm p-2.5 sm:p-4 flex items-center justify-center">
+    <div class="bg-white border-2 sm:border-4 border-signal max-w-md w-full p-3.5 sm:p-5 space-y-2.5 sm:space-y-3.5 shadow-[4px_4px_0px_0px_rgba(255,68,0,1)] sm:shadow-[8px_8px_0px_0px_rgba(255,68,0,1)] max-h-[92vh] overflow-y-auto">
       
-      <div class="flex items-center space-x-3 text-signal">
-        <i class="ph-bold ph-warning-octagon text-3xl"></i>
-        <h3 class="editorial-title text-2xl uppercase tracking-tight text-ink">START NEW PILE &bull; PERMANENT RESET</h3>
+      <!-- Modal Header (Compact Single Line) -->
+      <div class="flex items-center justify-between pb-1.5 border-b-2 border-signal">
+        <div class="flex items-center space-x-2 text-signal">
+          <i class="ph-bold ph-warning-octagon text-xl sm:text-2xl"></i>
+          <h3 class="editorial-title text-lg sm:text-2xl uppercase tracking-tight text-ink leading-tight">
+            START NEW PILE
+          </h3>
+        </div>
+        <span class="text-[9px] font-mono font-bold bg-signal text-white px-1.5 py-0.5 uppercase tracking-wider">
+          RESET
+        </span>
       </div>
 
-      <div class="p-3 bg-signal/10 border-2 border-signal/40 space-y-2 text-ink font-mono text-xs">
-        <p class="font-bold text-signal uppercase tracking-wider text-[11px] flex items-center space-x-1">
-          <i class="ph-bold ph-warning"></i>
-          <span>WARNING: THIS WILL PERMANENTLY ERASE ALL WRITTEN DATA!</span>
-        </p>
-        <p>
-          You are about to wipe the active pile driving log from device memory and local storage cache:
-        </p>
-        <ul class="list-disc list-inside space-y-1 font-bold pl-1 text-[11px]">
-          <li><span id="resetModalBlowCount" class="text-signal font-black">0</span> total blows will be erased</li>
-          <li><span id="resetModalIntervalCount" class="text-ink font-black">0</span> depth intervals logged will be cleared</li>
-          <li>Browser offline storage (`localStorage`) will be reset for the new pile</li>
-        </ul>
-        <p class="text-[10px] text-gray-600 italic">
-          Before erasing, choose your preferred format below to save a copy for your inspection records.
+      <!-- Warning Notice Box (Condensed) -->
+      <div class="p-2 sm:p-2.5 bg-signal/10 border border-signal/40 space-y-1 text-ink font-mono text-[11px]">
+        <div class="flex items-center justify-between text-signal font-bold uppercase text-[10px]">
+          <span class="flex items-center space-x-1">
+            <i class="ph-bold ph-warning"></i>
+            <span>DATA WILL BE ERASED:</span>
+          </span>
+          <span class="text-ink font-bold">
+            <b id="resetModalBlowCount" class="text-signal">0</b> blows &bull; <b id="resetModalIntervalCount" class="text-ink">0</b> logs
+          </span>
+        </div>
+        <p class="text-[10px] text-gray-600 leading-tight">
+          Current pile logs and local browser cache will be wiped. Choose a format below to download a copy first:
         </p>
       </div>
 
       <!-- FORMAT SELECTION: CSV (Excel), PDF (DelDOT IDR), or RAW (JSON) -->
-      <div class="space-y-2 bg-chalk p-3 border-2 border-black/20 font-mono text-xs">
-        <div class="flex items-center justify-between border-b border-black/10 pb-1.5">
-          <span class="text-[10px] text-gray-700 font-bold uppercase tracking-wider flex items-center space-x-1.5">
+      <div class="space-y-1.5 bg-chalk p-2 sm:p-2.5 border border-black/20 font-mono text-xs">
+        <div class="flex items-center justify-between border-b border-black/10 pb-1">
+          <span class="text-[9px] text-gray-700 font-bold uppercase tracking-wider flex items-center space-x-1">
             <i class="ph-bold ph-floppy-disk text-signal"></i>
-            <span>SAVE A COPY BEFORE ERASING:</span>
+            <span>SAVE COPY BEFORE ERASING:</span>
           </span>
-          <span class="text-[9px] bg-emerald/10 text-emerald border border-emerald/30 font-bold px-1.5 py-0.5 uppercase">
-            CHOOSE FORMAT
+          <span class="text-[8px] bg-emerald/10 text-emerald border border-emerald/30 font-bold px-1 uppercase">
+            3 FORMATS
           </span>
         </div>
 
-        <!-- 3 Quick Format Action Cards (100% Inspector Friendly!) -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
-          
-          <!-- Option 1: CSV for Microsoft Excel / Google Sheets / Numbers -->
-          <button type="button" onclick="exportLogAsCsvFile();" class="p-2.5 bg-white hover:bg-emerald hover:text-white border-2 border-ink text-ink font-bold uppercase transition flex flex-col items-center justify-center space-y-1 text-center shadow-sm active:translate-x-0.5 active:translate-y-0.5 group" title="Download spreadsheet file for Microsoft Excel, Apple Numbers, or Google Sheets">
-            <div class="flex items-center space-x-1.5">
-              <i class="ph-bold ph-file-csv text-xl text-emerald group-hover:text-white"></i>
-              <span class="text-[11px] font-black">CSV (EXCEL)</span>
-            </div>
-            <span class="text-[9px] text-gray-500 group-hover:text-white/90 normal-case block leading-tight font-sans">
-              Spreadsheet (.csv)
-            </span>
+        <div class="grid grid-cols-3 gap-1.5 pt-0.5">
+          <!-- Option 1: CSV for Microsoft Excel -->
+          <button type="button" onclick="exportLogAsCsvFile();" class="p-1.5 sm:p-2 bg-white hover:bg-emerald hover:text-white border border-ink text-ink font-bold uppercase transition flex flex-col items-center justify-center space-y-0.5 text-center shadow-sm active:translate-x-0.5 active:translate-y-0.5 group" title="Download spreadsheet file for Microsoft Excel, Apple Numbers, or Google Sheets">
+            <i class="ph-bold ph-file-csv text-base sm:text-lg text-emerald group-hover:text-white"></i>
+            <span class="text-[10px] font-black leading-none">CSV</span>
+            <span class="text-[8px] text-gray-500 group-hover:text-white/90 font-sans leading-none">Excel</span>
           </button>
 
           <!-- Option 2: PDF / DelDOT Section 605 Print Sheet -->
-          <button type="button" onclick="exportLogAsPdfOrPrint();" class="p-2.5 bg-white hover:bg-deldot hover:text-white border-2 border-ink text-ink font-bold uppercase transition flex flex-col items-center justify-center space-y-1 text-center shadow-sm active:translate-x-0.5 active:translate-y-0.5 group" title="Print or save official DelDOT Section 605 Field Sheet as PDF">
-            <div class="flex items-center space-x-1.5">
-              <i class="ph-bold ph-printer text-xl text-signal group-hover:text-white"></i>
-              <span class="text-[11px] font-black">PDF / PRINT</span>
-            </div>
-            <span class="text-[9px] text-gray-500 group-hover:text-white/90 normal-case block leading-tight font-sans">
-              Inspection Form (.pdf)
-            </span>
+          <button type="button" onclick="exportLogAsPdfOrPrint();" class="p-1.5 sm:p-2 bg-white hover:bg-deldot hover:text-white border border-ink text-ink font-bold uppercase transition flex flex-col items-center justify-center space-y-0.5 text-center shadow-sm active:translate-x-0.5 active:translate-y-0.5 group" title="Print or save official DelDOT Section 605 Field Sheet as PDF">
+            <i class="ph-bold ph-printer text-base sm:text-lg text-signal group-hover:text-white"></i>
+            <span class="text-[10px] font-black leading-none">PDF</span>
+            <span class="text-[8px] text-gray-500 group-hover:text-white/90 font-sans leading-none">Print</span>
           </button>
 
-          <!-- Option 3: Raw JSON Snapshot (Developers / System Backup) -->
-          <button type="button" onclick="downloadSessionBackupJson();" class="p-2.5 bg-white hover:bg-black hover:text-white border-2 border-ink text-ink font-bold uppercase transition flex flex-col items-center justify-center space-y-1 text-center shadow-sm active:translate-x-0.5 active:translate-y-0.5 group" title="Download raw JSON data backup file for developers">
-            <div class="flex items-center space-x-1.5">
-              <i class="ph-bold ph-code text-xl text-blue-600 group-hover:text-white"></i>
-              <span class="text-[11px] font-black">RAW (JSON)</span>
-            </div>
-            <span class="text-[9px] text-gray-500 group-hover:text-white/90 normal-case block leading-tight font-sans">
-              Raw Data (.json)
-            </span>
+          <!-- Option 3: Raw JSON Snapshot (Developers) -->
+          <button type="button" onclick="downloadSessionBackupJson();" class="p-1.5 sm:p-2 bg-white hover:bg-black hover:text-white border border-ink text-ink font-bold uppercase transition flex flex-col items-center justify-center space-y-0.5 text-center shadow-sm active:translate-x-0.5 active:translate-y-0.5 group" title="Download raw JSON data backup file for developers">
+            <i class="ph-bold ph-code text-base sm:text-lg text-blue-600 group-hover:text-white"></i>
+            <span class="text-[10px] font-black leading-none">JSON</span>
+            <span class="text-[8px] text-gray-500 group-hover:text-white/90 font-sans leading-none">Raw</span>
           </button>
-
         </div>
       </div>
 
       <!-- Final Actions: Cancel (Keep Data) vs Erase & Start New -->
-      <div class="grid grid-cols-2 gap-2 font-mono text-xs pt-1 border-t border-black/15">
-        <!-- Cancel Button -->
-        <button onclick="closeResetModal()" class="w-full py-3 px-3 bg-white border-2 border-ink hover:bg-black hover:text-white text-ink font-bold uppercase transition flex items-center justify-center space-x-1.5 text-xs shadow-sm active:translate-x-0.5 active:translate-y-0.5">
+      <div class="grid grid-cols-2 gap-2 pt-1 border-t border-black/15 font-mono text-xs">
+        <button onclick="closeResetModal()" class="w-full py-2.5 px-2 bg-white border border-ink hover:bg-black hover:text-white text-ink font-bold uppercase transition flex items-center justify-center space-x-1 text-[11px] shadow-sm active:translate-x-0.5 active:translate-y-0.5">
           <i class="ph-bold ph-arrow-u-up-left"></i>
           <span>CANCEL (KEEP)</span>
         </button>
-
-        <!-- Red Erase Confirm Button -->
-        <button onclick="executePermanentReset()" class="w-full py-3 px-3 bg-signal text-white hover:bg-black font-black uppercase transition flex items-center justify-center space-x-1.5 border-2 border-signal hover:border-black text-xs shadow-[3px_3px_0px_0px_rgba(17,17,17,1)] active:translate-x-0.5 active:translate-y-0.5">
+        <button onclick="executePermanentReset()" class="w-full py-2.5 px-2 bg-signal text-white hover:bg-black font-black uppercase transition flex items-center justify-center space-x-1 border border-signal text-[11px] shadow-sm active:translate-x-0.5 active:translate-y-0.5">
           <i class="ph-bold ph-trash"></i>
           <span>ERASE &amp; START</span>
         </button>
@@ -932,8 +930,8 @@
     </div>
   </div>
 
-  <!-- Toast Notification Container -->
-  <div id="toastContainer" class="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-50 pointer-events-none space-y-2"></div>
+  <!-- Toast Notification Container (Discreet, Non-Stacking, Above Keyboard/Thumb Area) -->
+  <div id="toastContainer" class="fixed top-20 sm:top-auto sm:bottom-6 right-3 sm:right-6 z-50 pointer-events-none flex flex-col items-end space-y-1"></div>
 
   <!-- ============================================================== -->
   <!-- PURE ENGLISH JAVASCRIPT APPLICATION LOGIC                      -->
@@ -1111,6 +1109,17 @@
       btnModeAuto.className = newMode === "auto" ? activeBtnClass : inactiveBtnClass;
       btnModeRecording.className = newMode === "recording" ? activeBtnClass : inactiveBtnClass;
       btnModeSimulator.className = newMode === "sim" ? activeBtnClass : inactiveBtnClass;
+
+      // In Manual Clicker Mode: Hide oscilloscope (avoids flat zero line) & position IDR table right under Cockpit!
+      const sectionOscilloscope = document.getElementById("sectionOscilloscope");
+      const lblStepLogHeader = document.getElementById("lblStepLogHeader");
+      if (newMode === "manual") {
+        if (sectionOscilloscope) sectionOscilloscope.classList.add("hidden");
+        if (lblStepLogHeader) lblStepLogHeader.innerText = "[ STEP 03 / IDR FOOT LOG ]";
+      } else {
+        if (sectionOscilloscope) sectionOscilloscope.classList.remove("hidden");
+        if (lblStepLogHeader) lblStepLogHeader.innerText = "[ STEP 04 / IDR FOOT LOG ]";
+      }
 
       if (newMode === "auto") {
         lblActiveModeTitle.innerText = "MODE: AUTOMATIC (ACOUSTIC DETECTION - BETA)";
@@ -1862,9 +1871,19 @@
 
     // 60 FPS Oscilloscope Canvas Drawing (Editorial Brutalist Light Architecture)
     function drawLiveOscilloscope() {
-      const devicePixelRatioVal = window.devicePixelRatio || 1;
+      // In Manual Clicker Mode or when hidden, bypass canvas drawing to save CPU & battery
+      if (currentOperatingMode === "manual") {
+        requestAnimationFrame(drawLiveOscilloscope);
+        return;
+      }
       const canvasWidth = liveOscilloscopeCanvas.clientWidth;
       const canvasHeight = liveOscilloscopeCanvas.clientHeight;
+      if (canvasWidth === 0 || canvasHeight === 0) {
+        requestAnimationFrame(drawLiveOscilloscope);
+        return;
+      }
+
+      const devicePixelRatioVal = window.devicePixelRatio || 1;
       if (liveOscilloscopeCanvas.width !== canvasWidth * devicePixelRatioVal) {
         liveOscilloscopeCanvas.width = canvasWidth * devicePixelRatioVal;
         liveOscilloscopeCanvas.height = canvasHeight * devicePixelRatioVal;
@@ -2428,22 +2447,39 @@
     // 3. Bootstrapping complete! Normal real-time auto-saving is now fully active.
     isAppBootstrapping = false;
 
-    // Toast Notification System
+    // Toast Notification System (Non-Stacking, Rapid 1.4s Fade, Zero Screen Clutter)
+    let activeToastTimeout = null;
     function showToast(message) {
       const toastContainer = document.getElementById("toastContainer");
+      if (!toastContainer) return;
+
+      // Prevent accumulation: immediately clear any previous toast
+      toastContainer.innerHTML = "";
+      if (activeToastTimeout) clearTimeout(activeToastTimeout);
+
       const toast = document.createElement("div");
-      toast.className = "bg-ink text-white font-mono text-xs px-4 py-2.5 border-2 border-black shadow-[3px_3px_0px_0px_rgba(255,68,0,1)] flex items-center space-x-2 transition-all duration-200 transform translate-y-2 opacity-0";
-      toast.innerHTML = `<span class="w-2 h-2 rounded-full bg-signal"></span><span>${message}</span>`;
+      toast.className = "bg-ink/95 backdrop-blur-sm text-white font-mono text-[11px] sm:text-xs px-3 py-1.5 border-2 border-black shadow-[2px_2px_0px_0px_rgba(255,68,0,1)] flex items-center space-x-2 transition-all duration-150 transform -translate-y-1 sm:translate-y-1 opacity-0 pointer-events-auto cursor-pointer max-w-[280px] sm:max-w-sm";
+      toast.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-signal flex-shrink-0 animate-pulse"></span><span class="truncate">${message}</span>`;
+      
+      // Tap to dismiss instantly
+      toast.onclick = () => {
+        toast.classList.add("opacity-0");
+        setTimeout(() => toast.remove(), 150);
+      };
+
       toastContainer.appendChild(toast);
       
       requestAnimationFrame(() => {
-        toast.classList.remove("translate-y-2", "opacity-0");
+        toast.classList.remove("-translate-y-1", "sm:translate-y-1", "opacity-0");
       });
 
-      setTimeout(() => {
-        toast.classList.add("translate-y-2", "opacity-0");
-        setTimeout(() => toast.remove(), 200);
-      }, 3000);
+      // Auto fade-out rapidly in 1.4s (1400ms)
+      activeToastTimeout = setTimeout(() => {
+        toast.classList.add("opacity-0");
+        setTimeout(() => {
+          if (toast.parentNode) toast.remove();
+        }, 150);
+      }, 1400);
     }
   </script>
 </body>
