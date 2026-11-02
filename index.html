@@ -3,19 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="author" content="Julian Gomez-Rodriguez">
-  <meta name="creator" content="Julian Gomez-Rodriguez">
+  <meta name="author" content="Heavy Highway Field Inspection Systems">
+  <meta name="creator" content="Heavy Highway Field Inspection Systems">
   <meta name="application-name" content="PILECOUNT.">
   <meta name="build-type" content="Internal Engineering Evaluation &amp; Field Test Build">
-  <meta name="description" content="Acoustic Pile Driving &amp; Pile Cap Blow Count Audio Processor and Foot-by-Foot Lap Logger designed by Julian Gomez-Rodriguez for heavy highway and bridge infrastructure field testing.">
+  <meta name="description" content="Acoustic Pile Driving &amp; Pile Cap Blow Count Audio Processor and Foot-by-Foot Lap Logger for heavy highway and bridge infrastructure field testing.">
   <title>PILECOUNT. — Acoustic Pile Driving &amp; Foot-by-Foot Lap Counter (Standard Spec Section 605)</title>
 
   <!-- ========================================================================== -->
   <!-- PILECOUNT. - SYSTEM ARCHITECTURE & FIELD ENGINEERING SPECIFICATION        -->
   <!-- ========================================================================== -->
   <!-- 
-    AUTHOR & CREATOR ATTRIBUTION:
-    - Principal System Architect & Creator: Julian Gomez-Rodriguez (jgome / Julian Gomez)
+    SYSTEM SPECIFICATION:
     - Professional Role: Heavy Highway & Civil Infrastructure Field Inspector / Daily Work Report (IDR) Specialist
     - Infrastructure Context: DelDOT Highway & Bridge Infrastructure Projects (e.g. SR-54 Lighthouse Rd, BR3-437)
     - Application Name: PILECOUNT. Acoustic Pile Driving & Pile Cap Blow Count Audio Processor
@@ -23,7 +22,7 @@
 
     LEGAL FRAMEWORK, NON-ENDORSEMENT NOTICE & TESTING DISCLAIMER:
     1. INDEPENDENT FIELD TOOL: This software is an independent engineering calculation and acoustic
-       field assistance tool designed and developed by Julian Gomez-Rodriguez.
+       field assistance tool for civil infrastructure field testing.
     2. NON-ENDORSEMENT NOTICE: This application is NOT affiliated with, sponsored by, authorized by,
        or officially endorsed by the Delaware Department of Transportation (DelDOT), the American
        Association of State Highway and Transportation Officials (AASHTO), the Federal Highway
@@ -62,7 +61,17 @@
             ink: '#111111',         /* Matte print ink black */
             deldot: '#002f6c',      /* Official DelDOT Highway Blue */
             signal: '#ff4400',      /* High-impact Signal Orange */
-            emerald: '#059669',     /* Verification Emerald */
+            emerald: {
+              DEFAULT: '#059669',
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
+              950: '#022c22'
+            },
           },
           fontFamily: {
             display: ['"Anton"', 'sans-serif'],
@@ -140,37 +149,144 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* Print Styles for DelDOT Section 605 Pile Driving Form */
+    /* ============================================================== */
+    /* FORMAL PILE DRIVING LOG REPLICA & CLEAN 1-PAGE PRINT STYLES   */
+    /* Supports both Portrait (Vertical) & Landscape (Horizontal)    */
+    /* ============================================================== */
+    .gtr-field-row {
+      display: flex;
+      align-items: baseline;
+      gap: 3px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 8.5pt;
+      line-height: 1.25;
+      color: #000000;
+    }
+    .gtr-label {
+      font-weight: 700;
+      white-space: nowrap;
+      font-size: 8.5pt;
+      color: #000000;
+    }
+    .gtr-input {
+      border: none;
+      border-bottom: 1px solid #000000;
+      background: transparent;
+      padding: 0 2px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 8.5pt;
+      font-weight: 600;
+      color: #000000;
+      outline: none;
+      box-sizing: border-box;
+      flex: 1;
+      min-width: 0;
+    }
+    .gtr-input:focus {
+      border-bottom: 2px solid #000000;
+      background: #f1f5f9;
+    }
+    .gtr-sheet-table {
+      border-collapse: collapse;
+      width: 100%;
+      border: 1.5px solid #000000;
+      background: #ffffff;
+    }
+    .gtr-sheet-table th, .gtr-sheet-table td {
+      border: 1px solid #000000;
+      padding: 1px 2px;
+      font-size: 8pt;
+      line-height: 1.15;
+      color: #000000;
+    }
+
+    @page {
+      margin: 0; /* Zero margin suppresses browser default URL, title, date & page numbers */
+      size: letter portrait;
+    }
+
     @media print {
-      body {
+      html, body {
+        margin: 0 !important;
+        padding: 0 !important;
         background: #ffffff !important;
         color: #000000 !important;
-        padding: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
       }
-      header, #mainWorkflowContainer, #mobileStickyCockpit, #toastContainer, #resetConfirmModal, .no-print {
+      header, #mainWorkflowContainer, #mobileStickyCockpit, #toastContainer, #resetConfirmModal, #delDotSheetModal, #refusalAlertOverlay, .no-print {
         display: none !important;
       }
-      #delDotSheetModal {
-        position: static !important;
+      #formalPrintModal {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
         display: block !important;
         background: #ffffff !important;
-        padding: 0 !important;
         box-shadow: none !important;
+        overflow: visible !important;
+        z-index: 999999 !important;
       }
-      #delDotSheetModalContent {
+      #formalPrintModalContent {
         border: none !important;
         box-shadow: none !important;
         max-width: 100% !important;
         width: 100% !important;
-        padding: 0 !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+        page-break-after: avoid !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        overflow: visible !important;
       }
-      #delDotSheetModalContent input {
+      .gtr-input {
+        border-bottom: 1px solid #000000 !important;
+        background: transparent !important;
+        color: #000000 !important;
+        font-weight: 700 !important;
+        box-shadow: none !important;
+        padding: 0 1px !important;
+      }
+      .gtr-sheet-table th, .gtr-sheet-table td {
+        border: 1px solid #000000 !important;
+        color: #000000 !important;
+        background: #ffffff !important;
+      }
+
+      /* STRICT PORTRAIT SIZING (Dedicated: Letter 8.5in x 11in, Single Page Fit) */
+      #formalPrintModalContent {
+        padding: 0.22in 0.35in 0.18in 0.35in !important;
+      }
+      .gtr-row {
+        height: 16.5px !important;
+      }
+      .gtr-sheet-table th,
+      .gtr-sheet-table td {
+        padding: 1px 2px !important;
+        font-size: 7.5pt !important;
+        line-height: 1.15 !important;
+      }
+      .gtr-field-row {
+        font-size: 8pt !important;
+        line-height: 1.2 !important;
+      }
+      .gtr-cell-comment {
         border: none !important;
         background: transparent !important;
-        padding: 0 !important;
-        font-weight: 700 !important;
         color: #000000 !important;
+        font-weight: 700 !important;
         box-shadow: none !important;
+        padding: 0 1px !important;
+        font-size: 6.5pt !important;
+        line-height: 1 !important;
+        width: 100% !important;
+        height: 100% !important;
       }
     }
   </style>
@@ -261,11 +377,14 @@
           </div>
           <div class="flex-1 sm:max-w-md">
             <select id="selectHammerType" class="w-full bg-white border border-ink text-[11px] font-bold text-ink px-2 py-1.5 focus:outline-none shadow-sm cursor-pointer">
-              <option value="diesel">DIESEL HAMMER (35-65 BPM, 0.45s REFRACTORY)</option>
-              <option value="hydraulic">HYDRAULIC HAMMER (40-100 BPM, 0.30s REFRACTORY)</option>
-              <option value="breaker">EXCAVATOR BREAKER (200-600 BPM, 0.12s REFRACTORY)</option>
-              <option value="drop">GRAVITY DROP HAMMER (20-45 BPM, 0.60s REFRACTORY)</option>
+              <option value="ice-i80" selected>ICE I-80v2 DIESEL (35-52 BPM &bull; 80k ft-lbs &bull; Trestle Steel Piles)</option>
+              <option value="ice-i45">ICE I-45 DIESEL (35-52 BPM &bull; 45k ft-lbs &bull; Concrete Bridge Piles)</option>
+              <option value="diesel">GENERIC DIESEL HAMMER (35-65 BPM &bull; 0.45s Refractory)</option>
+              <option value="hydraulic">HYDRAULIC HAMMER (40-100 BPM &bull; 0.30s Refractory)</option>
+              <option value="breaker">EXCAVATOR BREAKER (200-600 BPM &bull; 0.12s Refractory)</option>
+              <option value="drop">GRAVITY DROP HAMMER (20-45 BPM &bull; 0.60s Refractory)</option>
             </select>
+            <span class="text-[9px] font-mono text-gray-500 block mt-1">Acoustic sensor tuning only. Hammer specifications on official inspection logs remain blank for manual entry.</span>
           </div>
         </div>
 
@@ -464,7 +583,50 @@
 
         </div>
 
-        <!-- Real-Time Spec 605 Compliance Bar & Audio/Haptic Feedback Controls -->
+        <!-- ====================================================== -->
+        <!-- FIELD NOTE / MILESTONE STRIP (SPLICE, STOP, CUSHION)   -->
+        <!-- Manual field comments (Never BPM!)                     -->
+        <!-- ====================================================== -->
+        <div class="bg-chalk border border-black/20 p-2 font-mono text-xs space-y-1.5 shadow-2xs">
+          <div class="flex items-center justify-between text-[10px]">
+            <span class="font-bold text-ink uppercase flex items-center space-x-1">
+              <i class="ph-bold ph-note-pencil text-signal"></i>
+              <span>FIELD NOTE / MILESTONE (THIS INTERVAL):</span>
+            </span>
+            <span class="text-gray-500 text-[9px]">[ Appears in official log &bull; Optional ]</span>
+          </div>
+          <div class="flex flex-wrap items-center gap-1.5">
+            <button type="button" onclick="setQuickIntervalComment('SPLICE')" class="px-2 py-0.5 bg-white hover:bg-ink hover:text-white border border-black/30 font-bold text-[10px] uppercase transition shadow-2xs active:translate-x-0.5 active:translate-y-0.5">
+              SPLICE
+            </button>
+            <button type="button" onclick="setQuickIntervalComment('STOP')" class="px-2 py-0.5 bg-white hover:bg-ink hover:text-white border border-black/30 font-bold text-[10px] uppercase transition shadow-2xs active:translate-x-0.5 active:translate-y-0.5">
+              STOP
+            </button>
+            <button type="button" onclick="setQuickIntervalComment('CUSHION')" class="px-2 py-0.5 bg-white hover:bg-ink hover:text-white border border-black/30 font-bold text-[10px] uppercase transition shadow-2xs active:translate-x-0.5 active:translate-y-0.5">
+              CUSHION
+            </button>
+            <button type="button" onclick="setQuickIntervalComment('RESTRIKE')" class="px-2 py-0.5 bg-white hover:bg-ink hover:text-white border border-black/30 font-bold text-[10px] uppercase transition shadow-2xs active:translate-x-0.5 active:translate-y-0.5">
+              RESTRIKE
+            </button>
+            <button type="button" onclick="setQuickIntervalComment('REFUSAL')" class="px-2 py-0.5 bg-white hover:bg-signal hover:text-white border border-black/30 font-bold text-[10px] uppercase transition shadow-2xs active:translate-x-0.5 active:translate-y-0.5">
+              REFUSAL
+            </button>
+            <button type="button" onclick="setQuickIntervalComment('')" class="px-1.5 py-0.5 text-gray-400 hover:text-signal text-[10px] font-bold" title="Clear note">
+              [CLR]
+            </button>
+            <input id="inputIntervalComment" type="text" placeholder="Custom note (e.g. SPLICE, STOP, CHECK PLUMB)..." onkeydown="if(event.key==='Enter'){event.preventDefault();applyCommentToActiveInterval();}" class="flex-1 min-w-[130px] bg-white border border-black/30 text-ink font-bold px-2 py-1 text-[11px] focus:outline-none focus:border-signal">
+            <button type="button" onclick="applyCommentToActiveInterval()" class="bg-ink hover:bg-signal text-white font-bold px-2.5 py-1 text-[10px] uppercase transition shadow-2xs flex items-center space-x-1" title="Save this comment immediately to the current foot/interval without advancing">
+              <i class="ph-bold ph-floppy-disk"></i>
+              <span>SAVE NOTE</span>
+            </button>
+            <button type="button" onclick="logCurrentFootAndStop('REFUSAL')" class="bg-signal hover:bg-red-700 text-white font-bold px-2.5 py-1 text-[10px] uppercase transition shadow-2xs flex items-center space-x-1" title="Log current blows as Refusal and stop driving without advancing to dummy foot">
+              <i class="ph-bold ph-hand-palm"></i>
+              <span>LOG REFUSAL &amp; STOP</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Real-Time Spec 605 Compliance Bar        <!-- Real-Time Spec 605 Compliance Bar & Audio/Haptic Feedback Controls -->
         <div class="flex flex-wrap justify-between items-center text-[10px] sm:text-xs font-mono pt-2 border-t border-black/15 gap-2">
           <div class="flex items-center space-x-1.5">
             <span class="text-gray-500 font-bold uppercase text-[9px] hidden xs:inline">SPEC 605:</span>
@@ -536,6 +698,14 @@
         </div>
         
         <div class="flex flex-wrap items-center gap-1.5 font-mono text-xs">
+          <button onclick="openFormalPrintModal()" class="bg-ink hover:bg-signal text-white px-3 py-1 font-bold uppercase transition text-[11px] flex items-center space-x-1 shadow-sm" title="Open official 1-page formal pile driving log">
+            <i class="ph-bold ph-printer"></i>
+            <span>FORMAL PILE LOG</span>
+          </button>
+          <button onclick="exportFormalLogToExcel()" style="background-color: #059669 !important; color: #ffffff !important;" onmouseover="this.style.backgroundColor='#047857'" onmouseout="this.style.backgroundColor='#059669'" class="px-3 py-1 font-bold uppercase transition text-[11px] flex items-center space-x-1 shadow-sm border border-black/30" title="Export complete official pile driving log to Microsoft Excel (.xls)">
+            <i class="ph-bold ph-file-xls"></i>
+            <span>EXPORT TO EXCEL</span>
+          </button>
           <button onclick="openDelDotSheetModal()" class="bg-deldot text-white hover:bg-black px-3 py-1 font-bold uppercase transition text-[11px] flex items-center space-x-1">
             <i class="ph-bold ph-table"></i>
             <span>FIELD SHEET</span>
@@ -569,6 +739,7 @@
                 <th class="p-1.5 sm:p-2 text-center whitespace-nowrap">Blows</th>
                 <th class="p-1.5 sm:p-2 text-center whitespace-nowrap">Total</th>
                 <th class="p-1.5 sm:p-2 text-center whitespace-nowrap">BPM</th>
+                <th class="p-1.5 sm:p-2 text-left whitespace-nowrap">Field Note / Comment</th>
                 <th class="p-1.5 sm:p-2 text-center whitespace-nowrap">Time</th>
                 <th class="p-1.5 sm:p-2 text-right whitespace-nowrap">Status (605)</th>
               </tr>
@@ -607,7 +778,7 @@
             </span>
           </div>
           <p class="text-[11px] text-gray-600 font-mono">
-            Designed &amp; Developed by <strong class="text-ink font-bold">Julian Gomez-Rodriguez</strong> &bull; Heavy Highway &amp; Civil Infrastructure Field Systems &bull; 2026
+            Heavy Highway &amp; Civil Infrastructure Field Inspection Systems &bull; Section 605
           </p>
         </div>
 
@@ -829,35 +1000,43 @@
   <!-- DELDOT FORM 605 MULTI-COLUMN PILE DRIVING FIELD SHEET MODAL    -->
   <!-- Exactly formatted for quick clipboard writing & clean printing! -->
   <!-- ============================================================== -->
+  <!-- ============================================================== -->
+  <!-- MODAL 1: QUICK FIELD SHEET SUMMARY (THE BELOVED ONLINE DESIGN) -->
+  <!-- Fast, responsive, 3-column chronological grid with stats       -->
+  <!-- ============================================================== -->
   <div id="delDotSheetModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm p-3 sm:p-8 flex items-center justify-center">
-    <div id="delDotSheetModalContent" class="bg-white border-2 border-ink max-w-4xl w-full p-6 sm:p-8 space-y-6 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] max-h-[92vh] overflow-y-auto">
+    <div id="delDotSheetModalContent" class="bg-white border-2 border-ink max-w-4xl w-full p-6 sm:p-8 space-y-6 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] max-h-[92vh] overflow-y-auto font-sans">
       
       <!-- Sheet Header Bar -->
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-4 border-b-2 border-black gap-3">
         <div>
           <div class="flex items-center space-x-2">
             <span class="text-[10px] font-mono text-gray-500 uppercase tracking-widest font-bold">
-              HEAVY HIGHWAY &amp; CIVIL INFRASTRUCTURE • SECTION 605
+              HEAVY HIGHWAY &amp; CIVIL INFRASTRUCTURE &bull; SECTION 605
             </span>
             <span class="text-[8px] font-mono font-bold bg-chalk border border-black/20 text-gray-600 px-1.5 py-0.2">
-              INTERNAL TEST LOG
+              FIELD SUMMARY LOG
             </span>
           </div>
           <h2 class="editorial-title text-3xl sm:text-4xl uppercase text-ink">
             PILE DRIVING INSPECTION LOG (IDR)
           </h2>
           <span class="text-[9px] font-mono text-gray-400 uppercase tracking-wider block">
-            Independent calculation assistant • Standard Specifications Section 605
+            Independent calculation assistant &bull; Standard Specifications Section 605
           </span>
         </div>
-        <div class="flex items-center space-x-2 font-mono text-xs no-print">
-          <button onclick="exportLogAsCsvFile()" class="bg-white hover:bg-emerald hover:text-white border border-black/30 text-ink font-bold px-2.5 py-1.5 uppercase transition flex items-center space-x-1" title="Export table to CSV spreadsheet for Microsoft Excel">
-            <i class="ph-bold ph-file-csv text-emerald"></i>
-            <span>CSV (EXCEL)</span>
+        <div class="flex flex-wrap items-center gap-1.5 font-mono text-xs no-print">
+          <button onclick="exportFormalLogToExcel()" style="background-color: #059669 !important; color: #ffffff !important;" onmouseover="this.style.backgroundColor='#047857'" onmouseout="this.style.backgroundColor='#059669'" class="font-bold px-3 py-1.5 uppercase transition flex items-center space-x-1 shadow-sm active:translate-x-0.5 active:translate-y-0.5" title="Export complete official pile driving log to Microsoft Excel (.xls)">
+            <i class="ph-bold ph-file-xls"></i>
+            <span>EXPORT TO EXCEL (.XLS)</span>
           </button>
-          <button onclick="window.print()" class="bg-ink hover:bg-signal text-white font-bold px-3 py-1.5 uppercase transition flex items-center space-x-1" title="Print or save as PDF">
+          <button onclick="openFormalPrintModal()" class="bg-ink hover:bg-signal text-white font-bold px-3 py-1.5 uppercase transition flex items-center space-x-1" title="Open formal pile driving log to print">
             <i class="ph-bold ph-printer"></i>
-            <span>PRINT / SAVE PDF</span>
+            <span>PRINT FORMAL LOG</span>
+          </button>
+          <button onclick="exportLogAsCsvFile()" class="bg-white hover:bg-emerald-600 hover:text-white border border-black/30 text-ink font-bold px-2.5 py-1.5 uppercase transition flex items-center space-x-1" title="Export summary table to CSV">
+            <i class="ph-bold ph-file-csv text-emerald"></i>
+            <span>CSV</span>
           </button>
           <button onclick="closeDelDotSheetModal()" class="bg-white border border-black/30 text-ink font-bold px-3 py-1.5 uppercase hover:bg-gray-100 transition">
             CLOSE [X]
@@ -865,27 +1044,27 @@
         </div>
       </div>
 
-      <!-- DelDOT Engineering Metadata Grid Box (100% User-Editable for Any Jobsite!) -->
+      <!-- Quick Engineering Metadata Grid Box (Editable) -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 p-3 sm:p-4 bg-chalk border-2 border-black/20 font-mono text-xs">
         <div class="space-y-1">
           <label for="sheetContractNo" class="text-[9px] text-gray-500 block uppercase font-bold">CONTRACT NO:</label>
-          <input id="sheetContractNo" type="text" placeholder="e.g. T2024-XXXX" value="" class="w-full bg-white border border-black/30 text-ink font-bold px-2.5 py-1.5 focus:outline-none focus:border-signal text-xs placeholder:text-gray-400">
+          <input id="sheetContractNo" type="text" value="" class="w-full bg-white border border-black/30 text-ink font-bold px-2.5 py-1.5 focus:outline-none focus:border-signal text-xs">
         </div>
         <div class="space-y-1">
           <label for="sheetPileId" class="text-[9px] text-gray-500 block uppercase font-bold">SUBSTRUCTURE / PILE ID:</label>
-          <input id="sheetPileId" type="text" placeholder="e.g. Pier 1 Cap — Pile P-1" value="" class="w-full bg-white border border-black/30 text-ink font-bold px-2.5 py-1.5 focus:outline-none focus:border-signal text-xs placeholder:text-gray-400">
+          <input id="sheetPileId" type="text" value="" class="w-full bg-white border border-black/30 text-ink font-bold px-2.5 py-1.5 focus:outline-none focus:border-signal text-xs">
         </div>
         <div class="space-y-1">
           <label for="sheetHammerType" class="text-[9px] text-gray-500 block uppercase font-bold">HAMMER / EQUIPMENT:</label>
-          <input id="sheetHammerType" type="text" placeholder="e.g. Delmag / Berminghammer" value="DIESEL (35-65 BPM, 0.45s)" class="w-full bg-white border border-black/30 text-ink font-bold px-2.5 py-1.5 focus:outline-none focus:border-signal text-xs placeholder:text-gray-400">
+          <input id="sheetQuickHammerType" type="text" value="" class="w-full bg-white border border-black/30 text-ink font-bold px-2.5 py-1.5 focus:outline-none focus:border-signal text-xs">
         </div>
         <div class="space-y-1">
           <label for="sheetInspectorDate" class="text-[9px] text-gray-500 block uppercase font-bold">DATE &amp; INSPECTOR:</label>
-          <input id="sheetInspectorDate" type="text" placeholder="e.g. Shift 1 — Inspector" value="" class="w-full bg-white border border-black/30 text-ink font-bold px-2.5 py-1.5 focus:outline-none focus:border-signal text-xs placeholder:text-gray-400">
+          <input id="sheetInspectorDate" type="text" value="" class="w-full bg-white border border-black/30 text-ink font-bold px-2.5 py-1.5 focus:outline-none focus:border-signal text-xs">
         </div>
       </div>
 
-      <!-- DelDOT Section 605 3-Column Compact Grid (Easy to write onto paper form!) -->
+      <!-- DelDOT Section 605 3-Column Compact Grid (The Beloved Online View!) -->
       <div class="space-y-2">
         <div class="flex justify-between items-center text-xs font-mono">
           <span class="font-bold uppercase text-gray-600">FOOT-BY-FOOT PENETRATION LOG (CHRONOLOGICAL):</span>
@@ -928,14 +1107,350 @@
       </div>
 
       <!-- Sheet Footer Actions -->
-      <div class="flex justify-between items-center pt-2 font-mono text-xs no-print">
-        <button onclick="copyDelDotSheetMarkdown()" class="bg-chalk hover:bg-black hover:text-white border border-black/20 text-ink font-bold px-4 py-2 uppercase transition flex items-center space-x-1.5">
+      <div class="flex flex-col sm:flex-row justify-between items-center gap-2 pt-2 font-mono text-xs no-print">
+        <button onclick="copyDelDotSheetMarkdown()" class="w-full sm:w-auto bg-chalk hover:bg-black hover:text-white border border-black/20 text-ink font-bold px-4 py-2 uppercase transition flex items-center justify-center space-x-1.5">
           <i class="ph-bold ph-copy"></i>
           <span>COPY INSPECTION SHEET</span>
         </button>
-        <button onclick="closeDelDotSheetModal()" class="bg-ink hover:bg-signal text-white font-bold px-6 py-2 uppercase transition">
-          DONE / CLOSE
+        <div class="flex flex-wrap items-center gap-2">
+          <button onclick="exportFormalLogToExcel()" style="background-color: #059669 !important; color: #ffffff !important;" onmouseover="this.style.backgroundColor='#047857'" onmouseout="this.style.backgroundColor='#059669'" class="w-full sm:w-auto font-bold px-5 py-2 uppercase transition flex items-center justify-center space-x-1.5 shadow-sm active:translate-x-0.5 active:translate-y-0.5" title="Export complete official pile driving log to Microsoft Excel (.xls)">
+            <i class="ph-bold ph-file-xls text-base"></i>
+            <span>EXPORT TO EXCEL (.XLS)</span>
+          </button>
+          <button onclick="openFormalPrintModal()" class="w-full sm:w-auto bg-ink hover:bg-signal text-white font-bold px-6 py-2 uppercase transition flex items-center justify-center space-x-1.5 shadow-sm">
+            <i class="ph-bold ph-printer text-base"></i>
+            <span>PRINT FORMAL LOG &rarr;</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL 2: FORMAL PILE DRIVING LOG        -->
+  <!-- The final step before printing: Enter Project, Pile,          -->
+  <!-- Hammer & Driving data with Preset Menus, then Print 1-Page     -->
+  <!-- ============================================================== -->
+  <div id="formalPrintModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-sm p-2 sm:p-6 flex items-center justify-center">
+    <div id="formalPrintModalContent" class="bg-white border-2 border-ink max-w-5xl w-full p-4 sm:p-6 space-y-3 shadow-[8px_8px_0px_0px_rgba(17,17,17,1)] max-h-[96vh] overflow-y-auto font-sans">
+      
+      <!-- Top Action Bar (Screen Only, Hidden on Print - Sticky and High Visibility) -->
+      <div class="sticky top-0 bg-white z-30 pb-3 pt-1 border-b-2 border-black no-print space-y-2.5 shadow-sm">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="text-[10px] font-mono text-gray-500 uppercase tracking-widest font-bold">
+                FINAL STEP &bull; FORMAL OFFICIAL LOG
+              </span>
+              <span class="text-[9px] font-mono font-bold bg-emerald-100 border border-emerald-600 text-emerald-800 px-1.5 py-0.5">
+                1-PAGE PRINT READY
+              </span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-black uppercase text-ink tracking-tight">
+              FORMAL PILE DRIVING LOG
+            </h2>
+            <p class="text-[11px] font-mono text-gray-600">
+              Enter technical pile, hammer, and project data below before printing or exporting. Formatted for single-page portrait print.
+            </p>
+          </div>
+          <button onclick="closeFormalPrintModal()" class="bg-white hover:bg-gray-100 border-2 border-black text-ink font-bold px-3 py-1.5 uppercase transition font-mono text-xs self-start">
+            CLOSE [X]
+          </button>
+        </div>
+
+        <!-- Prominent High-Visibility Primary Action Toolbar -->
+        <div class="flex flex-wrap items-center gap-2 font-mono text-xs pt-0.5">
+          <!-- MAIN EXCEL EXPORT BUTTON -->
+          <button onclick="exportFormalLogToExcel()" style="background-color: #059669 !important; color: #ffffff !important;" onmouseover="this.style.backgroundColor='#047857'" onmouseout="this.style.backgroundColor='#059669'" class="font-black text-xs sm:text-sm px-5 py-2.5 uppercase transition flex items-center space-x-2 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-x-0.5 active:translate-y-0.5 cursor-pointer" title="Export complete official pile driving log sheet to Microsoft Excel (.xls)">
+            <i class="ph-bold ph-file-xls text-xl" style="color: #ffffff !important;"></i>
+            <span style="color: #ffffff !important;">EXPORT TO EXCEL (.XLS)</span>
+          </button>
+
+          <!-- PRINT LOG (PORTRAIT) -->
+          <button onclick="printFormalLog()" class="bg-ink hover:bg-signal text-white font-black text-xs sm:text-sm px-4 py-2.5 uppercase transition flex items-center space-x-2 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-x-0.5 active:translate-y-0.5 cursor-pointer" title="Print as 1-page vertical sheet without browser stamps">
+            <i class="ph-bold ph-printer text-xl"></i>
+            <span>PRINT LOG (PORTRAIT)</span>
+          </button>
+
+          <!-- BACK TO QUICK LOG -->
+          <button onclick="backToQuickSheetModal()" class="bg-chalk hover:bg-gray-200 border-2 border-black text-ink font-bold px-3 py-2.5 uppercase transition flex items-center space-x-1.5 text-xs active:translate-x-0.5 active:translate-y-0.5 cursor-pointer" title="Back to quick summary sheet">
+            <i class="ph-bold ph-arrow-left"></i>
+            <span>BACK TO LOG</span>
+          </button>
+        </div>
+      </div>
+<!-- Presets Selection Bar (Screen Only: Quick Menus to load Project, Hammer & Pile Templates) -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-2 bg-chalk border border-black/20 p-2.5 font-mono text-xs no-print">
+        
+        <!-- 1. Project Preset Dropdown -->
+        <div>
+          <label class="text-[9px] font-bold text-gray-600 uppercase block mb-1 flex items-center space-x-1">
+            <i class="ph-bold ph-folder-open text-signal"></i>
+            <span>1. PROJECT / CONTRACT PRESET:</span>
+          </label>
+          <select id="selectFormalProjectPreset" onchange="applyFormalProjectPreset(this.value)" class="w-full bg-white border border-black/40 font-bold text-ink px-2 py-1 text-xs focus:outline-none focus:border-signal cursor-pointer">
+            <option value="blank" selected>[ Blank / Manual Entry ]</option>
+            <option value="br-3-437">DelDOT BR 3-437 (SR-54 Assawoman Bay &bull; Contract T202007303)</option>
+          </select>
+        </div>
+
+        <!-- 2. Hammer Equipment (Auto-fill from Technical Tables) -->
+        <div>
+          <label class="text-[9px] font-bold text-gray-600 uppercase block mb-1 flex items-center space-x-1">
+            <i class="ph-bold ph-wrench text-signal"></i>
+            <span>2. HAMMER DATA PRESET:</span>
+          </label>
+          <select id="selectFormalHammerPreset" onchange="applyFormalHammerPreset(this.value)" class="w-full bg-white border border-black/40 font-bold text-ink px-2 py-1 text-xs focus:outline-none focus:border-signal cursor-pointer">
+            <option value="blank" selected>[ Blank / Manual Entry ]</option>
+            <option value="ice-i80">ICE I-80v2 Diesel (80k ft-lbs &bull; 35-52 BPM &bull; Trestle Steel)</option>
+            <option value="ice-i45">ICE I-45 Diesel (45k ft-lbs &bull; 35-52 BPM &bull; Concrete Piles)</option>
+            <option value="hydraulic">Hydraulic Hammer (60k ft-lbs &bull; 40-100 BPM)</option>
+            <option value="breaker">Excavator Breaker (200-600 BPM)</option>
+            <option value="drop">Gravity Drop Hammer (30k ft-lbs &bull; 20-45 BPM)</option>
+          </select>
+        </div>
+
+        <!-- 3. Pile Data (Blank by Default / Optional Templates) -->
+        <div>
+          <label class="text-[9px] font-bold text-gray-600 uppercase block mb-1 flex items-center space-x-1">
+            <i class="ph-bold ph-cylinder text-signal"></i>
+            <span>3. PILE DATA TEMPLATE:</span>
+          </label>
+          <select id="selectFormalPilePreset" onchange="applyFormalPilePreset(this.value)" class="w-full bg-white border border-black/40 font-bold text-ink px-2 py-1 text-xs focus:outline-none focus:border-signal cursor-pointer">
+            <option value="blank" selected>[ Blank / Manual Entry ]</option>
+            <option value="pipe-36-50">Optional Template: 36" Dia x 0.50" Steel Pipe</option>
+            <option value="pipe-36-625">Optional Template: 36" Dia x 0.625" Steel Pipe</option>
+            <option value="concrete-24">Optional Template: 24" Prestressed Concrete Pile</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- ============================================================ -->
+      <!-- THE PHYSICAL REPLICA SHEET CONTAINER (PRINTABLE AREA)        -->
+      <!-- Physical Replica Sheet (Standard Pile Driving Log) -->
+      <!-- ============================================================ -->
+      <div id="formalSheetPrintable" class="bg-white text-black p-2 sm:p-3 border border-black/20 print:border-none print:p-0 space-y-2">
+        
+        <!-- Sheet Header: Clean Bold Title -->
+        <div class="text-center pt-1 pb-1">
+          <h1 class="gtr-title text-xl sm:text-2xl font-black font-sans uppercase tracking-wider text-black">
+            PILE DRIVING LOG
+          </h1>
+        </div>
+
+        <!-- Project Metadata Header (2 Columns with Underlines - 100% User Editable) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 pt-1 font-sans text-[8.5pt]">
+          <!-- Left Column -->
+          <div class="space-y-1">
+            <div class="gtr-field-row">
+              <span class="gtr-label">Project:</span>
+              <input id="sheetProject" class="gtr-input" value="">
+            </div>
+            <div class="gtr-field-row">
+              <span class="gtr-label">Location:</span>
+              <input id="sheetLocation" class="gtr-input" value="">
+            </div>
+            <div class="gtr-field-row">
+              <span class="gtr-label">Client:</span>
+              <input id="sheetClient" class="gtr-input" value="">
+            </div>
+            <div class="gtr-field-row">
+              <span class="gtr-label">Contractor:</span>
+              <input id="sheetContractor" class="gtr-input" value="">
+            </div>
+          </div>
+
+          <!-- Right Column -->
+          <div class="space-y-1">
+            <div class="gtr-field-row">
+              <span class="gtr-label">Job No:</span>
+              <input id="sheetJobNo" class="gtr-input" value="">
+            </div>
+            <div class="gtr-field-row">
+              <span class="gtr-label">Date:</span>
+              <input id="sheetDate" class="gtr-input" value="">
+            </div>
+            <div class="gtr-field-row">
+              <span class="gtr-label">Representative:</span>
+              <input id="sheetRepresentative" class="gtr-input" value="">
+            </div>
+            <div class="gtr-field-row">
+              <span class="gtr-label">Comments:</span>
+              <input id="sheetComments" class="gtr-input" value="">
+            </div>
+          </div>
+        </div>
+
+        <!-- Three Technical Engineering Data Blocks (100% User Editable One-by-One) -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-x-4 gap-y-2 pt-1 font-sans text-[8.5pt]">
+          
+          <!-- Column 1: Pile Data -->
+          <div class="space-y-1">
+            <div class="gtr-block-title font-bold text-[9pt] border-b border-black pb-0.5 uppercase">Pile Data</div>
+            <div class="gtr-field-row">
+              <span class="gtr-label">No.</span>
+              <input id="sheetPileNo" class="gtr-input w-12" value="">
+              <span class="gtr-label ml-1">Group</span>
+              <input id="sheetPileGroup" class="gtr-input w-14" value="">
+              <span class="gtr-label ml-1">Sequence</span>
+              <input id="sheetPileSeq" class="gtr-input w-8" value="">
+            </div>
+            <div class="gtr-field-row">
+              <span class="gtr-label">Pdes</span>
+              <input id="sheetPilePdes" class="gtr-input" value="">
+              <span class="gtr-label ml-1">Pult</span>
+              <input id="sheetPilePult" class="gtr-input" value="">
+            </div>
+            <div class="gtr-field-row">
+              <span class="gtr-label">Type</span>
+              <input id="sheetPileType" class="gtr-input" value="">
+            </div>
+            <div class="gtr-field-row">
+              <span class="gtr-label">Length</span>
+              <input id="sheetPileLength" class="gtr-input" value="">
+              <span class="gtr-label ml-1">Area</span>
+              <input id="sheetPileArea" class="gtr-input" value="">
+            </div>
+            <div class="gtr-field-row">
+              <span class="gtr-label">Weight</span>
+              <input id="sheetPileWeight" class="gtr-input" value="">
+              <span class="gtr-label ml-1">Unit Wt</span>
+              <input id="sheetPileUnitWeight" class="gtr-input" value="">
+            </div>
+            <div class="gtr-field-row">
+              <span class="gtr-label">Req Driving Resistance</span>
+              <input id="sheetPileReqResistance" class="gtr-input" value="">
+            </div>
+            <div class="gtr-field-row">
+              <span class="gtr-label">Comments:</span>
+              <input id="sheetPileComments" class="gtr-input" value="">
+            </div>
+          </div>
+
+          <!-- Column 2: Hammer Data (Blank by Default • Manual Entry or Select Preset) -->
+          <div class="space-y-1">
+            <div class="gtr-block-title font-bold text-[9pt] border-b border-black pb-0.5 uppercase">Hammer Data</div>
+            <div class="gtr-field-row">
+              <span class="gtr-label">Make/Model</span>
+              <input id="sheetHammerMake" class="gtr-input" value="" oninput="this.dataset.manuallyEntered='true'">
+            </div>
+            <div class="gtr-field-row">
+              <span class="gtr-label">Type</span>
+              <input id="sheetHammerTypeInput" class="gtr-input" value="" oninput="this.dataset.manuallyEntered='true'">
+            </div>
+            <div class="gtr-field-row">
+              <span class="gtr-label">Rated Energy</span>
+              <input id="sheetHammerEnergy" class="gtr-input" value="">
+            </div>
+            <div class="gtr-field-row">
+              <span class="gtr-label">Ram Weight</span>
+              <input id="sheetHammerRamWeight" class="gtr-input" value="">
+            </div>
+            <div class="gtr-field-row">
+              <span class="gtr-label">Max Equiv. Stroke</span>
+              <input id="sheetHammerStroke" class="gtr-input" value="">
+            </div>
+            <div class="gtr-field-row">
+              <span class="gtr-label">Max Speed</span>
+              <input id="sheetHammerSpeed" class="gtr-input" value="">
+            </div>
+          </div>
+
+          <!-- Column 3: Driving Data (Blank by Default • To be filled during final survey) -->
+          <div class="space-y-1">
+            <div class="gtr-block-title font-bold text-[9pt] border-b border-black pb-0.5 uppercase">Driving Data</div>
+            <div class="gtr-field-row">
+              <span class="gtr-label">Driven Length</span>
+              <input id="sheetDrivenLength" class="gtr-input" value="">
+            </div>
+            <div class="gtr-field-row">
+              <span class="gtr-label">Top Elev.</span>
+              <input id="sheetTopElev" class="gtr-input" value="">
+            </div>
+            <div class="gtr-field-row">
+              <span class="gtr-label">Tip Elev.</span>
+              <input id="sheetTipElev" class="gtr-input" value="">
+            </div>
+            <div class="gtr-field-row">
+              <span class="gtr-label">Cut Off Elev.</span>
+              <input id="sheetCutOffElev" class="gtr-input" value="">
+            </div>
+            <div class="gtr-field-row">
+              <span class="gtr-label">Cut Off Length</span>
+              <input id="sheetCutOffLength" class="gtr-input" value="">
+            </div>
+            <div class="gtr-field-row">
+              <span class="gtr-label">Ground Elev.</span>
+              <input id="sheetGroundElev" class="gtr-input" value="">
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 5-Column Standard Pile Driving Table (Exact GTR Format - Clean Comments Only) -->
+        <div class="pt-1.5 overflow-x-auto">
+          <table class="gtr-sheet-table w-full border-collapse border border-black text-black">
+            <thead>
+              <tr class="bg-gray-100 text-[8pt] font-bold text-center border-b border-black">
+                <th colspan="3" class="border-r-2 border-black p-0.5">1 TO 35 FT</th>
+                <th colspan="3" class="border-r-2 border-black p-0.5">36 TO 70 FT</th>
+                <th colspan="3" class="border-r-2 border-black p-0.5">71 TO 105 FT</th>
+                <th colspan="3" class="border-r-2 border-black p-0.5">106 TO 140 FT</th>
+                <th colspan="2" class="p-0.5 font-bold">Final Driving Resistance</th>
+              </tr>
+              <tr class="text-[7.5pt] font-bold text-center border-b border-black">
+                <!-- Col 1 -->
+                <th class="w-[32px] border-r border-black p-0.5">Depth<br>(feet)</th>
+                <th class="w-[36px] border-r border-black p-0.5">Blows<br>(bpf)</th>
+                <th class="w-[50px] border-r-2 border-black p-0.5">Comment</th>
+                <!-- Col 2 -->
+                <th class="w-[32px] border-r border-black p-0.5">Depth<br>(feet)</th>
+                <th class="w-[36px] border-r border-black p-0.5">Blows<br>(bpf)</th>
+                <th class="w-[50px] border-r-2 border-black p-0.5">Comments</th>
+                <!-- Col 3 -->
+                <th class="w-[32px] border-r border-black p-0.5">Depth<br>(feet)</th>
+                <th class="w-[36px] border-r border-black p-0.5">Blows<br>(bpf)</th>
+                <th class="w-[50px] border-r-2 border-black p-0.5">Comments</th>
+                <!-- Col 4 -->
+                <th class="w-[32px] border-r border-black p-0.5">Depth<br>(feet)</th>
+                <th class="w-[36px] border-r border-black p-0.5">Blows<br>(bpf)</th>
+                <th class="w-[50px] border-r-2 border-black p-0.5">Comments</th>
+                <!-- Col 5 -->
+                <th class="w-[45px] border-r border-black p-0.5">Depth</th>
+                <th class="w-[45px] p-0.5">Blows (bpi)</th>
+              </tr>
+            </thead>
+            <tbody id="gtrSheetTableBody">
+              <!-- Dynamically populated with 35 rows (Only real field notes like SPLICE, STOP, etc.) -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Clean Sheet Footer (No file path) -->
+
+      </div>
+
+      <!-- Sheet Footer Actions (Screen only) -->
+      <div class="flex flex-wrap justify-between items-center gap-2 pt-2 border-t border-black/15 font-mono text-xs no-print">
+        <button onclick="backToQuickSheetModal()" class="bg-chalk hover:bg-black hover:text-white border border-black/20 text-ink font-bold px-4 py-2 uppercase transition flex items-center space-x-1.5">
+          <i class="ph-bold ph-arrow-left"></i>
+          <span>BACK TO QUICK FIELD SHEET</span>
         </button>
+        <div class="flex flex-wrap items-center gap-2">
+          <button onclick="exportFormalLogToExcel()" style="background-color: #059669 !important; color: #ffffff !important;" onmouseover="this.style.backgroundColor='#047857'" onmouseout="this.style.backgroundColor='#059669'" class="font-bold px-4 py-2 uppercase transition flex items-center space-x-1.5 shadow-sm active:translate-x-0.5 active:translate-y-0.5" title="Export complete pile driving log sheet to Microsoft Excel (.xls)">
+            <i class="ph-bold ph-file-xls text-base"></i>
+            <span>EXPORT TO EXCEL (.XLS)</span>
+          </button>
+          <button onclick="printFormalLog()" class="bg-ink hover:bg-signal text-white font-bold px-4 py-2 uppercase transition flex items-center space-x-1.5 shadow-sm active:translate-x-0.5 active:translate-y-0.5">
+            <i class="ph-bold ph-printer text-base"></i>
+            <span>PRINT LOG (PORTRAIT)</span>
+          </button>
+          <button onclick="closeFormalPrintModal()" class="bg-chalk hover:bg-gray-200 border border-black/30 text-ink font-bold px-4 py-2 uppercase transition">
+            CLOSE [X]
+          </button>
+        </div>
       </div>
 
     </div>
@@ -1049,13 +1564,52 @@
     const lblStickyActiveLap = document.getElementById("lblStickyActiveLap");
     const lblStickyUnitPrefix = document.getElementById("lblStickyUnitPrefix");
 
-    // DelDOT Sheet Modal Elements (Editable Metadata Inputs)
+    // Formal Log Modal Elements & Engineering Metadata Inputs
     const delDotSheetModal = document.getElementById("delDotSheetModal");
-    const sheetContractNo = document.getElementById("sheetContractNo");
-    const sheetPileId = document.getElementById("sheetPileId");
-    const sheetHammerType = document.getElementById("sheetHammerType");
-    const sheetInspectorDate = document.getElementById("sheetInspectorDate");
-    const sheetGridContainer = document.getElementById("sheetGridContainer");
+    const sheetProject = document.getElementById("sheetProject");
+    const sheetLocation = document.getElementById("sheetLocation");
+    const sheetClient = document.getElementById("sheetClient");
+    const sheetContractor = document.getElementById("sheetContractor");
+    const sheetJobNo = document.getElementById("sheetJobNo");
+    const sheetDate = document.getElementById("sheetDate");
+    const sheetRepresentative = document.getElementById("sheetRepresentative");
+    const sheetComments = document.getElementById("sheetComments");
+
+    const sheetPileNo = document.getElementById("sheetPileNo");
+    const sheetPileGroup = document.getElementById("sheetPileGroup");
+    const sheetPileSeq = document.getElementById("sheetPileSeq");
+    const sheetPilePdes = document.getElementById("sheetPilePdes");
+    const sheetPilePult = document.getElementById("sheetPilePult");
+    const sheetPileType = document.getElementById("sheetPileType");
+    const sheetPileLength = document.getElementById("sheetPileLength");
+    const sheetPileArea = document.getElementById("sheetPileArea");
+    const sheetPileWeight = document.getElementById("sheetPileWeight");
+    const sheetPileUnitWeight = document.getElementById("sheetPileUnitWeight");
+    const sheetPileReqResistance = document.getElementById("sheetPileReqResistance");
+    const sheetPileComments = document.getElementById("sheetPileComments");
+
+    const sheetHammerMake = document.getElementById("sheetHammerMake");
+    const sheetHammerTypeInput = document.getElementById("sheetHammerTypeInput");
+    const sheetHammerEnergy = document.getElementById("sheetHammerEnergy");
+    const sheetHammerRamWeight = document.getElementById("sheetHammerRamWeight");
+    const sheetHammerStroke = document.getElementById("sheetHammerStroke");
+    const sheetHammerSpeed = document.getElementById("sheetHammerSpeed");
+
+    const sheetDrivenLength = document.getElementById("sheetDrivenLength");
+    const sheetTopElev = document.getElementById("sheetTopElev");
+    const sheetTipElev = document.getElementById("sheetTipElev");
+    const sheetCutOffElev = document.getElementById("sheetCutOffElev");
+    const sheetCutOffLength = document.getElementById("sheetCutOffLength");
+    const sheetGroundElev = document.getElementById("sheetGroundElev");
+
+    // Quick Modal Elements & Backward Compatibility Aliases
+    const sheetQuickHammerType = document.getElementById("sheetQuickHammerType");
+    const sheetHammerType = sheetQuickHammerType; // Points to quick modal, never formal sheet
+    const sheetContractNo = sheetJobNo;
+    const sheetPileId = sheetPileNo;
+    const sheetInspectorDate = sheetDate;
+
+    const gtrSheetTableBody = document.getElementById("gtrSheetTableBody");
     const sheetTotalFeet = document.getElementById("sheetTotalFeet");
     const sheetTotalBlows = document.getElementById("sheetTotalBlows");
     const sheetAvgBpm = document.getElementById("sheetAvgBpm");
@@ -1248,14 +1802,27 @@
     });
     updateDepthInterface();
 
-    // Hammer Refractory Window Setup
+    // Step 01 Acoustic Refractory Window Configuration
+    // Calibrates audio processor transient filtering without modifying the formal sheet!
+    function applyHammerPresets(selectedType) {
+      if (selectedType === "ice-i80") {
+        refractoryPeriodSeconds = 0.45;
+      } else if (selectedType === "ice-i45") {
+        refractoryPeriodSeconds = 0.45;
+      } else if (selectedType === "hydraulic") {
+        refractoryPeriodSeconds = 0.35;
+      } else if (selectedType === "breaker") {
+        refractoryPeriodSeconds = 0.10;
+      } else if (selectedType === "drop") {
+        refractoryPeriodSeconds = 0.65;
+      } else {
+        refractoryPeriodSeconds = 0.45;
+      }
+    }
+
     selectHammerType.addEventListener("change", (event) => {
-      const selectedType = event.target.value;
-      if (selectedType === "diesel") refractoryPeriodSeconds = 0.45;
-      else if (selectedType === "hydraulic") refractoryPeriodSeconds = 0.35;
-      else if (selectedType === "breaker") refractoryPeriodSeconds = 0.10;
-      else if (selectedType === "drop") refractoryPeriodSeconds = 0.65;
-      sheetHammerType.value = selectHammerType.options[selectHammerType.selectedIndex].text;
+      applyHammerPresets(event.target.value);
+      saveSessionToLocalStorage();
     });
 
     // MANUAL CLICKER STRIKE ACTION (Both in-page and sticky bottom bar)
@@ -1359,6 +1926,13 @@
       }
 
       // Add to Log Entries Array
+      const inputIntervalComment = document.getElementById("inputIntervalComment");
+      let intervalComment = inputIntervalComment ? inputIntervalComment.value.trim() : "";
+      if (!intervalComment && complianceText === "REFUSAL") {
+        intervalComment = "REFUSAL";
+      }
+
+      // Add to Log Entries Array
       footLogEntries.unshift({
         intervalDisplay: intervalDisplay,
         unit: currentIntervalUnit.toUpperCase(),
@@ -1368,8 +1942,15 @@
         durationFormatted: intervalDurationSeconds > 0 ? `${intervalDurationSeconds}s` : "—",
         complianceText: complianceText,
         complianceBadgeClass: complianceBadgeClass,
-        depthNum: currentDepthFeet
+        depthNum: currentDepthFeet,
+        depthFeet: endingDepthFeet,
+        depthInches: endingDepthInches,
+        startFeet: (currentIntervalUnit === "in" ? (currentDepthFeet) : (currentDepthFeet - 1)),
+        startInches: (currentIntervalUnit === "in" ? (endingDepthInches > 0 ? endingDepthInches - 1 : 11) : 0),
+        comment: intervalComment // Manual field note (SPLICE, STOP, etc. Never BPM!)
       });
+
+      if (inputIntervalComment) inputIntervalComment.value = "";
 
       updateDepthInterface();
 
@@ -1392,59 +1973,62 @@
 
     function renderFootLogTable() {
       if (footLogEntries.length === 0) {
-        footLogTableBody.innerHTML = `<tr><td colspan="6" class="p-4 sm:p-6 text-center text-gray-400 font-mono text-xs"><i class="ph-bold ph-clipboard-text text-xl mb-1 block text-gray-300"></i><span>NO FEET LOGGED YET</span><span class="block text-[10px] text-gray-400 mt-0.5">Tap "NEXT FOOT / NEXT INCH" as each pile mark passes to populate your IDR table.</span></td></tr>`;
+        footLogTableBody.innerHTML = `<tr><td colspan="7" class="p-4 sm:p-6 text-center text-gray-400 font-mono text-xs"><i class="ph-bold ph-clipboard-text text-xl mb-1 block text-gray-300"></i><span>NO FEET LOGGED YET</span><span class="block text-[10px] text-gray-400 mt-0.5">Tap "NEXT FOOT / NEXT INCH" as each pile mark passes to populate your IDR table.</span></td></tr>`;
         return;
       }
-      const rowsHtml = footLogEntries.map(entry => `
+      const rowsHtml = footLogEntries.map((entry, idx) => `
         <tr class="hover:bg-chalk/80 font-mono text-[11px] sm:text-xs border-b border-black/10 transition-colors">
           <td class="p-1.5 sm:p-2 font-bold text-ink whitespace-nowrap">${entry.intervalDisplay}</td>
           <td class="p-1.5 sm:p-2 text-center font-bold text-signal whitespace-nowrap tabular-num">${entry.blowsPerFoot} <span class="text-[9px] text-gray-400 font-normal">b</span></td>
           <td class="p-1.5 sm:p-2 text-center font-bold text-ink whitespace-nowrap tabular-num">${entry.cumulativeTotal}</td>
           <td class="p-1.5 sm:p-2 text-center text-deldot font-bold whitespace-nowrap tabular-num">${entry.averageBpm}</td>
+          <td class="p-1.5 sm:p-2 text-left whitespace-nowrap">
+            <input type="text" value="${entry.comment || ''}" onchange="updateEntryComment(${idx}, this.value)" placeholder="Add note..." class="bg-transparent border-b border-transparent hover:border-black/30 focus:border-signal focus:bg-white text-ink font-bold text-[10px] px-1 py-0.5 w-24 sm:w-32 focus:outline-none">
+          </td>
           <td class="p-1.5 sm:p-2 text-center text-gray-500 whitespace-nowrap tabular-num">${entry.durationFormatted}</td>
           <td class="p-1.5 sm:p-2 text-right whitespace-nowrap">
-            <span class="px-1.5 py-0.5 rounded text-[9px] sm:text-[10px] font-bold uppercase whitespace-nowrap border ${entry.complianceBadgeClass}">${entry.complianceText}</span>
+            <span class="inline-block text-[10px] font-bold px-1.5 py-0.5 rounded border ${entry.complianceBadgeClass}">${entry.complianceText}</span>
           </td>
         </tr>
       `).join("");
       footLogTableBody.innerHTML = rowsHtml;
     }
 
-    // DELDOT FORM 605 MULTI-COLUMN COMPACT SHEET GENERATOR
+    // QUICK FIELD SHEET (DELDOT IDR SUMMARY) MODAL LOGIC
     function openDelDotSheetModal() {
+      if (formalPrintModal) formalPrintModal.classList.add("hidden");
       delDotSheetModal.classList.remove("hidden");
-      if (!sheetInspectorDate.value) {
-        sheetInspectorDate.value = new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-      }
-      if (!sheetHammerType.value) {
-        sheetHammerType.value = selectHammerType.options[selectHammerType.selectedIndex].text;
-      }
+      
+      // Leave blank by default if not set by inspector
+      // if (sheetInspectorDate && !sheetInspectorDate.value) { ... }
       
       const feetEntries = footLogEntries.filter(e => e.unit === "FT").length;
       const inchEntries = footLogEntries.filter(e => e.unit === "IN").length;
       if (inchEntries > 0 && feetEntries > 0) {
-        sheetTotalFeet.innerText = `${feetEntries} FT + ${inchEntries} IN`;
+        if (sheetTotalFeet) sheetTotalFeet.innerText = `${feetEntries} FT + ${inchEntries} IN`;
       } else if (inchEntries > 0) {
-        sheetTotalFeet.innerText = `${inchEntries} IN`;
+        if (sheetTotalFeet) sheetTotalFeet.innerText = `${inchEntries} IN`;
       } else {
-        sheetTotalFeet.innerText = `${feetEntries} FT`;
+        if (sheetTotalFeet) sheetTotalFeet.innerText = `${feetEntries} FT`;
       }
 
-      sheetTotalBlows.innerText = totalBlowCount + " BLOWS";
-      sheetAvgBpm.innerText = (lblBlowsPerMinute.innerText || "0.0") + " BPM";
+      if (sheetTotalBlows) sheetTotalBlows.innerText = totalBlowCount + " BLOWS";
+      if (sheetAvgBpm) sheetAvgBpm.innerText = (lblBlowsPerMinute.innerText || "0.0") + " BPM";
 
-      // Check if any refusal or exceeded
+      // Resistance compliance status check
       const hasRefusal = footLogEntries.some(e => e.complianceText.includes("REFUSAL"));
       const hasExceeded = footLogEntries.some(e => e.complianceText.includes("HIGH") || e.complianceText.includes("EXCEEDED"));
-      if (hasRefusal) {
-        sheetComplianceBadge.innerText = "REFUSAL OBSERVED";
-        sheetComplianceBadge.className = "font-bold text-sm px-2 py-0.5 rounded bg-signal text-white border border-signal inline-block mt-0.5";
-      } else if (hasExceeded) {
-        sheetComplianceBadge.innerText = "HIGH RESISTANCE";
-        sheetComplianceBadge.className = "font-bold text-sm px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-600 inline-block mt-0.5";
-      } else {
-        sheetComplianceBadge.innerText = "PASS (NOMINAL)";
-        sheetComplianceBadge.className = "font-bold text-sm px-2 py-0.5 rounded bg-emerald/10 text-emerald border border-emerald inline-block mt-0.5";
+      if (sheetComplianceBadge) {
+        if (hasRefusal) {
+          sheetComplianceBadge.innerText = "REFUSAL OBSERVED";
+          sheetComplianceBadge.className = "font-bold text-xs px-2 py-0.5 rounded bg-signal text-white border border-signal inline-block";
+        } else if (hasExceeded) {
+          sheetComplianceBadge.innerText = "HIGH RESISTANCE";
+          sheetComplianceBadge.className = "font-bold text-xs px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-600 inline-block";
+        } else {
+          sheetComplianceBadge.innerText = "PASS (NOMINAL)";
+          sheetComplianceBadge.className = "font-bold text-xs px-2 py-0.5 rounded bg-emerald/10 text-emerald border border-emerald inline-block";
+        }
       }
 
       renderDelDotSheetColumns();
@@ -1454,31 +2038,14 @@
       delDotSheetModal.classList.add("hidden");
     }
 
-    // Legal Framework Collapsible Accordion Logic
-    const btnToggleLegalFramework = document.getElementById("btnToggleLegalFramework");
-    const panelLegalFrameworkContent = document.getElementById("panelLegalFrameworkContent");
-    const lblLegalAccordionStatus = document.getElementById("lblLegalAccordionStatus");
-
-    function toggleLegalFramework() {
-      const isHidden = panelLegalFrameworkContent.classList.contains("hidden");
-      if (isHidden) {
-        panelLegalFrameworkContent.classList.remove("hidden");
-        lblLegalAccordionStatus.innerText = "[ COLLAPSE ▴ ]";
-        btnToggleLegalFramework.classList.add("bg-chalk");
-      } else {
-        panelLegalFrameworkContent.classList.add("hidden");
-        lblLegalAccordionStatus.innerText = "[ VIEW LEGAL NOTICE ▾ ]";
-        btnToggleLegalFramework.classList.remove("bg-chalk");
-      }
-    }
-    btnToggleLegalFramework.addEventListener("click", toggleLegalFramework);
-
+    // Render 3-Column Online Field Sheet (The Beloved Online IDR View)
     function renderDelDotSheetColumns() {
-      // Sort chronological ascending (0-1', 1-2', etc.)
+      const container = document.getElementById("sheetGridContainer");
+      if (!container) return;
+
       const chronological = [...footLogEntries].reverse();
-      
       if (chronological.length === 0) {
-        sheetGridContainer.innerHTML = `
+        container.innerHTML = `
           <div class="col-span-3 p-6 text-center text-gray-400 font-mono text-xs border border-dashed border-black/20">
             No penetration intervals recorded yet. Drive piles and tap "NEXT FOOT / NEXT INCH" to generate your IDR inspection sheet.
           </div>
@@ -1486,7 +2053,6 @@
         return;
       }
 
-      // Break into 3 equal columns for 1-page compact field transcription
       const perColumn = Math.ceil(chronological.length / 3);
       const cols = [
         chronological.slice(0, perColumn),
@@ -1497,7 +2063,7 @@
       let gridHtml = "";
       cols.forEach((colItems, colIdx) => {
         gridHtml += `
-          <div class="border border-black/20 bg-white">
+          <div class="border border-black/20 bg-white shadow-2xs">
             <div class="bg-black text-white px-2 py-1 text-[10px] font-mono uppercase font-bold flex justify-between">
               <span>DEPTH (FT)</span>
               <span>BLOWS / ACC</span>
@@ -1505,7 +2071,10 @@
             <div class="divide-y divide-black/10 font-mono text-xs max-h-72 overflow-y-auto">
               ${colItems.map(item => `
                 <div class="flex justify-between items-center p-1.5 hover:bg-chalk">
-                  <span class="font-bold text-ink">${item.intervalDisplay}</span>
+                  <div>
+                    <span class="font-bold text-ink">${item.intervalDisplay}</span>
+                    ${item.comment ? `<span class="ml-1.5 px-1 py-0.2 bg-ink text-white font-bold text-[9px] uppercase tracking-wider">${item.comment}</span>` : ''}
+                  </div>
                   <div class="space-x-1.5 text-right">
                     <span class="font-black text-signal text-sm">${item.blowsPerFoot}</span>
                     <span class="text-[10px] text-gray-400">(${item.cumulativeTotal})</span>
@@ -1516,30 +2085,819 @@
           </div>
         `;
       });
-      sheetGridContainer.innerHTML = gridHtml;
+      container.innerHTML = gridHtml;
+    }
+
+    // ==============================================================
+    // FORMAL PRINT MODAL - THE FINAL STEP
+    // ==============================================================
+    const formalPrintModal = document.getElementById("formalPrintModal");
+
+    function openFormalPrintModal() {
+      if (delDotSheetModal) delDotSheetModal.classList.add("hidden");
+      if (formalPrintModal) formalPrintModal.classList.remove("hidden");
+
+      // Keep Hammer Data completely blank unless inspector actually chose a preset from the menu
+      if (selectFormalHammerPreset && selectFormalHammerPreset.value === "blank") {
+        if (!sheetHammerMake.dataset.manuallyEntered) sheetHammerMake.value = "";
+        if (!sheetHammerTypeInput.dataset.manuallyEntered) sheetHammerTypeInput.value = "";
+        if (!sheetHammerEnergy.dataset.manuallyEntered) sheetHammerEnergy.value = "";
+        if (!sheetHammerRamWeight.dataset.manuallyEntered) sheetHammerRamWeight.value = "";
+        if (!sheetHammerStroke.dataset.manuallyEntered) sheetHammerStroke.value = "";
+        if (!sheetHammerSpeed.dataset.manuallyEntered) sheetHammerSpeed.value = "";
+      }
+
+      // If opening in default blank state, ensure no stray dates or values
+      if (selectFormalProjectPreset && selectFormalProjectPreset.value === "blank") {
+        if (sheetDate && sheetDate.value && sheetDate.value.includes("10/29/2026")) {
+          sheetDate.value = "";
+        }
+      }
+      renderFormalGtrTable();
+    }
+
+    function closeFormalPrintModal() {
+      if (formalPrintModal) formalPrintModal.classList.add("hidden");
+    }
+
+    function backToQuickSheetModal() {
+      closeFormalPrintModal();
+      openDelDotSheetModal();
+    }
+
+    // 1. PROJECT PRESET HANDLER (Blank by default, or auto-populates project details)
+    function applyFormalProjectPreset(preset) {
+      if (preset === "br-3-437") {
+        if (sheetProject) sheetProject.value = "Replacement of BR 3-437 on SR-54";
+        if (sheetLocation) sheetLocation.value = "Assawoman Bay, Sussex County, DE";
+        if (sheetClient) sheetClient.value = "DelDOT";
+        if (sheetContractor) sheetContractor.value = "Richard E. Pierson Construction Co., Inc.";
+        if (sheetJobNo) sheetJobNo.value = "T202007303 / 60774439";
+        if (sheetDate && !sheetDate.value) sheetDate.value = new Date().toLocaleDateString();
+        if (sheetRepresentative) sheetRepresentative.value = "";
+        if (sheetComments) sheetComments.value = "North Access Trestle Driving";
+        if (sheetContractNo) sheetContractNo.value = "T202007303 / 60774439";
+      } else {
+        // Blank / Clear: Wipes every project and driving field completely clean
+        if (sheetProject) sheetProject.value = "";
+        if (sheetLocation) sheetLocation.value = "";
+        if (sheetClient) sheetClient.value = "";
+        if (sheetContractor) sheetContractor.value = "";
+        if (sheetJobNo) sheetJobNo.value = "";
+        if (sheetDate) sheetDate.value = "";
+        if (sheetRepresentative) sheetRepresentative.value = "";
+        if (sheetComments) sheetComments.value = "";
+        if (sheetContractNo) sheetContractNo.value = "";
+        if (sheetDrivenLength) sheetDrivenLength.value = "";
+        if (sheetTopElev) sheetTopElev.value = "";
+        if (sheetTipElev) sheetTipElev.value = "";
+        if (sheetCutOffElev) sheetCutOffElev.value = "";
+        if (sheetCutOffLength) sheetCutOffLength.value = "";
+        if (sheetGroundElev) sheetGroundElev.value = "";
+      }
+      saveSessionToLocalStorage();
+    }
+
+    function applyFormalPilePreset(preset) {
+      if (preset === "blank" || preset === "custom") {
+        if (sheetPileNo) sheetPileNo.value = "";
+        if (sheetPileGroup) sheetPileGroup.value = "";
+        if (sheetPileSeq) sheetPileSeq.value = "";
+        if (sheetPilePdes) sheetPilePdes.value = "";
+        if (sheetPilePult) sheetPilePult.value = "";
+        if (sheetPileType) sheetPileType.value = "";
+        if (sheetPileLength) sheetPileLength.value = "";
+        if (sheetPileArea) sheetPileArea.value = "";
+        if (sheetPileWeight) sheetPileWeight.value = "";
+        if (sheetPileUnitWeight) sheetPileUnitWeight.value = "";
+        if (sheetPileReqResistance) sheetPileReqResistance.value = "";
+        if (sheetPileComments) sheetPileComments.value = "";
+      } else if (preset === "pipe-36-50") {
+        if (sheetPileType) sheetPileType.value = '36" Dia x 0.50" Steel Pipe';
+        if (sheetPileLength) sheetPileLength.value = "90 ft";
+        if (sheetPileArea) sheetPileArea.value = "55.77 in²";
+        if (sheetPileWeight) sheetPileWeight.value = "17,064 lbs";
+        if (sheetPileUnitWeight) sheetPileUnitWeight.value = "189.6 lb/ft";
+        if (sheetPilePdes) sheetPilePdes.value = "800 kips";
+        if (sheetPilePult) sheetPilePult.value = "1,600 kips";
+        if (sheetPileReqResistance) sheetPileReqResistance.value = "1,600 kips / Refusal";
+        if (sheetPileComments) sheetPileComments.value = "ASTM A252 Gr.3 Open-End";
+      } else if (preset === "pipe-36-625") {
+        if (sheetPileType) sheetPileType.value = '36" Dia x 0.625" Steel Pipe';
+        if (sheetPileLength) sheetPileLength.value = "90 ft";
+        if (sheetPileArea) sheetPileArea.value = "69.46 in²";
+        if (sheetPileWeight) sheetPileWeight.value = "21,258 lbs";
+        if (sheetPileUnitWeight) sheetPileUnitWeight.value = "236.2 lb/ft";
+        if (sheetPilePdes) sheetPilePdes.value = "900 kips";
+        if (sheetPilePult) sheetPilePult.value = "1,800 kips";
+        if (sheetPileReqResistance) sheetPileReqResistance.value = "1,800 kips / Refusal";
+        if (sheetPileComments) sheetPileComments.value = "ASTM A252 Gr.3 Heavy Wall";
+      } else if (preset === "concrete-24") {
+        if (sheetPileType) sheetPileType.value = '24" Prestressed Concrete Pile';
+        if (sheetPileLength) sheetPileLength.value = "75 ft";
+        if (sheetPileArea) sheetPileArea.value = "576.0 in²";
+        if (sheetPileWeight) sheetPileWeight.value = "45,000 lbs";
+        if (sheetPileUnitWeight) sheetPileUnitWeight.value = "600.0 lb/ft";
+        if (sheetPilePdes) sheetPilePdes.value = "450 kips";
+        if (sheetPilePult) sheetPilePult.value = "900 kips";
+        if (sheetPileReqResistance) sheetPileReqResistance.value = "900 kips / Refusal";
+        if (sheetPileComments) sheetPileComments.value = "f'c = 6,000 psi, 16 strands";
+      }
+      saveSessionToLocalStorage();
+    }
+
+    // 3. HAMMER DATA PRESET HANDLER (Auto-populates table specifications)
+    function applyFormalHammerPreset(preset) {
+      if (preset === "ice-i80") {
+        if (sheetHammerMake) sheetHammerMake.value = "ICE I-80v2";
+        if (sheetHammerTypeInput) sheetHammerTypeInput.value = "Open-End Diesel";
+        if (sheetHammerEnergy) sheetHammerEnergy.value = "80,000 ft-lbs";
+        if (sheetHammerRamWeight) sheetHammerRamWeight.value = "8,000 lbs";
+        if (sheetHammerStroke) sheetHammerStroke.value = "10.0 ft";
+        if (sheetHammerSpeed) sheetHammerSpeed.value = "35 - 52 BPM";
+        if (selectHammerType) selectHammerType.value = "ice-i80";
+      } else if (preset === "ice-i45") {
+        if (sheetHammerMake) sheetHammerMake.value = "ICE I-45";
+        if (sheetHammerTypeInput) sheetHammerTypeInput.value = "Open-End Diesel";
+        if (sheetHammerEnergy) sheetHammerEnergy.value = "45,000 ft-lbs";
+        if (sheetHammerRamWeight) sheetHammerRamWeight.value = "4,500 lbs";
+        if (sheetHammerStroke) sheetHammerStroke.value = "10.0 ft";
+        if (sheetHammerSpeed) sheetHammerSpeed.value = "35 - 52 BPM";
+        if (selectHammerType) selectHammerType.value = "ice-i45";
+      } else if (preset === "hydraulic") {
+        if (sheetHammerMake) sheetHammerMake.value = "Hydraulic Hammer";
+        if (sheetHammerTypeInput) sheetHammerTypeInput.value = "Double-Acting Hydraulic";
+        if (sheetHammerEnergy) sheetHammerEnergy.value = "60,000 ft-lbs";
+        if (sheetHammerRamWeight) sheetHammerRamWeight.value = "7,000 lbs";
+        if (sheetHammerStroke) sheetHammerStroke.value = "5.0 ft";
+        if (sheetHammerSpeed) sheetHammerSpeed.value = "40 - 100 BPM";
+        if (selectHammerType) selectHammerType.value = "hydraulic";
+      } else if (preset === "breaker") {
+        if (sheetHammerMake) sheetHammerMake.value = "Excavator Breaker";
+        if (sheetHammerTypeInput) sheetHammerTypeInput.value = "Hydraulic Impact Breaker";
+        if (sheetHammerEnergy) sheetHammerEnergy.value = "Varies";
+        if (sheetHammerRamWeight) sheetHammerRamWeight.value = "3,000 lbs";
+        if (sheetHammerStroke) sheetHammerStroke.value = "Rapid Cycle";
+        if (sheetHammerSpeed) sheetHammerSpeed.value = "200 - 600 BPM";
+        if (selectHammerType) selectHammerType.value = "breaker";
+      } else if (preset === "drop") {
+        if (sheetHammerMake) sheetHammerMake.value = "Gravity Drop Hammer";
+        if (sheetHammerTypeInput) sheetHammerTypeInput.value = "Cable Drop";
+        if (sheetHammerEnergy) sheetHammerEnergy.value = "30,000 ft-lbs";
+        if (sheetHammerRamWeight) sheetHammerRamWeight.value = "3,000 lbs";
+        if (sheetHammerStroke) sheetHammerStroke.value = "10.0 ft";
+        if (sheetHammerSpeed) sheetHammerSpeed.value = "20 - 45 BPM";
+        if (selectHammerType) selectHammerType.value = "drop";
+      } else {
+        // Blank / Custom
+        if (sheetHammerMake) sheetHammerMake.value = "";
+        if (sheetHammerTypeInput) sheetHammerTypeInput.value = "";
+        if (sheetHammerEnergy) sheetHammerEnergy.value = "";
+        if (sheetHammerRamWeight) sheetHammerRamWeight.value = "";
+        if (sheetHammerStroke) sheetHammerStroke.value = "";
+        if (sheetHammerSpeed) sheetHammerSpeed.value = "";
+      }
+      if (selectFormalHammerPreset) selectFormalHammerPreset.value = preset;
+      saveSessionToLocalStorage();
+    }
+
+        // Direct In-Table Comment Editing in the Formal Pile Driving Log
+    let customFormalFootComments = {};
+
+    function updateFormalFootComment(footNum, val) {
+      const commentText = (val || "").trim();
+      customFormalFootComments[footNum] = commentText;
+
+      // Update matching footLogEntries interval if present
+      if (footLogEntries && footLogEntries.length > 0) {
+        for (let entry of footLogEntries) {
+          if (entry.unit === "FT") {
+            let targetFoot = entry.depthNum;
+            if (!targetFoot && entry.intervalDisplay) {
+              const m = entry.intervalDisplay.match(/(\d+)'\s*&rarr;\s*(\d+)'/);
+              if (m) targetFoot = parseInt(m[2], 10);
+            }
+            if (targetFoot === footNum) {
+              entry.comment = commentText;
+              if (commentText.toUpperCase() === "REFUSAL") {
+                entry.complianceText = "REFUSAL";
+                entry.complianceBadgeClass = "bg-signal text-white border-signal font-black animate-pulse";
+              }
+              break;
+            }
+          }
+        }
+      }
+
+      renderDelDotSheetColumns();
+      saveSessionToLocalStorage();
+      showToast(commentText ? `Comment "${commentText}" saved for depth ${footNum} ft!` : `Comment cleared for depth ${footNum} ft.`);
+    }
+
+    // Render Exact Formal 5-Column Table (Cols 1-4: 1-140 ft, Col 5: Inches)
+    // CRITICAL: Comment column ONLY displays manual notes (SPLICE, STOP, etc.). NEVER BPM!
+    function renderFormalGtrTable() {
+      const gtrTableBody = document.getElementById("gtrSheetTableBody");
+      if (!gtrTableBody) return;
+
+      const footMap = {};
+      const inchList = [];
+
+      const chronological = [...footLogEntries].reverse();
+      chronological.forEach(entry => {
+        if (entry.unit === "FT") {
+          let targetFoot = entry.depthNum;
+          if (!targetFoot && entry.intervalDisplay) {
+            const match = entry.intervalDisplay.match(/(\d+)'\s*&rarr;\s*(\d+)'/);
+            if (match) targetFoot = parseInt(match[2], 10);
+          }
+          if (targetFoot) {
+            // ONLY manual comment (SPLICE, STOP, CUSHION, REFUSAL). NEVER BPM!
+            let commentText = entry.comment || "";
+            if (!commentText && entry.complianceText === "REFUSAL") {
+              commentText = "REFUSAL";
+            }
+            footMap[targetFoot] = {
+              blows: entry.blowsPerFoot,
+              comment: commentText,
+              status: entry.complianceText
+            };
+          }
+        } else {
+          // INCHES / Practical Refusal
+          let commentText = entry.comment || "";
+          if (!commentText && entry.complianceText === "REFUSAL") {
+            commentText = "REFUSAL";
+          }
+          let formattedDepth = "";
+          if (entry.depthFeet !== undefined && entry.depthFeet !== null && entry.depthInches !== undefined && entry.depthInches !== null) {
+            formattedDepth = `${entry.depthFeet}' ${entry.depthInches}"`;
+          } else if (entry.intervalDisplay) {
+            const raw = entry.intervalDisplay.replace(/&rarr;/g, "->");
+            const match = raw.match(/(\d+)'\s*(\d+)"\s*->\s*(\d+)'\s*(\d+)"/);
+            if (match) {
+              formattedDepth = `${match[3]}' ${match[4]}"`;
+            } else {
+              const single = raw.match(/(\d+)'\s*(\d+)"/);
+              if (single) {
+                formattedDepth = `${single[1]}' ${single[2]}"`;
+              } else {
+                formattedDepth = raw;
+              }
+            }
+          }
+          inchList.push({
+            interval: entry.intervalDisplay ? entry.intervalDisplay.replace(/&rarr;/g, "->") : "",
+            blows: entry.blowsPerFoot,
+            depthDisplay: formattedDepth,
+            comment: commentText
+          });
+        }
+      });
+
+      // Driving Data remains blank by default for manual entry (or inspector-entered value)
+      // (No forced auto-fill of sheetDrivenLength.value to preserve blank default state)
+
+      let rowsHtml = "";
+      for (let r = 0; r < 35; r++) {
+        const f1 = r + 1;
+        const f2 = r + 36;
+        const f3 = r + 71;
+        const f4 = r + 106;
+
+        const data1 = footMap[f1] || null;
+        const data2 = footMap[f2] || null;
+        const data3 = footMap[f3] || null;
+        const data4 = footMap[f4] || null;
+        const inchData = inchList[r] || null;
+
+        const c1 = (data1 && data1.comment) ? data1.comment : (customFormalFootComments[f1] || '');
+        const c2 = (data2 && data2.comment) ? data2.comment : (customFormalFootComments[f2] || '');
+        const c3 = (data3 && data3.comment) ? data3.comment : (customFormalFootComments[f3] || '');
+        const c4 = (data4 && data4.comment) ? data4.comment : (customFormalFootComments[f4] || '');
+
+        rowsHtml += `
+          <tr class="gtr-row border-b border-black text-center">
+            <!-- Col 1: 1-35 -->
+            <td class="border-r border-black font-bold bg-gray-50/50">${f1}</td>
+            <td class="border-r border-black font-bold text-signal">${data1 ? data1.blows : ''}</td>
+            <td class="border-r-2 border-black p-0 text-left">
+              <input type="text" id="formalComment_${f1}" value="${c1}" onchange="updateFormalFootComment(${f1}, this.value)" class="gtr-cell-comment w-full h-[15.5px] bg-transparent border-none text-[6.5pt] sm:text-[7pt] font-mono font-bold text-ink px-0.5 uppercase focus:outline-none focus:bg-amber-100/60" title="Click to write comment for depth ${f1} ft (e.g. STOP, SPLICE, REFUSAL)">
+            </td>
+
+            <!-- Col 2: 36-70 (e.g. depth 51) -->
+            <td class="border-r border-black font-bold bg-gray-50/50">${f2}</td>
+            <td class="border-r border-black font-bold text-signal">${data2 ? data2.blows : ''}</td>
+            <td class="border-r-2 border-black p-0 text-left">
+              <input type="text" id="formalComment_${f2}" value="${c2}" onchange="updateFormalFootComment(${f2}, this.value)" class="gtr-cell-comment w-full h-[15.5px] bg-transparent border-none text-[6.5pt] sm:text-[7pt] font-mono font-bold text-ink px-0.5 uppercase focus:outline-none focus:bg-amber-100/60" title="Click to write comment for depth ${f2} ft (e.g. STOP, SPLICE, REFUSAL)">
+            </td>
+
+            <!-- Col 3: 71-105 -->
+            <td class="border-r border-black font-bold bg-gray-50/50">${f3}</td>
+            <td class="border-r border-black font-bold text-signal">${data3 ? data3.blows : ''}</td>
+            <td class="border-r-2 border-black p-0 text-left">
+              <input type="text" id="formalComment_${f3}" value="${c3}" onchange="updateFormalFootComment(${f3}, this.value)" class="gtr-cell-comment w-full h-[15.5px] bg-transparent border-none text-[6.5pt] sm:text-[7pt] font-mono font-bold text-ink px-0.5 uppercase focus:outline-none focus:bg-amber-100/60" title="Click to write comment for depth ${f3} ft (e.g. STOP, SPLICE, REFUSAL)">
+            </td>
+
+            <!-- Col 4: 106-140 -->
+            <td class="border-r border-black font-bold bg-gray-50/50">${f4}</td>
+            <td class="border-r border-black font-bold text-signal">${data4 ? data4.blows : ''}</td>
+            <td class="border-r-2 border-black p-0 text-left">
+              <input type="text" id="formalComment_${f4}" value="${c4}" onchange="updateFormalFootComment(${f4}, this.value)" class="gtr-cell-comment w-full h-[15.5px] bg-transparent border-none text-[6.5pt] sm:text-[7pt] font-mono font-bold text-ink px-0.5 uppercase focus:outline-none focus:bg-amber-100/60" title="Click to write comment for depth ${f4} ft (e.g. STOP, SPLICE, REFUSAL)">
+            </td>
+
+            <!-- Col 5: Final Driving Resistance -->
+            <td class="border-r border-black text-[7pt] px-0.5 font-bold">${inchData ? (inchData.depthDisplay || inchData.interval) : ''}</td>
+            <td class="font-bold text-signal">${inchData ? inchData.blows : ''}</td>
+          </tr>
+        `;
+      }
+      gtrTableBody.innerHTML = rowsHtml;
+    }
+
+    // Dedicated Single-Page Portrait Print Dispatcher
+    function printFormalLog() {
+      let styleEl = document.getElementById("dynamicPrintOrientation");
+      if (!styleEl) {
+        styleEl = document.createElement("style");
+        styleEl.id = "dynamicPrintOrientation";
+        document.head.appendChild(styleEl);
+      }
+      styleEl.innerHTML = `@page { size: letter portrait; margin: 0; }`;
+      document.body.classList.remove('print-landscape');
+      document.body.classList.add('print-portrait');
+      setTimeout(() => {
+        window.print();
+      }, 100);
+    }
+
+    // Export Complete Formal Pile Driving Log to Microsoft Excel (.xls)
+    function exportFormalLogToExcel() {
+      const projectVal = (sheetProject && sheetProject.value.trim()) || "";
+      const locationVal = (sheetLocation && sheetLocation.value.trim()) || "";
+      const clientVal = (sheetClient && sheetClient.value.trim()) || "";
+      const contractorVal = (sheetContractor && sheetContractor.value.trim()) || "";
+      const jobNoVal = (sheetJobNo && sheetJobNo.value.trim()) || "";
+      const dateVal = (sheetDate && sheetDate.value.trim()) || "";
+      const representativeVal = (sheetRepresentative && sheetRepresentative.value.trim()) || "";
+      const commentsVal = (sheetComments && sheetComments.value.trim()) || "";
+
+      // Pile Data
+      const pileNoVal = (sheetPileNo && sheetPileNo.value.trim()) || "";
+      const pileGroupVal = (sheetPileGroup && sheetPileGroup.value.trim()) || "";
+      const pileSeqVal = (sheetPileSeq && sheetPileSeq.value.trim()) || "";
+      const pilePdesVal = (sheetPilePdes && sheetPilePdes.value.trim()) || "";
+      const pilePultVal = (sheetPilePult && sheetPilePult.value.trim()) || "";
+      const pileTypeVal = (sheetPileType && sheetPileType.value.trim()) || "";
+      const pileLengthVal = (sheetPileLength && sheetPileLength.value.trim()) || "";
+      const pileAreaVal = (sheetPileArea && sheetPileArea.value.trim()) || "";
+      const pileWeightVal = (sheetPileWeight && sheetPileWeight.value.trim()) || "";
+      const pileUnitWeightVal = (sheetPileUnitWeight && sheetPileUnitWeight.value.trim()) || "";
+      const pileReqResVal = (sheetPileReqResistance && sheetPileReqResistance.value.trim()) || "";
+      const pileCommentsVal = (sheetPileComments && sheetPileComments.value.trim()) || "";
+
+      // Hammer Data
+      const hammerMakeVal = (sheetHammerMake && sheetHammerMake.value.trim()) || "";
+      const hammerTypeVal = (sheetHammerTypeInput && sheetHammerTypeInput.value.trim()) || "";
+      const hammerEnergyVal = (sheetHammerEnergy && sheetHammerEnergy.value.trim()) || "";
+      const hammerRamVal = (sheetHammerRamWeight && sheetHammerRamWeight.value.trim()) || "";
+      const hammerStrokeVal = (sheetHammerStroke && sheetHammerStroke.value.trim()) || "";
+      const hammerSpeedVal = (sheetHammerSpeed && sheetHammerSpeed.value.trim()) || "";
+
+      // Driving Data
+      const drivenLengthVal = (sheetDrivenLength && sheetDrivenLength.value.trim()) || "";
+      const topElevVal = (sheetTopElev && sheetTopElev.value.trim()) || "";
+      const tipElevVal = (sheetTipElev && sheetTipElev.value.trim()) || "";
+      const cutOffElevVal = (sheetCutOffElev && sheetCutOffElev.value.trim()) || "";
+      const cutOffLengthVal = (sheetCutOffLength && sheetCutOffLength.value.trim()) || "";
+      const groundElevVal = (sheetGroundElev && sheetGroundElev.value.trim()) || "";
+
+      // Map entries into 1-140ft and inches
+      const footMap = {};
+      const inchList = [];
+      const chronological = [...footLogEntries].reverse();
+      chronological.forEach(entry => {
+        if (entry.unit === "FT") {
+          let targetFoot = entry.depthNum;
+          if (!targetFoot && entry.intervalDisplay) {
+            const match = entry.intervalDisplay.match(/(\\d+)'\\s*&rarr;\\s*(\\d+)'/);
+            if (match) targetFoot = parseInt(match[2], 10);
+          }
+          if (targetFoot) {
+            let commentText = entry.comment || "";
+            if (!commentText && entry.complianceText === "REFUSAL") {
+              commentText = "REFUSAL";
+            }
+            footMap[targetFoot] = {
+              blows: entry.blowsPerFoot,
+              comment: commentText
+            };
+          }
+        } else {
+          let commentText = entry.comment || "";
+          if (!commentText && entry.complianceText === "REFUSAL") {
+            commentText = "REFUSAL";
+          }
+          let formattedDepth = "";
+          if (entry.depthFeet !== undefined && entry.depthFeet !== null && entry.depthInches !== undefined && entry.depthInches !== null) {
+            formattedDepth = `${entry.depthFeet}' ${entry.depthInches}"`;
+          } else if (entry.intervalDisplay) {
+            const raw = entry.intervalDisplay.replace(/&rarr;/g, "->");
+            const match = raw.match(/(\d+)'\s*(\d+)"\s*->\s*(\d+)'\s*(\d+)"/);
+            if (match) {
+              formattedDepth = `${match[3]}' ${match[4]}"`;
+            } else {
+              const single = raw.match(/(\d+)'\s*(\d+)"/);
+              if (single) {
+                formattedDepth = `${single[1]}' ${single[2]}"`;
+              } else {
+                formattedDepth = raw;
+              }
+            }
+          }
+          inchList.push({
+            interval: entry.intervalDisplay ? entry.intervalDisplay.replace(/&rarr;/g, "->") : "",
+            blows: entry.blowsPerFoot,
+            depthDisplay: formattedDepth,
+            comment: commentText
+          });
+        }
+      });
+
+      let html = `
+        <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+        <head>
+          <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+          <!--[if gte mso 9]>
+          <xml>
+            <x:ExcelWorkbook>
+              <x:ExcelWorksheets>
+                <x:ExcelWorksheet>
+                  <x:Name>Pile Driving Log</x:Name>
+                  <x:WorksheetOptions>
+                    <x:DisplayGridlines/>
+                  </x:WorksheetOptions>
+                </x:ExcelWorksheet>
+              </x:ExcelWorksheets>
+            </x:ExcelWorkbook>
+          </xml>
+          <![endif]-->
+          <style>
+            table { border-collapse: collapse; font-family: Arial, sans-serif; font-size: 9pt; }
+            .title { font-size: 16pt; font-weight: bold; text-align: center; }
+            .hdr-lbl { font-weight: bold; text-align: right; white-space: nowrap; }
+            .hdr-val { border-bottom: 1px solid #000; text-align: left; }
+            .sec-title { font-size: 10pt; font-weight: bold; border-bottom: 1.5px solid #000; text-transform: uppercase; background-color: #f8fafc; }
+            .th-group { background-color: #f1f5f9; font-weight: bold; text-align: center; border: 1px solid #000; font-size: 8.5pt; }
+            .th-col { background-color: #e2e8f0; font-weight: bold; text-align: center; border: 1px solid #000; font-size: 8pt; }
+            .td-depth { border: 1px solid #000; text-align: center; font-weight: bold; background-color: #f8fafc; }
+            .td-blows { border: 1px solid #000; text-align: center; font-weight: bold; color: #ff4400; }
+            .td-comment { border: 1px solid #000; text-align: left; font-size: 7.5pt; }
+          </style>
+        </head>
+        <body>
+          <table border="0" cellpadding="2" cellspacing="0">
+            <!-- Title -->
+            <tr>
+              <td colspan="14" class="title">PILE DRIVING LOG</td>
+            </tr>
+            <tr><td colspan="14"></td></tr>
+
+            <!-- Project Information -->
+            <tr>
+              <td class="hdr-lbl">Project:</td>
+              <td colspan="6" class="hdr-val">${projectVal}</td>
+              <td class="hdr-lbl">Job No:</td>
+              <td colspan="6" class="hdr-val">${jobNoVal}</td>
+            </tr>
+            <tr>
+              <td class="hdr-lbl">Location:</td>
+              <td colspan="6" class="hdr-val">${locationVal}</td>
+              <td class="hdr-lbl">Date:</td>
+              <td colspan="6" class="hdr-val">${dateVal}</td>
+            </tr>
+            <tr>
+              <td class="hdr-lbl">Client:</td>
+              <td colspan="6" class="hdr-val">${clientVal}</td>
+              <td class="hdr-lbl">Representative:</td>
+              <td colspan="6" class="hdr-val">${representativeVal}</td>
+            </tr>
+            <tr>
+              <td class="hdr-lbl">Contractor:</td>
+              <td colspan="6" class="hdr-val">${contractorVal}</td>
+              <td class="hdr-lbl">Comments:</td>
+              <td colspan="6" class="hdr-val">${commentsVal}</td>
+            </tr>
+            <tr><td colspan="14"></td></tr>
+
+            <!-- Technical Data Headers -->
+            <tr>
+              <td colspan="5" class="sec-title">PILE DATA</td>
+              <td colspan="5" class="sec-title">HAMMER DATA</td>
+              <td colspan="4" class="sec-title">DRIVING DATA</td>
+            </tr>
+            <tr>
+              <td class="hdr-lbl">No. / Group / Seq:</td>
+              <td colspan="4" class="hdr-val">${pileNoVal} ${pileGroupVal ? '/ ' + pileGroupVal : ''} ${pileSeqVal ? '/ ' + pileSeqVal : ''}</td>
+              <td class="hdr-lbl">Make/Model:</td>
+              <td colspan="4" class="hdr-val">${hammerMakeVal}</td>
+              <td class="hdr-lbl">Driven Length:</td>
+              <td colspan="3" class="hdr-val">${drivenLengthVal}</td>
+            </tr>
+            <tr>
+              <td class="hdr-lbl">Pdes / Pult:</td>
+              <td colspan="4" class="hdr-val">${pilePdesVal} ${pilePultVal ? '/ ' + pilePultVal : ''}</td>
+              <td class="hdr-lbl">Type:</td>
+              <td colspan="4" class="hdr-val">${hammerTypeVal}</td>
+              <td class="hdr-lbl">Top Elev:</td>
+              <td colspan="3" class="hdr-val">${topElevVal}</td>
+            </tr>
+            <tr>
+              <td class="hdr-lbl">Type:</td>
+              <td colspan="4" class="hdr-val">${pileTypeVal}</td>
+              <td class="hdr-lbl">Rated Energy:</td>
+              <td colspan="4" class="hdr-val">${hammerEnergyVal}</td>
+              <td class="hdr-lbl">Tip Elev:</td>
+              <td colspan="3" class="hdr-val">${tipElevVal}</td>
+            </tr>
+            <tr>
+              <td class="hdr-lbl">Length / Area:</td>
+              <td colspan="4" class="hdr-val">${pileLengthVal} ${pileAreaVal ? '/ ' + pileAreaVal : ''}</td>
+              <td class="hdr-lbl">Ram Weight:</td>
+              <td colspan="4" class="hdr-val">${hammerRamVal}</td>
+              <td class="hdr-lbl">Cut Off Elev:</td>
+              <td colspan="3" class="hdr-val">${cutOffElevVal}</td>
+            </tr>
+            <tr>
+              <td class="hdr-lbl">Weight / Unit Wt:</td>
+              <td colspan="4" class="hdr-val">${pileWeightVal} ${pileUnitWeightVal ? '/ ' + pileUnitWeightVal : ''}</td>
+              <td class="hdr-lbl">Max Equiv. Stroke:</td>
+              <td colspan="4" class="hdr-val">${hammerStrokeVal}</td>
+              <td class="hdr-lbl">Cut Off Length:</td>
+              <td colspan="3" class="hdr-val">${cutOffLengthVal}</td>
+            </tr>
+            <tr>
+              <td class="hdr-lbl">Req Resistance:</td>
+              <td colspan="4" class="hdr-val">${pileReqResVal}</td>
+              <td class="hdr-lbl">Max Speed:</td>
+              <td colspan="4" class="hdr-val">${hammerSpeedVal}</td>
+              <td class="hdr-lbl">Ground Elev:</td>
+              <td colspan="3" class="hdr-val">${groundElevVal}</td>
+            </tr>
+            <tr>
+              <td class="hdr-lbl">Comments:</td>
+              <td colspan="4" class="hdr-val">${pileCommentsVal}</td>
+              <td colspan="9"></td>
+            </tr>
+            <tr><td colspan="14"></td></tr>
+
+            <!-- Table Super Headers -->
+            <tr>
+              <th colspan="3" class="th-group">1 TO 35 FT</th>
+              <th colspan="3" class="th-group">36 TO 70 FT</th>
+              <th colspan="3" class="th-group">71 TO 105 FT</th>
+              <th colspan="3" class="th-group">106 TO 140 FT</th>
+              <th colspan="2" class="th-group">FINAL RESISTANCE</th>
+            </tr>
+            <tr>
+              <th class="th-col">Depth (ft)</th>
+              <th class="th-col">Blows (bpf)</th>
+              <th class="th-col">Comment</th>
+              <th class="th-col">Depth (ft)</th>
+              <th class="th-col">Blows (bpf)</th>
+              <th class="th-col">Comments</th>
+              <th class="th-col">Depth (ft)</th>
+              <th class="th-col">Blows (bpf)</th>
+              <th class="th-col">Comments</th>
+              <th class="th-col">Depth (ft)</th>
+              <th class="th-col">Blows (bpf)</th>
+              <th class="th-col">Comments</th>
+              <th class="th-col">Depth</th>
+              <th class="th-col">Blows (bpi)</th>
+            </tr>
+      `;
+
+      for (let r = 0; r < 35; r++) {
+        const f1 = r + 1;
+        const f2 = r + 36;
+        const f3 = r + 71;
+        const f4 = r + 106;
+
+        const d1 = footMap[f1] || null;
+        const d2 = footMap[f2] || null;
+        const d3 = footMap[f3] || null;
+        const d4 = footMap[f4] || null;
+        const inch = inchList[r] || null;
+
+        const el1 = document.getElementById(`formalComment_${f1}`);
+        const el2 = document.getElementById(`formalComment_${f2}`);
+        const el3 = document.getElementById(`formalComment_${f3}`);
+        const el4 = document.getElementById(`formalComment_${f4}`);
+
+        const c1 = (el1 && el1.value.trim()) || (d1 ? d1.comment : "") || customFormalFootComments[f1] || "";
+        const c2 = (el2 && el2.value.trim()) || (d2 ? d2.comment : "") || customFormalFootComments[f2] || "";
+        const c3 = (el3 && el3.value.trim()) || (d3 ? d3.comment : "") || customFormalFootComments[f3] || "";
+        const c4 = (el4 && el4.value.trim()) || (d4 ? d4.comment : "") || customFormalFootComments[f4] || "";
+
+        html += `
+          <tr>
+            <td class="td-depth">${f1}</td>
+            <td class="td-blows">${d1 ? d1.blows : ''}</td>
+            <td class="td-comment">${c1}</td>
+            <td class="td-depth">${f2}</td>
+            <td class="td-blows">${d2 ? d2.blows : ''}</td>
+            <td class="td-comment">${c2}</td>
+            <td class="td-depth">${f3}</td>
+            <td class="td-blows">${d3 ? d3.blows : ''}</td>
+            <td class="td-comment">${c3}</td>
+            <td class="td-depth">${f4}</td>
+            <td class="td-blows">${d4 ? d4.blows : ''}</td>
+            <td class="td-comment">${c4}</td>
+            <td class="td-depth">${inch ? (inch.depthDisplay || inch.interval) : ''}</td>
+            <td class="td-blows">${inch ? inch.blows : ''}</td>
+          </tr>
+        `;
+      }
+
+      html += `
+          </table>
+        </body>
+        </html>
+      `;
+
+      const blob = new Blob([html], { type: "application/vnd.ms-excel;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const cleanPile = (pileNoVal || "pile").replace(/[^a-zA-Z0-9_-]/g, "_");
+      const dateStamp = new Date().toISOString().slice(0, 10);
+      a.href = url;
+      a.download = `Pile_Driving_Log_${cleanPile}_${dateStamp}.xls`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast("Pile Driving Log exported to Excel (.xls)!");
+    }
+
+    // Helper to set quick comment in cockpit
+    function setQuickIntervalComment(text) {
+      const inputEl = document.getElementById("inputIntervalComment");
+      if (!inputEl) return;
+      if (inputEl.value === text && text !== "") {
+        inputEl.value = "";
+        applyCommentToActiveInterval("");
+      } else {
+        inputEl.value = text;
+        applyCommentToActiveInterval(text);
+      }
+    }
+
+    // Save note immediately to active or most recent interval without advancing depth
+    function applyCommentToActiveInterval(textOverride = null) {
+      const inputEl = document.getElementById("inputIntervalComment");
+      const note = (textOverride !== null ? textOverride : (inputEl ? inputEl.value.trim() : "")).trim();
+
+      if (footLogEntries && footLogEntries.length > 0) {
+        footLogEntries[0].comment = note;
+        if (note.toUpperCase() === "REFUSAL") {
+          footLogEntries[0].complianceText = "REFUSAL";
+          footLogEntries[0].complianceBadgeClass = "bg-signal text-white border-signal font-black animate-pulse";
+        }
+        renderFootLogTable();
+        renderDelDotSheetColumns();
+        renderFormalGtrTable();
+        saveSessionToLocalStorage();
+        const displayDepth = footLogEntries[0].intervalDisplay ? footLogEntries[0].intervalDisplay.replace(/&rarr;/g, '→') : `${footLogEntries[0].depthNum} ft`;
+        showToast(note ? `Saved note "${note}" to depth ${displayDepth}` : `Cleared note for depth ${displayDepth}`);
+      } else if (currentFootBlowCount > 0) {
+        // If blows are accumulated on current interval, commit it now with this note
+        logCurrentFootAndStop(note || "REFUSAL");
+      } else {
+        showToast(note ? `Note "${note}" staged for next depth interval.` : `Note cleared.`);
+      }
+    }
+
+    // Log current foot as Refusal and stop driving without advancing to dummy next foot
+    function logCurrentFootAndStop(note = "REFUSAL") {
+      if (currentFootBlowCount === 0 && footLogEntries.length > 0) {
+        applyCommentToActiveInterval(note);
+        return;
+      }
+      const blowsInThisInterval = currentFootBlowCount;
+      const currentSeconds = performance.now() / 1000;
+      const intervalDurationSeconds = currentFootStartTime ? Math.max(1, Math.round(currentSeconds - currentFootStartTime)) : 0;
+      currentFootStartTime = currentSeconds;
+
+      let intervalDisplay = "";
+      let endingDepthFeet = currentDepthFeet;
+      let endingDepthInches = currentDepthInches;
+
+      if (currentIntervalUnit === "ft") {
+        intervalDisplay = `${currentDepthFeet}' &rarr; ${currentDepthFeet + 1}'`;
+        endingDepthFeet = currentDepthFeet + 1;
+      } else {
+        endingDepthInches = currentDepthInches + 1;
+        if (endingDepthInches >= 12) {
+          endingDepthFeet = currentDepthFeet + 1;
+          endingDepthInches = 0;
+        }
+        intervalDisplay = `${currentDepthFeet}' ${currentDepthInches}" &rarr; ${endingDepthFeet}' ${endingDepthInches}"`;
+      }
+
+      footLogEntries.unshift({
+        intervalDisplay: intervalDisplay,
+        unit: currentIntervalUnit.toUpperCase(),
+        blowsPerFoot: blowsInThisInterval,
+        cumulativeTotal: totalBlowCount,
+        averageBpm: lblBlowsPerMinute ? lblBlowsPerMinute.innerText : "0.0",
+        durationFormatted: intervalDurationSeconds > 0 ? `${intervalDurationSeconds}s` : "—",
+        complianceText: "REFUSAL",
+        complianceBadgeClass: "bg-signal text-white border-signal font-black animate-pulse",
+        depthNum: endingDepthFeet,
+        depthFeet: endingDepthFeet,
+        depthInches: endingDepthInches,
+        startFeet: (currentIntervalUnit === "in" ? currentDepthFeet : currentDepthFeet),
+        startInches: (currentIntervalUnit === "in" ? currentDepthInches : 0),
+        comment: note
+      });
+
+      // Update depth to completed refusal depth
+      currentDepthFeet = endingDepthFeet;
+      currentDepthInches = endingDepthInches;
+      if (inputCurrentDepthFeet) inputCurrentDepthFeet.value = currentDepthFeet;
+      if (inputCurrentDepthInches) inputCurrentDepthInches.value = currentDepthInches;
+
+      // Reset current foot counter
+      currentFootBlowCount = 0;
+      if (lblCurrentFootBlowCount) lblCurrentFootBlowCount.innerText = "0";
+      if (lblStickyFootBlows) lblStickyFootBlows.innerText = "0";
+      updateComplianceBadge(0);
+
+      updateDepthInterface();
+      renderFootLogTable();
+      renderDelDotSheetColumns();
+      renderFormalGtrTable();
+      saveSessionToLocalStorage();
+
+      showToast(`Refusal logged at ${intervalDisplay.replace(/&rarr;/g, '→')} (${blowsInThisInterval} blows). Driving stopped.`);
+    }
+
+    // Allow inspector to click any row in footLogTable to edit/add a note
+    function editNoteForInterval(index) {
+      if (!footLogEntries || index < 0 || index >= footLogEntries.length) return;
+      const entry = footLogEntries[index];
+      const currentNote = entry.comment || "";
+      const newComment = prompt(`Edit note for interval ${entry.intervalDisplay.replace(/&rarr;/g, '→')}:`, currentNote);
+      if (newComment !== null) {
+        entry.comment = newComment.trim();
+        if (entry.comment.toUpperCase() === "REFUSAL") {
+          entry.complianceText = "REFUSAL";
+          entry.complianceBadgeClass = "bg-signal text-white border-signal font-black animate-pulse";
+        }
+        renderFootLogTable();
+        renderDelDotSheetColumns();
+        renderFormalGtrTable();
+        saveSessionToLocalStorage();
+        showToast(`Updated note for ${entry.intervalDisplay.replace(/&rarr;/g, '→')} to "${entry.comment}"`);
+      }
+    }
+
+    // Helper to edit comment on existing logged entries in Step 04 table
+    function updateEntryComment(idx, val) {
+      if (footLogEntries && footLogEntries[idx]) {
+        footLogEntries[idx].comment = val.trim();
+        if (footLogEntries[idx].comment.toUpperCase() === "REFUSAL") {
+          footLogEntries[idx].complianceText = "REFUSAL";
+          footLogEntries[idx].complianceBadgeClass = "bg-signal text-white border-signal font-black animate-pulse";
+        }
+        renderDelDotSheetColumns();
+        renderFormalGtrTable();
+        saveSessionToLocalStorage();
+      }
     }
 
     function copyDelDotSheetMarkdown() {
-      const contractVal = (sheetContractNo && sheetContractNo.value.trim()) || "Field Project";
-      const substructureVal = (sheetPileId && sheetPileId.value.trim()) || "General Pile Driving";
-      const hammerVal = (sheetHammerType && sheetHammerType.value.trim()) || selectHammerType.options[selectHammerType.selectedIndex].text;
-      const inspectorVal = (sheetInspectorDate && sheetInspectorDate.value.trim()) || new Date().toLocaleDateString();
+      const contractVal = (sheetContractNo && sheetContractNo.value.trim()) || "";
+      const substructureVal = (sheetPileId && sheetPileId.value.trim()) || "";
+      const hammerVal = (sheetQuickHammerType && sheetQuickHammerType.value.trim()) || "";
+      const inspectorVal = (sheetInspectorDate && sheetInspectorDate.value.trim()) || "";
 
-      let md = `Section 605 Inspector's Daily Report (IDR) — Pile Driving Log\n`;
+      let md = `Section 605 Inspector's Daily Report (IDR) - Pile Driving Log\n`;
       md += `Contract: ${contractVal} | Substructure/Pile: ${substructureVal} | Equipment: ${hammerVal} | Date/Inspector: ${inspectorVal}\n`;
-      md += `----------------------------------------------------------------------------------\n`;
-      md += `Depth Interval | Blows / Intv | Cumulative Total | Average BPM | Status\n`;
-      md += `----------------------------------------------------------------------------------\n`;
+      md += `--------------------------------------------------------------------------------------------------\n`;
+      md += `Depth Interval | Blows / Intv | Cumulative Total | Average BPM | Field Note | Status\n`;
+      md += `--------------------------------------------------------------------------------------------------\n`;
       const chronological = [...footLogEntries].reverse();
       chronological.forEach(entry => {
-        const intv = entry.intervalDisplay.replace("&rarr;", "->").padEnd(14, " ");
+        const intv = (entry.intervalDisplay || "").replace(/&rarr;/g, "->").padEnd(14, " ");
         const b = entry.blowsPerFoot.toString().padStart(12, " ");
         const tot = entry.cumulativeTotal.toString().padStart(16, " ");
         const bpm = entry.averageBpm.toString().padStart(11, " ");
-        md += `${intv} | ${b} | ${tot} | ${bpm} | ${entry.complianceText}\n`;
+        const note = (entry.comment || "").padEnd(12, " ");
+        md += `${intv} | ${b} | ${tot} | ${bpm} | ${note} | ${entry.complianceText}\n`;
       });
-      md += `----------------------------------------------------------------------------------\n`;
-      md += `Notice: Internal Field Evaluation Build • Independent calculation tool.\n`;
+      md += `--------------------------------------------------------------------------------------------------\n`;
+      md += `Notice: Internal Field Evaluation Build - Independent calculation tool.\n`;
       md += `Not affiliated with or endorsed by DelDOT, AASHTO, or any agency.\n`;
       md += `Official IDR records require certified field inspector manual verification.\n`;
       navigator.clipboard.writeText(md).then(() => {
@@ -1973,7 +3331,15 @@
       renderFootLogTable();
       drivingStartTime = Date.now();
       currentFootStartTime = performance.now() / 1000;
+      customFormalFootComments = {};
       updateDepthInterface();
+      // Ensure all driving data fields are cleared to blank on reset
+      if (sheetDrivenLength) sheetDrivenLength.value = "";
+      if (sheetTopElev) sheetTopElev.value = "";
+      if (sheetTipElev) sheetTipElev.value = "";
+      if (sheetCutOffElev) sheetCutOffElev.value = "";
+      if (sheetCutOffLength) sheetCutOffLength.value = "";
+      if (sheetGroundElev) sheetGroundElev.value = "";
       try {
         localStorage.removeItem(SESSION_STORAGE_KEY);
         if (dbInstance) {
@@ -2240,24 +3606,23 @@
     // Tailored specifically for Civil Infrastructure Field Inspectors
     // ================================================================
     function exportLogAsCsvFile() {
-      const contractVal = (sheetContractNo && sheetContractNo.value.trim()) || "Field-Project";
-      const pileVal = (sheetPileId && sheetPileId.value.trim()) || "Pile-Driven";
-      const hammerVal = (sheetHammerType && sheetHammerType.value.trim()) || (selectHammerType ? selectHammerType.options[selectHammerType.selectedIndex].text : "Diesel Hammer");
-      const inspectorVal = (sheetInspectorDate && sheetInspectorDate.value.trim()) || (new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}));
+      // Summary Sheet Header Metadata: completely blank by default, never mismatched with formal log
+      const contractVal = (sheetContractNo && sheetContractNo.value.trim()) || "";
+      const pileVal = (sheetPileId && sheetPileId.value.trim()) || "";
+      const hammerVal = (sheetQuickHammerType && sheetQuickHammerType.value.trim()) || "";
+      const inspectorVal = (sheetInspectorDate && sheetInspectorDate.value.trim()) || "";
       const dateStr = new Date().toISOString().slice(0, 10);
-      const pileName = (sheetPileId && sheetPileId.value ? sheetPileId.value.replace(/[^a-zA-Z0-9_-]/g, '_') : 'pile');
+      const pileName = (pileVal ? pileVal.replace(/[^a-zA-Z0-9_-]/g, '_') : 'pile');
 
       let csvRows = [];
-      // IDR Header block for Excel / Numbers
-      csvRows.push(["DELDOT SECTION 605 - PILE DRIVING INSPECTION LOG (IDR)"]);
-      csvRows.push(["Contract Number", contractVal]);
+      csvRows.push(["SECTION 605 INSPECTION SUMMARY - PENETRATION LOG"]);
+      csvRows.push(["Contract No", contractVal]);
       csvRows.push(["Substructure / Pile ID", pileVal]);
-      csvRows.push(["Hammer Equipment", hammerVal]);
-      csvRows.push(["Date / Inspector", inspectorVal]);
+      csvRows.push(["Hammer / Equipment", hammerVal]);
+      csvRows.push(["Date & Inspector", inspectorVal]);
       csvRows.push(["Total Cumulative Blows", totalBlowCount]);
       csvRows.push(["Total Driven Depth", `${currentDepthFeet} ft ${currentDepthInches} in`]);
       csvRows.push(["Average Cadence (BPM)", lblBlowsPerMinute ? lblBlowsPerMinute.innerText : "0.0"]);
-      csvRows.push(["Export Timestamp", new Date().toLocaleString()]);
       csvRows.push([]); // blank line separator
 
       // Table Column Headers
@@ -2268,6 +3633,7 @@
         "Blows_Per_Interval",
         "Cumulative_Blows",
         "Avg_BPM",
+        "Field_Comment",
         "Duration",
         "Resistance_Compliance_Status"
       ]);
@@ -2283,6 +3649,7 @@
           entry.blowsPerFoot,
           entry.cumulativeTotal,
           entry.averageBpm,
+          entry.comment || "",
           entry.durationFormatted,
           entry.complianceText
         ]);
@@ -2338,9 +3705,9 @@
     }
 
     document.getElementById("btnCopyIdrClipboard").addEventListener("click", () => {
-      const contractVal = (sheetContractNo && sheetContractNo.value.trim()) || "Field Project";
-      const pileVal = (sheetPileId && sheetPileId.value.trim()) || "General Pile Driving";
-      const hammerVal = (sheetHammerType && sheetHammerType.value.trim()) || selectHammerType.options[selectHammerType.selectedIndex].text;
+      const contractVal = (sheetContractNo && sheetContractNo.value.trim()) || "";
+      const pileVal = (sheetPileId && sheetPileId.value.trim()) || "";
+      const hammerVal = (sheetQuickHammerType && sheetQuickHammerType.value.trim()) || "";
 
       let clipboardText = `Section 605 Inspector's Daily Report (IDR) — Pile Driving Log\n`;
       clipboardText += `Contract: ${contractVal} | Substructure/Pile: ${pileVal} | Equipment: ${hammerVal} | Total Blows: ${totalBlowCount} | Cadence: ${lblBlowsPerMinute.innerText} BPM\n`;
@@ -2367,7 +3734,7 @@
     // ================================================================
     // MULTI-LAYER LOCAL PERSISTENCE ENGINE (IPHONE & DESKTOP SHIELD)
     // ================================================================
-    const SESSION_STORAGE_KEY = "pile_driving_field_session_v2";
+    const SESSION_STORAGE_KEY = "pile_driving_field_session_v6";
     let isAppBootstrapping = true;
 
     // IndexedDB Redundant Storage Shield (for iOS Safari Private Tabs & Safari Quotas)
@@ -2416,15 +3783,45 @@
           currentIntervalUnit: currentIntervalUnit,
           footLogEntries: footLogEntries,
           recentStrikeIntervals: recentStrikeIntervals,
-          contractNo: sheetContractNo ? sheetContractNo.value : "",
-          pileId: sheetPileId ? sheetPileId.value : "",
-          hammerType: sheetHammerType ? sheetHammerType.value : "",
-          inspectorDate: sheetInspectorDate ? sheetInspectorDate.value : "",
-          selectedHammerValue: selectHammerType ? selectHammerType.value : "diesel",
+          // GTR Metadata fields
+          project: sheetProject ? sheetProject.value : "",
+          location: sheetLocation ? sheetLocation.value : "",
+          client: sheetClient ? sheetClient.value : "",
+          contractor: sheetContractor ? sheetContractor.value : "",
+          jobNo: sheetJobNo ? sheetJobNo.value : "",
+          dateVal: sheetDate ? sheetDate.value : "",
+          representative: sheetRepresentative ? sheetRepresentative.value : "",
+          comments: sheetComments ? sheetComments.value : "",
+          pileNo: sheetPileNo ? sheetPileNo.value : "",
+          pileGroup: sheetPileGroup ? sheetPileGroup.value : "",
+          pileSeq: sheetPileSeq ? sheetPileSeq.value : "",
+          pilePdes: sheetPilePdes ? sheetPilePdes.value : "",
+          pilePult: sheetPilePult ? sheetPilePult.value : "",
+          pileType: sheetPileType ? sheetPileType.value : "",
+          pileLength: sheetPileLength ? sheetPileLength.value : "",
+          pileArea: sheetPileArea ? sheetPileArea.value : "",
+          pileWeight: sheetPileWeight ? sheetPileWeight.value : "",
+          pileUnitWeight: sheetPileUnitWeight ? sheetPileUnitWeight.value : "",
+          pileReqResistance: sheetPileReqResistance ? sheetPileReqResistance.value : "",
+          pileComments: sheetPileComments ? sheetPileComments.value : "",
+          hammerMake: sheetHammerMake ? sheetHammerMake.value : "",
+          hammerTypeInput: sheetHammerTypeInput ? sheetHammerTypeInput.value : "",
+          hammerEnergy: sheetHammerEnergy ? sheetHammerEnergy.value : "",
+          hammerRamWeight: sheetHammerRamWeight ? sheetHammerRamWeight.value : "",
+          hammerStroke: sheetHammerStroke ? sheetHammerStroke.value : "",
+          hammerSpeed: sheetHammerSpeed ? sheetHammerSpeed.value : "",
+          topElev: sheetTopElev ? sheetTopElev.value : "",
+          tipElev: sheetTipElev ? sheetTipElev.value : "",
+          cutOffElev: sheetCutOffElev ? sheetCutOffElev.value : "",
+          cutOffLength: sheetCutOffLength ? sheetCutOffLength.value : "",
+          groundElev: sheetGroundElev ? sheetGroundElev.value : "",
+        drivenLength: sheetDrivenLength ? sheetDrivenLength.value : "",
+          selectedHammerValue: selectHammerType ? selectHammerType.value : "ice-i80",
           earbudBeep: checkboxEarbudBeep ? checkboxEarbudBeep.checked : true,
           hapticFeedback: checkboxHapticFeedback ? checkboxHapticFeedback.checked : true,
           drivingStartTime: drivingStartTime,
-          currentFootStartTime: currentFootStartTime
+          currentFootStartTime: currentFootStartTime,
+          customFormalFootComments: customFormalFootComments
         };
         localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(sessionPayload));
         saveToIndexedDb(sessionPayload);
@@ -2444,13 +3841,54 @@
       recentStrikeIntervals = Array.isArray(data.recentStrikeIntervals) ? data.recentStrikeIntervals : [];
       drivingStartTime = data.drivingStartTime || null;
       currentFootStartTime = data.currentFootStartTime || null;
+      if (data.customFormalFootComments && typeof data.customFormalFootComments === 'object') {
+        customFormalFootComments = data.customFormalFootComments;
+      }
 
       if (inputCurrentDepthFeet) inputCurrentDepthFeet.value = currentDepthFeet;
       if (inputCurrentDepthInches) inputCurrentDepthInches.value = currentDepthInches;
-      if (sheetContractNo && data.contractNo) sheetContractNo.value = data.contractNo;
-      if (sheetPileId && data.pileId) sheetPileId.value = data.pileId;
-      if (sheetHammerType && data.hammerType) sheetHammerType.value = data.hammerType;
-      if (sheetInspectorDate && data.inspectorDate) sheetInspectorDate.value = data.inspectorDate;
+      // Restore GTR metadata fields
+      if (sheetProject && data.project) sheetProject.value = data.project;
+      if (sheetLocation && data.location) sheetLocation.value = data.location;
+      if (sheetClient && data.client) sheetClient.value = data.client;
+      if (sheetContractor && data.contractor) sheetContractor.value = data.contractor;
+      if (sheetJobNo && (data.jobNo || data.contractNo)) sheetJobNo.value = data.jobNo || data.contractNo;
+      if (sheetDate && (data.dateVal || data.inspectorDate) && !String(data.dateVal || data.inspectorDate).includes("10/29/2026")) sheetDate.value = data.dateVal || data.inspectorDate;
+      if (sheetRepresentative && data.representative) sheetRepresentative.value = data.representative;
+      if (sheetComments && data.comments) sheetComments.value = data.comments;
+      if (sheetPileNo && (data.pileNo || data.pileId)) sheetPileNo.value = data.pileNo || data.pileId;
+      if (sheetPileGroup && data.pileGroup) sheetPileGroup.value = data.pileGroup;
+      if (sheetPileSeq && data.pileSeq) sheetPileSeq.value = data.pileSeq;
+      if (sheetPilePdes && data.pilePdes) sheetPilePdes.value = data.pilePdes;
+      if (sheetPilePult && data.pilePult) sheetPilePult.value = data.pilePult;
+      if (sheetPileType && data.pileType) sheetPileType.value = data.pileType;
+      if (sheetPileLength && data.pileLength) sheetPileLength.value = data.pileLength;
+      if (sheetPileArea && data.pileArea) sheetPileArea.value = data.pileArea;
+      if (sheetPileWeight && data.pileWeight) sheetPileWeight.value = data.pileWeight;
+      if (sheetPileUnitWeight && data.pileUnitWeight) sheetPileUnitWeight.value = data.pileUnitWeight;
+      if (sheetPileReqResistance && data.pileReqResistance) sheetPileReqResistance.value = data.pileReqResistance;
+      if (sheetPileComments && data.pileComments) sheetPileComments.value = data.pileComments;
+      if (selectFormalHammerPreset && selectFormalHammerPreset.value !== "blank") {
+        if (sheetHammerMake && (data.hammerMake || data.hammerType)) sheetHammerMake.value = data.hammerMake || data.hammerType;
+        if (sheetHammerTypeInput && data.hammerTypeInput) sheetHammerTypeInput.value = data.hammerTypeInput;
+        if (sheetHammerEnergy && data.hammerEnergy) sheetHammerEnergy.value = data.hammerEnergy;
+        if (sheetHammerRamWeight && data.hammerRamWeight) sheetHammerRamWeight.value = data.hammerRamWeight;
+        if (sheetHammerStroke && data.hammerStroke) sheetHammerStroke.value = data.hammerStroke;
+        if (sheetHammerSpeed && data.hammerSpeed) sheetHammerSpeed.value = data.hammerSpeed;
+      } else {
+        if (sheetHammerMake) sheetHammerMake.value = "";
+        if (sheetHammerTypeInput) sheetHammerTypeInput.value = "";
+        if (sheetHammerEnergy) sheetHammerEnergy.value = "";
+        if (sheetHammerRamWeight) sheetHammerRamWeight.value = "";
+        if (sheetHammerStroke) sheetHammerStroke.value = "";
+        if (sheetHammerSpeed) sheetHammerSpeed.value = "";
+      }
+      if (sheetTopElev && data.topElev) sheetTopElev.value = data.topElev;
+      if (sheetTipElev && data.tipElev) sheetTipElev.value = data.tipElev;
+      if (sheetCutOffElev && data.cutOffElev) sheetCutOffElev.value = data.cutOffElev;
+      if (sheetCutOffLength && data.cutOffLength) sheetCutOffLength.value = data.cutOffLength;
+      if (sheetGroundElev && data.groundElev) sheetGroundElev.value = data.groundElev;
+      if (sheetDrivenLength && data.drivenLength) sheetDrivenLength.value = data.drivenLength;
       if (selectHammerType && data.selectedHammerValue) selectHammerType.value = data.selectedHammerValue;
       if (checkboxEarbudBeep && typeof data.earbudBeep === "boolean") checkboxEarbudBeep.checked = data.earbudBeep;
       if (checkboxHapticFeedback && typeof data.hapticFeedback === "boolean") checkboxHapticFeedback.checked = data.hapticFeedback;
@@ -2467,6 +3905,19 @@
       const timeStr = data.savedAt ? new Date(data.savedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
       showToast(`Auto-restored session: ${totalBlowCount} blows across ${footLogEntries.length} intervals (${timeStr})`);
     }
+
+        // Clear legacy v1-v5 storage with old test dates and pre-filled equipment on initial bootstrap
+    try {
+      localStorage.removeItem("pile_driving_field_session_v1");
+      localStorage.removeItem("pile_driving_field_session_v2");
+      localStorage.removeItem("pile_driving_field_session_v3");
+      localStorage.removeItem("pile_driving_field_session_v4");
+      localStorage.removeItem("pile_driving_field_session_v5");
+      localStorage.removeItem("pileSession_delDot605_v1");
+      localStorage.removeItem("pileSession_delDot605_v2");
+      localStorage.removeItem("pileSession_delDot605_v3");
+      localStorage.removeItem("pileSession_delDot605_v4");
+    } catch(e) {}
 
     function restoreSessionFromLocalStorage() {
       try {
@@ -2552,11 +4003,19 @@
       }
     });
 
-    // Auto-save metadata fields when inspector edits them in the sheet modal
-    if (sheetContractNo) sheetContractNo.addEventListener("input", saveSessionToLocalStorage);
-    if (sheetPileId) sheetPileId.addEventListener("input", saveSessionToLocalStorage);
-    if (sheetHammerType) sheetHammerType.addEventListener("input", saveSessionToLocalStorage);
-    if (sheetInspectorDate) sheetInspectorDate.addEventListener("input", saveSessionToLocalStorage);
+    // Auto-save all GTR metadata fields when inspector edits them
+    const gtrInputsToPersist = [
+      sheetProject, sheetLocation, sheetClient, sheetContractor, sheetJobNo,
+      sheetDate, sheetRepresentative, sheetComments, sheetPileNo, sheetPileGroup,
+      sheetPileSeq, sheetPilePdes, sheetPilePult, sheetPileType, sheetPileLength,
+      sheetPileArea, sheetPileWeight, sheetPileUnitWeight, sheetPileReqResistance,
+      sheetPileComments, sheetHammerMake, sheetHammerTypeInput, sheetHammerEnergy,
+      sheetHammerRamWeight, sheetHammerStroke, sheetHammerSpeed, sheetTopElev,
+      sheetTipElev, sheetCutOffElev, sheetCutOffLength, sheetGroundElev, sheetDrivenLength
+    ];
+    gtrInputsToPersist.forEach(inputEl => {
+      if (inputEl) inputEl.addEventListener("input", saveSessionToLocalStorage);
+    });
     if (selectHammerType) selectHammerType.addEventListener("change", saveSessionToLocalStorage);
     if (checkboxEarbudBeep) checkboxEarbudBeep.addEventListener("change", saveSessionToLocalStorage);
     if (checkboxHapticFeedback) checkboxHapticFeedback.addEventListener("change", saveSessionToLocalStorage);
@@ -2569,6 +4028,7 @@
     // 2. THEN configure default operating mode (manual clicker) without wiping cache
     setOperatingMode("manual", false);
     if (!restored) {
+      applyHammerPresets(selectHammerType.value);
       updateDepthInterface();
     }
     // 3. Bootstrapping complete! Normal real-time auto-saving is now fully active.
