@@ -300,35 +300,50 @@
     .gtr-field-row {
       display: flex;
       align-items: baseline;
-      gap: 3px;
+      gap: 2px;
       font-family: Arial, Helvetica, sans-serif;
-      font-size: 8.5pt;
-      line-height: 1.25;
+      font-size: 7.2pt;
+      line-height: 1.15;
       color: #000000;
     }
     .gtr-label {
       font-weight: 700;
       white-space: nowrap;
-      font-size: 8.5pt;
+      font-size: 7.2pt;
       color: #000000;
     }
     .gtr-input {
       border: none;
       border-bottom: 1px solid #000000;
       background: transparent;
-      padding: 0 2px;
+      padding: 0 1px;
       font-family: Arial, Helvetica, sans-serif;
-      font-size: 8.5pt;
+      font-size: 7.2pt;
       font-weight: 600;
       color: #000000;
       outline: none;
       box-sizing: border-box;
       flex: 1;
       min-width: 0;
+      height: 13.5px;
+      line-height: 1;
     }
     .gtr-input:focus {
-      border-bottom: 2px solid #000000;
+      border-bottom: 1.5px solid #000000;
       background: #f1f5f9;
+    }
+    .gtr-block-title {
+      font-size: 7.8pt;
+      font-weight: 800;
+      border-bottom: 1px solid #000000;
+      padding-bottom: 1px;
+      margin-bottom: 2px;
+      text-transform: uppercase;
+      line-height: 1.1;
+      letter-spacing: 0.02em;
+    }
+    .gtr-table-container {
+      margin-top: 28px;
     }
     .gtr-sheet-table {
       border-collapse: collapse;
@@ -338,10 +353,25 @@
     }
     .gtr-sheet-table th, .gtr-sheet-table td {
       border: 1px solid #000000;
-      padding: 1px 2px;
-      font-size: 8pt;
-      line-height: 1.15;
+      padding: 0.5px 1.5px;
+      font-size: 7pt;
+      line-height: 1.1;
       color: #000000;
+    }
+    .gtr-row {
+      height: 14.5px !important;
+    }
+    .gtr-cell-comment {
+      border: none !important;
+      background: transparent !important;
+      color: #000000 !important;
+      font-weight: 700 !important;
+      box-shadow: none !important;
+      padding: 0 1px !important;
+      font-size: 6.5pt !important;
+      line-height: 1 !important;
+      width: 100% !important;
+      height: 100% !important;
     }
 
     @page {
@@ -437,6 +467,7 @@
       div[class*="overflow-x-auto"] {
         overflow: visible !important;
         width: 100% !important;
+        margin-top: 28px !important;
       }
 
       .gtr-sheet-table {
@@ -461,17 +492,27 @@
 
       /* STRICT PORTRAIT SIZING (Dedicated: Letter 8.5in x 11in, Single Page Fit) */
       .gtr-row {
-        height: 16.5px !important;
+        height: 14.5px !important;
       }
       .gtr-sheet-table th,
       .gtr-sheet-table td {
-        padding: 1px 2px !important;
-        font-size: 7.5pt !important;
-        line-height: 1.15 !important;
+        padding: 0.5px 1.5px !important;
+        font-size: 7pt !important;
+        line-height: 1.1 !important;
       }
       .gtr-field-row {
-        font-size: 8pt !important;
-        line-height: 1.2 !important;
+        font-size: 7.2pt !important;
+        line-height: 1.15 !important;
+      }
+      .gtr-label {
+        font-size: 7.2pt !important;
+      }
+      .gtr-input {
+        font-size: 7.2pt !important;
+        height: 13.5px !important;
+      }
+      .gtr-block-title {
+        font-size: 7.8pt !important;
       }
       .gtr-cell-comment {
         border: none !important;
@@ -1347,27 +1388,23 @@
           </span>
         </div>
         <div class="flex flex-wrap items-center gap-1.5 font-mono text-xs no-print">
-          <button onclick="exportFormalLogToPdf('portrait')" style="background-color: #dc2626 !important; color: #ffffff !important;" onmouseover="this.style.backgroundColor='#b91c1c'" onmouseout="this.style.backgroundColor='#dc2626'" class="bg-[#dc2626] hover:bg-[#b91c1c] text-white font-bold min-h-[36px] px-2.5 py-1.5 uppercase transition flex items-center space-x-1 shadow-sm active:translate-x-0.5 active:translate-y-0.5 cursor-pointer" title="Export 1-page PDF (Portrait)">
-            <i class="ph-bold ph-file-pdf text-white"></i>
-            <span class="text-white">PDF (PORTRAIT)</span>
+          <button onclick="exportFormalLogToPdf()" style="background-color: #b91c1c !important; color: #ffffff !important;" onmouseover="this.style.backgroundColor='#991b1b'" onmouseout="this.style.backgroundColor='#b91c1c'" class="bg-[#b91c1c] text-white font-bold min-h-[34px] px-2.5 py-1 text-[11px] uppercase transition flex items-center space-x-1 border border-black/30 shadow-sm active:translate-x-0.5 active:translate-y-0.5 cursor-pointer" title="Download 1-page PDF">
+            <i class="ph-bold ph-file-pdf text-white text-xs"></i>
+            <span class="text-white">PDF (1-PAGE)</span>
           </button>
-          <button onclick="exportFormalLogToPdf('landscape')" style="background-color: #1e293b !important; color: #ffffff !important;" onmouseover="this.style.backgroundColor='#0f172a'" onmouseout="this.style.backgroundColor='#1e293b'" class="bg-[#1e293b] hover:bg-[#0f172a] text-white font-bold min-h-[36px] px-2.5 py-1.5 uppercase transition flex items-center space-x-1 shadow-sm active:translate-x-0.5 active:translate-y-0.5 cursor-pointer" title="Export 1-page PDF (Landscape)">
-            <i class="ph-bold ph-file-pdf text-white"></i>
-            <span class="text-white">PDF (LANDSCAPE)</span>
-          </button>
-          <button onclick="exportFormalLogToExcel()" style="background-color: #059669 !important; color: #ffffff !important;" onmouseover="this.style.backgroundColor='#047857'" onmouseout="this.style.backgroundColor='#059669'" class="bg-[#059669] hover:bg-[#047857] text-white font-bold min-h-[36px] px-2.5 py-1.5 uppercase transition flex items-center space-x-1 shadow-sm active:translate-x-0.5 active:translate-y-0.5 cursor-pointer" title="Export complete official pile driving log to Microsoft Excel (.xls)">
-            <i class="ph-bold ph-file-xls text-white"></i>
+          <button onclick="exportFormalLogToExcel()" style="background-color: #059669 !important; color: #ffffff !important;" onmouseover="this.style.backgroundColor='#047857'" onmouseout="this.style.backgroundColor='#059669'" class="bg-[#059669] hover:bg-[#047857] text-white font-bold min-h-[34px] px-2.5 py-1 text-[11px] uppercase transition flex items-center space-x-1 border border-black/30 shadow-sm active:translate-x-0.5 active:translate-y-0.5 cursor-pointer" title="Export complete official pile driving log to Microsoft Excel (.xls)">
+            <i class="ph-bold ph-file-xls text-white text-xs"></i>
             <span class="text-white">EXCEL (.XLS)</span>
           </button>
-          <button onclick="openFormalPrintModal()" class="bg-ink hover:bg-signal text-white font-bold min-h-[36px] px-2.5 py-1.5 uppercase transition flex items-center space-x-1 shadow-sm active:translate-x-0.5 active:translate-y-0.5 cursor-pointer" title="Open formal pile driving log to view or edit fields">
-            <i class="ph-bold ph-pencil-simple"></i>
+          <button onclick="openFormalPrintModal()" class="bg-ink hover:bg-signal text-white font-bold min-h-[34px] px-2.5 py-1 text-[11px] uppercase transition flex items-center space-x-1 border border-black/30 shadow-sm active:translate-x-0.5 active:translate-y-0.5 cursor-pointer" title="Open formal pile driving log to view or edit fields">
+            <i class="ph-bold ph-pencil-simple text-xs"></i>
             <span>EDIT &amp; PRINT LOG</span>
           </button>
-          <button onclick="exportLogAsCsvFile()" class="bg-white hover:bg-emerald-600 hover:text-white border border-black/30 text-ink font-bold min-h-[36px] px-2 py-1.5 uppercase transition flex items-center space-x-1 shadow-sm active:translate-x-0.5 active:translate-y-0.5 cursor-pointer" title="Export summary table to CSV">
-            <i class="ph-bold ph-file-csv text-emerald-600"></i>
+          <button onclick="exportLogAsCsvFile()" class="bg-white hover:bg-emerald-600 hover:text-white border border-black/30 text-ink font-bold min-h-[34px] px-2.5 py-1 text-[11px] uppercase transition flex items-center space-x-1 shadow-sm active:translate-x-0.5 active:translate-y-0.5 cursor-pointer" title="Export summary table to CSV">
+            <i class="ph-bold ph-file-csv text-emerald-600 text-xs"></i>
             <span>CSV</span>
           </button>
-          <button onclick="closeDelDotSheetModal()" class="bg-white border border-black/30 text-ink font-bold min-h-[36px] px-2.5 py-1.5 uppercase hover:bg-gray-100 transition active:translate-x-0.5 active:translate-y-0.5 cursor-pointer">
+          <button onclick="closeDelDotSheetModal()" class="bg-white border border-black/30 text-ink font-bold min-h-[34px] px-2.5 py-1 text-[11px] uppercase hover:bg-gray-100 transition active:translate-x-0.5 active:translate-y-0.5 cursor-pointer">
             CLOSE [X]
           </button>
         </div>
@@ -1483,41 +1520,35 @@
               Enter technical pile, hammer, and project data below before printing or exporting. Formatted for single-page portrait print.
             </p>
           </div>
-          <button onclick="closeFormalPrintModal()" class="min-h-[40px] bg-white hover:bg-gray-100 border-2 border-black text-ink font-bold px-3.5 py-2 uppercase transition font-mono text-xs self-start active:translate-x-0.5 active:translate-y-0.5 cursor-pointer">
+          <button onclick="closeFormalPrintModal()" class="min-h-[34px] bg-white hover:bg-gray-100 border border-black/30 text-ink font-mono font-bold px-3 py-1 uppercase transition text-[11px] self-start active:translate-x-0.5 active:translate-y-0.5 cursor-pointer">
             CLOSE [X]
           </button>
         </div>
 
-        <!-- Prominent High-Visibility Primary Action Toolbar -->
+        <!-- Calm, Professional Engineering Toolbar (Compact, Non-Intrusive, No Giant Buttons) -->
         <div class="flex flex-wrap items-center gap-2 font-mono text-xs pt-0.5">
-          <!-- 1. DIRECT 1-PAGE PDF (PORTRAIT) - Optimized for Mobile & Desktop -->
-          <button onclick="exportFormalLogToPdf('portrait')" style="background-color: #dc2626 !important; color: #ffffff !important;" onmouseover="this.style.backgroundColor='#b91c1c'" onmouseout="this.style.backgroundColor='#dc2626'" class="bg-[#dc2626] hover:bg-[#b91c1c] text-white font-black text-xs sm:text-sm min-h-[44px] px-4 py-2.5 uppercase transition flex items-center space-x-2 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-x-0.5 active:translate-y-0.5 cursor-pointer" title="Export official 1-page PDF file in Portrait (Vertical) format for iPhone, Android, and Desktop">
-            <i class="ph-bold ph-file-pdf text-xl text-white" style="color: #ffffff !important;"></i>
-            <span class="text-white" style="color: #ffffff !important;">PDF (PORTRAIT)</span>
+          <!-- 1. PDF (1-PAGE) -->
+          <button onclick="exportFormalLogToPdf()" style="background-color: #b91c1c !important; color: #ffffff !important;" onmouseover="this.style.backgroundColor='#991b1b'" onmouseout="this.style.backgroundColor='#b91c1c'" class="min-h-[34px] px-3 py-1 bg-[#b91c1c] text-white font-mono text-[11px] font-bold uppercase transition flex items-center space-x-1.5 border border-black/30 shadow-sm active:translate-x-0.5 active:translate-y-0.5 cursor-pointer" title="Download official 1-page PDF file">
+            <i class="ph-bold ph-file-pdf text-sm text-white"></i>
+            <span class="text-white">PDF (1-PAGE)</span>
           </button>
 
-          <!-- 2. DIRECT 1-PAGE PDF (LANDSCAPE) - Optimized for Mobile & Desktop -->
-          <button onclick="exportFormalLogToPdf('landscape')" style="background-color: #1e293b !important; color: #ffffff !important;" onmouseover="this.style.backgroundColor='#0f172a'" onmouseout="this.style.backgroundColor='#1e293b'" class="bg-[#1e293b] hover:bg-[#0f172a] text-white font-black text-xs sm:text-sm min-h-[44px] px-4 py-2.5 uppercase transition flex items-center space-x-2 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-x-0.5 active:translate-y-0.5 cursor-pointer" title="Export official 1-page PDF file in Landscape (Horizontal) format for iPhone, Android, and Desktop">
-            <i class="ph-bold ph-file-pdf text-xl text-white" style="color: #ffffff !important;"></i>
-            <span class="text-white" style="color: #ffffff !important;">PDF (LANDSCAPE)</span>
+          <!-- 2. PRINT LOG -->
+          <button onclick="printFormalLog()" class="min-h-[34px] px-3 py-1 bg-ink hover:bg-signal text-white font-mono text-[11px] font-bold uppercase transition flex items-center space-x-1.5 border border-black/30 shadow-sm active:translate-x-0.5 active:translate-y-0.5 cursor-pointer" title="Print as 1-page vertical sheet (AirPrint / Printer)">
+            <i class="ph-bold ph-printer text-sm"></i>
+            <span>PRINT</span>
           </button>
 
-          <!-- 3. PRINT LOG (AIRPRINT & BROWSER PRINT) -->
-          <button onclick="printFormalLog('portrait')" style="background-color: #111111 !important; color: #ffffff !important;" onmouseover="this.style.backgroundColor='#ff3b00'" onmouseout="this.style.backgroundColor='#111111'" class="bg-ink hover:bg-signal text-white font-black text-xs sm:text-sm min-h-[44px] px-4 py-2.5 uppercase transition flex items-center space-x-2 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-x-0.5 active:translate-y-0.5 cursor-pointer" title="Open system print / AirPrint dialog for physical printer or browser print">
-            <i class="ph-bold ph-printer text-xl text-white" style="color: #ffffff !important;"></i>
-            <span class="text-white" style="color: #ffffff !important;">PRINT LOG</span>
+          <!-- 3. MICROSOFT EXCEL (.XLS) -->
+          <button onclick="exportFormalLogToExcel()" style="background-color: #059669 !important; color: #ffffff !important;" onmouseover="this.style.backgroundColor='#047857'" onmouseout="this.style.backgroundColor='#059669'" class="min-h-[34px] px-3 py-1 bg-[#059669] text-white font-mono text-[11px] font-bold uppercase transition flex items-center space-x-1.5 border border-black/30 shadow-sm active:translate-x-0.5 active:translate-y-0.5 cursor-pointer" title="Export complete official pile driving log sheet to Microsoft Excel (.xls)">
+            <i class="ph-bold ph-file-xls text-sm text-white"></i>
+            <span class="text-white">EXCEL (.XLS)</span>
           </button>
 
-          <!-- 4. MICROSOFT EXCEL (.XLS) -->
-          <button onclick="exportFormalLogToExcel()" style="background-color: #059669 !important; color: #ffffff !important;" onmouseover="this.style.backgroundColor='#047857'" onmouseout="this.style.backgroundColor='#059669'" class="bg-[#059669] hover:bg-[#047857] text-white font-black text-xs sm:text-sm min-h-[44px] px-4 py-2.5 uppercase transition flex items-center space-x-2 border-2 border-black shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-x-0.5 active:translate-y-0.5 cursor-pointer" title="Export complete official pile driving log sheet to Microsoft Excel (.xls)">
-            <i class="ph-bold ph-file-xls text-xl text-white" style="color: #ffffff !important;"></i>
-            <span class="text-white" style="color: #ffffff !important;">EXPORT TO EXCEL (.XLS)</span>
-          </button>
-
-          <!-- 5. BACK TO LOG -->
-          <button onclick="backToQuickSheetModal()" class="bg-chalk hover:bg-gray-200 border-2 border-black text-ink font-bold min-h-[44px] px-3.5 py-2.5 uppercase transition flex items-center space-x-1.5 text-xs active:translate-x-0.5 active:translate-y-0.5 cursor-pointer" title="Back to quick summary sheet">
-            <i class="ph-bold ph-arrow-left text-base"></i>
-            <span>BACK TO LOG</span>
+          <!-- 4. BACK TO LOG -->
+          <button onclick="backToQuickSheetModal()" class="min-h-[34px] px-3 py-1 bg-chalk hover:bg-gray-200 text-ink font-mono text-[11px] font-bold uppercase transition flex items-center space-x-1.5 border border-black/30 active:translate-x-0.5 active:translate-y-0.5 cursor-pointer" title="Back to quick summary sheet">
+            <i class="ph-bold ph-arrow-left text-sm"></i>
+            <span>BACK</span>
           </button>
         </div>
       </div>
@@ -1572,19 +1603,19 @@
       <!-- THE PHYSICAL REPLICA SHEET CONTAINER (PRINTABLE AREA)        -->
       <!-- Physical Replica Sheet (Standard Pile Driving Log) -->
       <!-- ============================================================ -->
-      <div id="formalSheetPrintable" class="bg-white text-black p-2 sm:p-3 border border-black/20 print:border-none print:p-0 space-y-2">
+      <div id="formalSheetPrintable" class="bg-white text-black p-1.5 sm:p-2 border border-black/20 print:border-none print:p-0 space-y-1 min-w-[750px] mx-auto">
         
         <!-- Sheet Header: Clean Bold Title -->
         <div class="text-center pt-1 pb-1">
-          <h1 class="gtr-title text-xl sm:text-2xl font-black font-sans uppercase tracking-wider text-black">
+          <h1 class="gtr-title text-lg sm:text-xl font-black font-sans uppercase tracking-wider text-black">
             PILE DRIVING LOG
           </h1>
         </div>
 
         <!-- Project Metadata Header (2 Columns with Underlines - 100% User Editable) -->
-        <div id="sheetProjectMetadataGrid" class="gtr-project-grid grid grid-cols-1 sm:grid-cols-2 print:grid-cols-2 gap-x-6 gap-y-1 pt-1 font-sans text-[8.5pt]">
+        <div id="sheetProjectMetadataGrid" class="gtr-project-grid grid grid-cols-2 gap-x-5 gap-y-0.5 pt-0.5 font-sans text-[7.2pt]">
           <!-- Left Column -->
-          <div class="space-y-1">
+          <div class="space-y-0.5">
             <div class="gtr-field-row">
               <span class="gtr-label">Project:</span>
               <input id="sheetProject" class="gtr-input" value="">
@@ -1604,7 +1635,7 @@
           </div>
 
           <!-- Right Column -->
-          <div class="space-y-1">
+          <div class="space-y-0.5">
             <div class="gtr-field-row">
               <span class="gtr-label">Job No:</span>
               <input id="sheetJobNo" class="gtr-input" value="">
@@ -1625,11 +1656,11 @@
         </div>
 
         <!-- Three Technical Engineering Data Blocks (100% User Editable One-by-One) -->
-        <div id="sheetTechnicalDataGrid" class="gtr-tech-grid grid grid-cols-1 sm:grid-cols-3 print:grid-cols-3 gap-x-4 gap-y-2 pt-1 font-sans text-[8.5pt]">
+        <div id="sheetTechnicalDataGrid" class="gtr-tech-grid grid grid-cols-3 gap-x-3 gap-y-0.5 mt-1.5 pt-0.5 font-sans text-[7.2pt]">
           
           <!-- Column 1: Pile Data -->
-          <div class="space-y-1">
-            <div class="gtr-block-title font-bold text-[9pt] border-b border-black pb-0.5 uppercase">Pile Data</div>
+          <div class="space-y-0.5">
+            <div class="gtr-block-title font-bold text-[7.8pt] border-b border-black pb-0.5 mb-0.5 uppercase">Pile Data</div>
             <div class="gtr-field-row">
               <span class="gtr-label">No.</span>
               <input id="sheetPileNo" class="gtr-input w-12" value="">
@@ -1672,7 +1703,7 @@
 
           <!-- Column 2: Hammer Data (Blank by Default • Manual Entry or Select Preset) -->
           <div class="space-y-1">
-            <div class="gtr-block-title font-bold text-[9pt] border-b border-black pb-0.5 uppercase">Hammer Data</div>
+            <div class="gtr-block-title font-bold text-[7.8pt] border-b border-black pb-0.5 mb-0.5 uppercase">Hammer Data</div>
             <div class="gtr-field-row">
               <span class="gtr-label">Make/Model</span>
               <input id="sheetHammerMake" class="gtr-input" value="" oninput="this.dataset.manuallyEntered='true'">
@@ -1701,7 +1732,7 @@
 
           <!-- Column 3: Driving Data (Blank by Default • To be filled during final survey) -->
           <div class="space-y-1">
-            <div class="gtr-block-title font-bold text-[9pt] border-b border-black pb-0.5 uppercase">Driving Data</div>
+            <div class="gtr-block-title font-bold text-[7.8pt] border-b border-black pb-0.5 mb-0.5 uppercase">Driving Data</div>
             <div class="gtr-field-row">
               <span class="gtr-label">Driven Length</span>
               <input id="sheetDrivenLength" class="gtr-input" value="">
@@ -1731,17 +1762,17 @@
         </div>
 
         <!-- 5-Column Standard Pile Driving Table (Exact GTR Format - Clean Comments Only) -->
-        <div class="pt-1.5 overflow-x-auto gtr-table-container">
+        <div class="mt-7 pt-0.5 overflow-x-auto gtr-table-container" style="margin-top: 28px !important;">
           <table class="gtr-sheet-table w-full border-collapse border border-black text-black">
             <thead>
-              <tr class="bg-gray-100 text-[8pt] font-bold text-center border-b border-black">
+              <tr class="bg-gray-100 text-[7.2pt] font-bold text-center border-b border-black leading-tight">
                 <th colspan="3" class="border-r-2 border-black p-0.5">1 TO 35 FT</th>
                 <th colspan="3" class="border-r-2 border-black p-0.5">36 TO 70 FT</th>
                 <th colspan="3" class="border-r-2 border-black p-0.5">71 TO 105 FT</th>
                 <th colspan="3" class="border-r-2 border-black p-0.5">106 TO 140 FT</th>
                 <th colspan="2" class="p-0.5 font-bold">Final Driving Resistance</th>
               </tr>
-              <tr class="text-[7.5pt] font-bold text-center border-b border-black">
+              <tr class="text-[7pt] font-bold text-center border-b border-black leading-tight">
                 <!-- Col 1 -->
                 <th class="w-[32px] border-r border-black p-0.5">Depth<br>(feet)</th>
                 <th class="w-[36px] border-r border-black p-0.5">Blows<br>(bpf)</th>
@@ -1773,30 +1804,26 @@
 
       </div>
 
-      <!-- Sheet Footer Actions (Screen only) -->
+      <!-- Sheet Footer Actions (Screen only, Compact & Consistent) -->
       <div class="flex flex-wrap justify-between items-center gap-2 pt-2 border-t border-black/15 font-mono text-xs no-print">
-        <button onclick="backToQuickSheetModal()" class="min-h-[44px] bg-chalk hover:bg-black hover:text-white border-2 border-black text-ink font-bold px-4 py-2 uppercase transition flex items-center space-x-1.5 active:translate-x-0.5 active:translate-y-0.5 cursor-pointer">
-          <i class="ph-bold ph-arrow-left text-base"></i>
-          <span>BACK TO QUICK FIELD SHEET</span>
+        <button onclick="backToQuickSheetModal()" class="min-h-[34px] bg-chalk hover:bg-black hover:text-white border border-black/30 text-ink font-mono font-bold px-3 py-1 text-[11px] uppercase transition flex items-center space-x-1.5 active:translate-x-0.5 active:translate-y-0.5 cursor-pointer">
+          <i class="ph-bold ph-arrow-left text-sm"></i>
+          <span>BACK TO FIELD SHEET</span>
         </button>
-        <div class="flex flex-wrap items-center gap-2">
-          <button onclick="exportFormalLogToPdf('portrait')" style="background-color: #dc2626 !important; color: #ffffff !important;" onmouseover="this.style.backgroundColor='#b91c1c'" onmouseout="this.style.backgroundColor='#dc2626'" class="min-h-[44px] bg-[#dc2626] hover:bg-[#b91c1c] text-white font-bold px-3.5 py-2 uppercase transition flex items-center space-x-1.5 border-2 border-black shadow-sm active:translate-x-0.5 active:translate-y-0.5 cursor-pointer" title="Export official 1-page PDF file (Portrait)">
-            <i class="ph-bold ph-file-pdf text-base text-white" style="color: #ffffff !important;"></i>
-            <span class="text-white" style="color: #ffffff !important;">PDF (PORTRAIT)</span>
+        <div class="flex flex-wrap items-center gap-1.5">
+          <button onclick="exportFormalLogToPdf()" style="background-color: #b91c1c !important; color: #ffffff !important;" onmouseover="this.style.backgroundColor='#991b1b'" onmouseout="this.style.backgroundColor='#b91c1c'" class="min-h-[34px] bg-[#b91c1c] text-white font-mono font-bold px-3 py-1 text-[11px] uppercase transition flex items-center space-x-1 border border-black/30 shadow-sm active:translate-x-0.5 active:translate-y-0.5 cursor-pointer" title="Download official 1-page PDF file">
+            <i class="ph-bold ph-file-pdf text-sm text-white"></i>
+            <span class="text-white">PDF (1-PAGE)</span>
           </button>
-          <button onclick="exportFormalLogToPdf('landscape')" style="background-color: #1e293b !important; color: #ffffff !important;" onmouseover="this.style.backgroundColor='#0f172a'" onmouseout="this.style.backgroundColor='#1e293b'" class="min-h-[44px] bg-[#1e293b] hover:bg-[#0f172a] text-white font-bold px-3.5 py-2 uppercase transition flex items-center space-x-1.5 border-2 border-black shadow-sm active:translate-x-0.5 active:translate-y-0.5 cursor-pointer" title="Export official 1-page PDF file (Landscape)">
-            <i class="ph-bold ph-file-pdf text-base text-white" style="color: #ffffff !important;"></i>
-            <span class="text-white" style="color: #ffffff !important;">PDF (LANDSCAPE)</span>
+          <button onclick="printFormalLog()" class="min-h-[34px] bg-ink hover:bg-signal text-white font-mono font-bold px-3 py-1 text-[11px] uppercase transition flex items-center space-x-1 border border-black/30 shadow-sm active:translate-x-0.5 active:translate-y-0.5 cursor-pointer">
+            <i class="ph-bold ph-printer text-sm"></i>
+            <span>PRINT</span>
           </button>
-          <button onclick="printFormalLog('portrait')" style="background-color: #111111 !important; color: #ffffff !important;" onmouseover="this.style.backgroundColor='#ff3b00'" onmouseout="this.style.backgroundColor='#111111'" class="min-h-[44px] bg-ink hover:bg-signal text-white font-bold px-3.5 py-2 uppercase transition flex items-center space-x-1.5 border-2 border-black shadow-sm active:translate-x-0.5 active:translate-y-0.5 cursor-pointer">
-            <i class="ph-bold ph-printer text-base text-white" style="color: #ffffff !important;"></i>
-            <span class="text-white" style="color: #ffffff !important;">PRINT LOG</span>
+          <button onclick="exportFormalLogToExcel()" style="background-color: #059669 !important; color: #ffffff !important;" onmouseover="this.style.backgroundColor='#047857'" onmouseout="this.style.backgroundColor='#059669'" class="min-h-[34px] bg-[#059669] text-white font-mono font-bold px-3 py-1 text-[11px] uppercase transition flex items-center space-x-1 border border-black/30 shadow-sm active:translate-x-0.5 active:translate-y-0.5 cursor-pointer" title="Export complete pile driving log sheet to Microsoft Excel (.xls)">
+            <i class="ph-bold ph-file-xls text-sm text-white"></i>
+            <span class="text-white">EXCEL (.XLS)</span>
           </button>
-          <button onclick="exportFormalLogToExcel()" style="background-color: #059669 !important; color: #ffffff !important;" onmouseover="this.style.backgroundColor='#047857'" onmouseout="this.style.backgroundColor='#059669'" class="min-h-[44px] bg-[#059669] hover:bg-[#047857] text-white font-bold px-3.5 py-2 uppercase transition flex items-center space-x-1.5 border-2 border-black shadow-sm active:translate-x-0.5 active:translate-y-0.5 cursor-pointer" title="Export complete pile driving log sheet to Microsoft Excel (.xls)">
-            <i class="ph-bold ph-file-xls text-base text-white" style="color: #ffffff !important;"></i>
-            <span class="text-white" style="color: #ffffff !important;">EXCEL (.XLS)</span>
-          </button>
-          <button onclick="closeFormalPrintModal()" class="min-h-[44px] bg-chalk hover:bg-gray-200 border-2 border-black text-ink font-bold px-3.5 py-2 uppercase transition active:translate-x-0.5 active:translate-y-0.5 cursor-pointer">
+          <button onclick="closeFormalPrintModal()" class="min-h-[34px] bg-chalk hover:bg-gray-200 border border-black/30 text-ink font-mono font-bold px-3 py-1 text-[11px] uppercase transition active:translate-x-0.5 active:translate-y-0.5 cursor-pointer">
             CLOSE [X]
           </button>
         </div>
@@ -2736,28 +2763,28 @@
             <td class="border-r border-black font-bold bg-gray-50/50">${f1}</td>
             <td class="border-r border-black font-bold text-signal">${data1 ? data1.blows : ''}</td>
             <td class="border-r-2 border-black p-0 text-left">
-              <input type="text" id="formalComment_${f1}" value="${c1}" onchange="updateFormalFootComment(${f1}, this.value)" class="gtr-cell-comment w-full h-[15.5px] bg-transparent border-none text-[6.5pt] sm:text-[7pt] font-mono font-bold text-ink px-0.5 uppercase focus:outline-none focus:bg-amber-100/60" title="Click to write comment for depth ${f1} ft (e.g. STOP, SPLICE, REFUSAL)">
+              <input type="text" id="formalComment_${f1}" value="${c1}" onchange="updateFormalFootComment(${f1}, this.value)" class="gtr-cell-comment w-full h-[14px] bg-transparent border-none text-[6.5pt] sm:text-[7pt] font-mono font-bold text-ink px-0.5 uppercase focus:outline-none focus:bg-amber-100/60" title="Click to write comment for depth ${f1} ft (e.g. STOP, SPLICE, REFUSAL)">
             </td>
 
             <!-- Col 2: 36-70 (e.g. depth 51) -->
             <td class="border-r border-black font-bold bg-gray-50/50">${f2}</td>
             <td class="border-r border-black font-bold text-signal">${data2 ? data2.blows : ''}</td>
             <td class="border-r-2 border-black p-0 text-left">
-              <input type="text" id="formalComment_${f2}" value="${c2}" onchange="updateFormalFootComment(${f2}, this.value)" class="gtr-cell-comment w-full h-[15.5px] bg-transparent border-none text-[6.5pt] sm:text-[7pt] font-mono font-bold text-ink px-0.5 uppercase focus:outline-none focus:bg-amber-100/60" title="Click to write comment for depth ${f2} ft (e.g. STOP, SPLICE, REFUSAL)">
+              <input type="text" id="formalComment_${f2}" value="${c2}" onchange="updateFormalFootComment(${f2}, this.value)" class="gtr-cell-comment w-full h-[14px] bg-transparent border-none text-[6.5pt] sm:text-[7pt] font-mono font-bold text-ink px-0.5 uppercase focus:outline-none focus:bg-amber-100/60" title="Click to write comment for depth ${f2} ft (e.g. STOP, SPLICE, REFUSAL)">
             </td>
 
             <!-- Col 3: 71-105 -->
             <td class="border-r border-black font-bold bg-gray-50/50">${f3}</td>
             <td class="border-r border-black font-bold text-signal">${data3 ? data3.blows : ''}</td>
             <td class="border-r-2 border-black p-0 text-left">
-              <input type="text" id="formalComment_${f3}" value="${c3}" onchange="updateFormalFootComment(${f3}, this.value)" class="gtr-cell-comment w-full h-[15.5px] bg-transparent border-none text-[6.5pt] sm:text-[7pt] font-mono font-bold text-ink px-0.5 uppercase focus:outline-none focus:bg-amber-100/60" title="Click to write comment for depth ${f3} ft (e.g. STOP, SPLICE, REFUSAL)">
+              <input type="text" id="formalComment_${f3}" value="${c3}" onchange="updateFormalFootComment(${f3}, this.value)" class="gtr-cell-comment w-full h-[14px] bg-transparent border-none text-[6.5pt] sm:text-[7pt] font-mono font-bold text-ink px-0.5 uppercase focus:outline-none focus:bg-amber-100/60" title="Click to write comment for depth ${f3} ft (e.g. STOP, SPLICE, REFUSAL)">
             </td>
 
             <!-- Col 4: 106-140 -->
             <td class="border-r border-black font-bold bg-gray-50/50">${f4}</td>
             <td class="border-r border-black font-bold text-signal">${data4 ? data4.blows : ''}</td>
             <td class="border-r-2 border-black p-0 text-left">
-              <input type="text" id="formalComment_${f4}" value="${c4}" onchange="updateFormalFootComment(${f4}, this.value)" class="gtr-cell-comment w-full h-[15.5px] bg-transparent border-none text-[6.5pt] sm:text-[7pt] font-mono font-bold text-ink px-0.5 uppercase focus:outline-none focus:bg-amber-100/60" title="Click to write comment for depth ${f4} ft (e.g. STOP, SPLICE, REFUSAL)">
+              <input type="text" id="formalComment_${f4}" value="${c4}" onchange="updateFormalFootComment(${f4}, this.value)" class="gtr-cell-comment w-full h-[14px] bg-transparent border-none text-[6.5pt] sm:text-[7pt] font-mono font-bold text-ink px-0.5 uppercase focus:outline-none focus:bg-amber-100/60" title="Click to write comment for depth ${f4} ft (e.g. STOP, SPLICE, REFUSAL)">
             </td>
 
             <!-- Col 5: Final Driving Resistance -->
@@ -2769,83 +2796,65 @@
       gtrTableBody.innerHTML = rowsHtml;
     }
 
-    // Dedicated Single-Page Print Dispatcher (Supports Portrait & Landscape, iOS Safari & Desktop)
-    function printFormalLog(orientation = 'portrait') {
-      const isLandscape = orientation === 'landscape';
+        // Dedicated Single-Page Portrait Print Dispatcher (iOS Safari & Desktop)
+    function printFormalLog() {
       let styleEl = document.getElementById("dynamicPrintOrientation");
       if (!styleEl) {
         styleEl = document.createElement("style");
         styleEl.id = "dynamicPrintOrientation";
         document.head.appendChild(styleEl);
       }
-      if (isLandscape) {
-        styleEl.innerHTML = `
-          @page { size: letter landscape; margin: 0; }
-          @media print {
-            html, body {
-              width: 11in !important;
-              min-width: 11in !important;
-              max-width: 11in !important;
-            }
-            #formalPrintModal, #formalPrintModalContent {
-              width: 11in !important;
-              min-width: 11in !important;
-              max-width: 11in !important;
-              height: 8.5in !important;
-              max-height: 8.5in !important;
-              padding: 0.18in 0.35in 0.15in 0.35in !important;
-            }
-            #sheetProjectMetadataGrid, .gtr-project-grid {
-              display: grid !important;
-              grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-            }
-            #sheetTechnicalDataGrid, .gtr-tech-grid {
-              display: grid !important;
-              grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-            }
-            .gtr-row {
-              height: 14px !important;
-            }
-            .gtr-sheet-table th, .gtr-sheet-table td {
-              font-size: 7pt !important;
-              padding: 0.5px 1px !important;
-            }
+      styleEl.innerHTML = `
+        @page { size: letter portrait; margin: 0; }
+        @media print {
+          html, body {
+            width: 8.5in !important;
+            min-width: 8.5in !important;
+            max-width: 8.5in !important;
+            height: 11in !important;
+            overflow: hidden !important;
           }
-        `;
-        document.body.classList.remove('print-portrait');
-        document.body.classList.add('print-landscape');
-      } else {
-        styleEl.innerHTML = `
-          @page { size: letter portrait; margin: 0; }
-          @media print {
-            html, body {
-              width: 8.5in !important;
-              min-width: 8.5in !important;
-              max-width: 8.5in !important;
-            }
-            #formalPrintModal, #formalPrintModalContent {
-              width: 8.5in !important;
-              min-width: 8.5in !important;
-              max-width: 8.5in !important;
-              height: 11in !important;
-              max-height: 11in !important;
-              padding: 0.22in 0.35in 0.18in 0.35in !important;
-            }
-            #sheetProjectMetadataGrid, .gtr-project-grid {
-              display: grid !important;
-              grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-            }
-            #sheetTechnicalDataGrid, .gtr-tech-grid {
-              display: grid !important;
-              grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-            }
+          #formalPrintModal, #formalPrintModalContent {
+            width: 8.5in !important;
+            min-width: 8.5in !important;
+            max-width: 8.5in !important;
+            height: 11in !important;
+            max-height: 11in !important;
+            padding: 0.18in 0.30in 0.15in 0.30in !important;
+            page-break-after: avoid !important;
+            break-after: avoid !important;
+            overflow: hidden !important;
           }
-        `;
-        document.body.classList.remove('print-landscape');
-        document.body.classList.add('print-portrait');
-      }
+          #sheetProjectMetadataGrid, .gtr-project-grid {
+            display: grid !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          }
+          #sheetTechnicalDataGrid, .gtr-tech-grid {
+            display: grid !important;
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+          }
+          .gtr-row {
+            height: 15px !important;
+          }
+          .gtr-sheet-table th, .gtr-sheet-table td {
+            font-size: 7.2pt !important;
+            padding: 0.5px 1.5px !important;
+            line-height: 1.1 !important;
+          }
+          .gtr-table-container {
+            overflow: visible !important;
+            margin-top: 28px !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+          }
+          #sheetTechnicalDataGrid {
+            margin-top: 6px !important;
+          }
+        }
+      `;
+      document.body.classList.remove('print-landscape');
+      document.body.classList.add('print-portrait');
 
-      // iOS Safari Viewport Optimization:
       const viewportMeta = document.querySelector('meta[name="viewport"]');
       const originalViewport = viewportMeta ? viewportMeta.getAttribute('content') : null;
       
@@ -2853,7 +2862,7 @@
                     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
       if (isIOS && viewportMeta) {
-        viewportMeta.setAttribute('content', isLandscape ? 'width=1056, initial-scale=1.0' : 'width=816, initial-scale=1.0');
+        viewportMeta.setAttribute('content', 'width=816, initial-scale=1.0');
       }
 
       function restoreAfterPrint() {
@@ -2872,270 +2881,107 @@
     }
 
     // ==============================================================
-    // DEDICATED 1-PAGE DIRECT PDF GENERATION ENGINE
-    // For iPhone, iPad, Android, and Desktop PC
-    // Outputs true .pdf file fitting exactly onto 1 single sheet
-    // Supported Orientations: 'portrait' (8.5x11) & 'landscape' (11x8.5)
+    // DEDICATED 1-PAGE DIRECT PDF GENERATION ENGINE (PORTRAIT ONLY)
+    // Renders the visible sheet in-place for 100% non-blank PDF output
+    // Guarantees 1-page Letter fit on iPhone, Android, and Desktop PC
     // Preserves 2-col metadata, 3-col technical, and 5-col driving table
     // ==============================================================
-    async function exportFormalLogToPdf(orientation = 'portrait') {
-      const isLandscape = orientation === 'landscape';
-      const orientationLabel = isLandscape ? 'Landscape' : 'Portrait';
-
-      // 1. Check library availability
+    async function exportFormalLogToPdf() {
       if (typeof html2pdf === 'undefined') {
-        showToast("PDF Engine loading... Please retry in a second or use PRINT LOG.");
+        showToast("PDF Engine loading... Please retry in a second or use PRINT.");
         return;
       }
 
-      showToast(`Generating official 1-page PDF (${orientationLabel.toUpperCase()})...`);
+      // Ensure formal log modal is open and laid out
+      const modal = document.getElementById("formalPrintModal");
+      const wasHidden = modal && modal.classList.contains("hidden");
+      if (wasHidden) {
+        openFormalPrintModal();
+        await new Promise(r => setTimeout(r, 150));
+      } else {
+        renderFormalGtrTable();
+      }
 
-      // Ensure formal log table is rendered with latest data
-      renderFormalGtrTable();
+      showToast("Generating official 1-page PDF...");
 
-      const sourceContainer = document.getElementById("formalSheetPrintable");
-      if (!sourceContainer) {
-        showToast("Error: Printable log container not found.");
+      const sheet = document.getElementById("formalSheetPrintable");
+      if (!sheet) {
+        showToast("Error: Sheet element not found.");
         return;
       }
 
-      // 2. Extract pile identifier for clean file naming
+      // Sync live typed values to DOM attributes so html2canvas reads them reliably
+      sheet.querySelectorAll("input, textarea").forEach(input => {
+        input.setAttribute("value", input.value);
+      });
+
       const pileNoVal = (sheetPileNo && sheetPileNo.value.trim()) || 
                         (sheetPileId && sheetPileId.value.trim()) || "1";
       const cleanPileNo = pileNoVal.replace(/[^a-zA-Z0-9_-]/g, "_");
-      const pdfFileName = `Pile_Driving_Log_Pile_${cleanPileNo}_${orientationLabel.toUpperCase()}.pdf`;
-
-      // 3. Create isolated offscreen sandbox with fixed desktop geometry
-      // This bypasses mobile viewport collapse (iPhone 390px / Android screens)
-      const sandbox = document.createElement("div");
-      sandbox.id = "pdfGenerationSandbox";
-      sandbox.style.position = "fixed";
-      sandbox.style.left = "-9999px";
-      sandbox.style.top = "0";
-      sandbox.style.zIndex = "-99999";
-      sandbox.style.backgroundColor = "#ffffff";
-      sandbox.style.color = "#000000";
-      sandbox.style.boxSizing = "border-box";
-      sandbox.style.fontFamily = "Arial, Helvetica, sans-serif";
-
-      // Strict dimensions matching US Letter proportions:
-      // Portrait Letter: 8.5" x 11" (width: 816px)
-      // Landscape Letter: 11" x 8.5" (width: 1056px)
-      if (isLandscape) {
-        sandbox.style.width = "1056px";
-        sandbox.style.minWidth = "1056px";
-        sandbox.style.maxWidth = "1056px";
-        sandbox.style.padding = "0.20in 0.35in 0.16in 0.35in";
-      } else {
-        sandbox.style.width = "816px";
-        sandbox.style.minWidth = "816px";
-        sandbox.style.maxWidth = "816px";
-        sandbox.style.padding = "0.22in 0.35in 0.18in 0.35in";
-      }
-
-      // Clone the printable sheet
-      const clone = sourceContainer.cloneNode(true);
-      clone.id = "clonedFormalSheetForPdf";
-      clone.style.width = "100%";
-      clone.style.maxWidth = "100%";
-      clone.style.margin = "0";
-      clone.style.padding = "0";
-      clone.style.border = "none";
-      clone.style.boxShadow = "none";
-      clone.style.overflow = "visible";
-      clone.style.backgroundColor = "#ffffff";
-
-      sandbox.appendChild(clone);
-      document.body.appendChild(sandbox);
+      const pdfFileName = `Pile_Driving_Log_Pile_${cleanPileNo}.pdf`;
 
       try {
-        // 4. Transform all <input>, <select>, and <textarea> elements into clean,
-        // styled <span> elements with live typed values and visible underlines.
-        // This solves two critical problems:
-        // a) cloneNode does NOT copy user-typed input values
-        // b) html2canvas renders HTML inputs with ugly browser-specific shadows/borders
-        const sourceInputs = sourceContainer.querySelectorAll("input, select, textarea");
-        const cloneInputs = clone.querySelectorAll("input, select, textarea");
-
-        for (let i = 0; i < sourceInputs.length; i++) {
-          const src = sourceInputs[i];
-          const dest = cloneInputs[i];
-          if (!dest) continue;
-
-          const val = (src.value || "").trim();
-
-          if (src.classList.contains("gtr-cell-comment")) {
-            // Foot-by-foot comment cell in the 5-column table
-            const span = document.createElement("span");
-            span.style.display = "block";
-            span.style.width = "100%";
-            span.style.textAlign = "left";
-            span.style.fontWeight = "bold";
-            span.style.color = "#000000";
-            span.style.fontSize = isLandscape ? "6.5pt" : "7pt";
-            span.style.lineHeight = "1";
-            span.style.padding = "0 1px";
-            span.style.whiteSpace = "nowrap";
-            span.style.overflow = "hidden";
-            span.style.fontFamily = "Arial, Helvetica, sans-serif";
-            span.textContent = val || "";
-            dest.parentNode.replaceChild(span, dest);
-          } else {
-            // General engineering data inputs (Project metadata, Pile, Hammer, Driving data)
-            const span = document.createElement("span");
-            span.style.display = "inline-block";
-            span.style.borderBottom = "1px solid #000000";
-            span.style.fontWeight = "700";
-            span.style.color = "#000000";
-            span.style.fontSize = isLandscape ? "7.5pt" : "8pt";
-            span.style.lineHeight = "1.2";
-            span.style.fontFamily = "Arial, Helvetica, sans-serif";
-            span.style.padding = "0 2px";
-            span.style.boxSizing = "border-box";
-            span.style.verticalAlign = "baseline";
-
-            // Preserve specific inline input widths
-            if (src.classList.contains("w-12")) span.style.width = "48px";
-            else if (src.classList.contains("w-14")) span.style.width = "56px";
-            else if (src.classList.contains("w-8")) span.style.width = "32px";
-            else {
-              span.style.flex = "1";
-              span.style.minWidth = "30px";
-            }
-
-            span.textContent = val || "\u00A0"; // Non-breaking space keeps the underline visible when blank!
-            dest.parentNode.replaceChild(span, dest);
-          }
-        }
-
-        // 5. Enforce explicit layout grids in the clone (Defeats mobile viewport collapsing)
-        const projectGrid = clone.querySelector("#sheetProjectMetadataGrid") || clone.querySelector(".gtr-project-grid");
-        if (projectGrid) {
-          projectGrid.style.display = "grid";
-          projectGrid.style.gridTemplateColumns = "repeat(2, minmax(0, 1fr))";
-          projectGrid.style.columnGap = isLandscape ? "24px" : "18px";
-          projectGrid.style.rowGap = "2px";
-          projectGrid.style.paddingTop = "2px";
-          projectGrid.style.paddingBottom = "2px";
-        }
-
-        const techGrid = clone.querySelector("#sheetTechnicalDataGrid") || clone.querySelector(".gtr-tech-grid");
-        if (techGrid) {
-          techGrid.style.display = "grid";
-          techGrid.style.gridTemplateColumns = "repeat(3, minmax(0, 1fr))";
-          techGrid.style.columnGap = isLandscape ? "18px" : "12px";
-          techGrid.style.rowGap = "3px";
-          techGrid.style.paddingTop = "2px";
-          techGrid.style.paddingBottom = "2px";
-        }
-
-        const tableContainer = clone.querySelector(".gtr-table-container");
-        if (tableContainer) {
-          tableContainer.style.overflow = "visible";
-          tableContainer.style.width = "100%";
-          tableContainer.style.paddingTop = isLandscape ? "2px" : "4px";
-        }
-
-        const table = clone.querySelector(".gtr-sheet-table");
-        if (table) {
-          table.style.width = "100%";
-          table.style.borderCollapse = "collapse";
-          table.style.border = "1.5px solid #000000";
-          table.style.tableLayout = "fixed";
-
-          // Format all rows and cells for strict 1-page fit
-          const rows = table.querySelectorAll("tr");
-          rows.forEach((row, rIdx) => {
-            row.style.pageBreakInside = "avoid";
-            row.style.breakInside = "avoid";
-            if (rIdx >= 2) {
-              // Body rows (35 rows)
-              row.style.height = isLandscape ? "13.5px" : "15.5px";
-              row.style.maxHeight = isLandscape ? "13.5px" : "15.5px";
-            }
-          });
-
-          const cells = table.querySelectorAll("th, td");
-          cells.forEach(cell => {
-            cell.style.borderColor = "#000000";
-            cell.style.color = "#000000";
-            cell.style.padding = isLandscape ? "0.2px 1px" : "0.5px 1.5px";
-            cell.style.fontSize = isLandscape ? "6.8pt" : "7.5pt";
-            cell.style.lineHeight = "1.1";
-            cell.style.overflow = "hidden";
-          });
-        }
-
-        // Adjust title and field rows
-        const titleEl = clone.querySelector(".gtr-title");
-        if (titleEl) {
-          titleEl.style.fontSize = isLandscape ? "14pt" : "16pt";
-          titleEl.style.margin = "0";
-          titleEl.style.padding = "0 0 2px 0";
-        }
-
-        const fieldRows = clone.querySelectorAll(".gtr-field-row");
-        fieldRows.forEach(fr => {
-          fr.style.display = "flex";
-          fr.style.alignItems = "baseline";
-          fr.style.gap = "2px";
-          fr.style.fontSize = isLandscape ? "7.5pt" : "8pt";
-          fr.style.lineHeight = "1.2";
-          fr.style.color = "#000000";
-        });
-
-        const labels = clone.querySelectorAll(".gtr-label");
-        labels.forEach(lbl => {
-          lbl.style.fontWeight = "700";
-          lbl.style.whiteSpace = "nowrap";
-          lbl.style.fontSize = isLandscape ? "7.5pt" : "8pt";
-          lbl.style.color = "#000000";
-        });
-
-        const blockTitles = clone.querySelectorAll(".gtr-block-title");
-        blockTitles.forEach(bt => {
-          bt.style.fontSize = isLandscape ? "8pt" : "8.5pt";
-          bt.style.borderBottom = "1px solid #000000";
-          bt.style.paddingBottom = "1px";
-          bt.style.marginBottom = "2px";
-        });
-
-        // 6. Configure html2pdf options for exact 1-page output
-        const opt = {
-          margin: isLandscape ? [0.18, 0.25, 0.16, 0.25] : [0.22, 0.28, 0.18, 0.28],
-          filename: pdfFileName,
-          image: { type: "jpeg", quality: 0.98 },
+        const worker = html2pdf().set({
           html2canvas: {
-            scale: 2, // 2x DPI for crisp high-resolution text and lines
+            scale: 2, // High resolution (300 DPI equivalent)
             useCORS: true,
-            letterRendering: true,
-            scrollY: 0,
+            backgroundColor: "#ffffff",
             scrollX: 0,
-            windowWidth: isLandscape ? 1056 : 816,
-            backgroundColor: "#ffffff"
+            scrollY: 0
           },
           jsPDF: {
             unit: "in",
             format: "letter",
-            orientation: orientation // 'portrait' or 'landscape'
-          },
-          pagebreak: { mode: "avoid-all" }
-        };
+            orientation: "portrait"
+          }
+        }).from(sheet);
 
-        // 7. Execute PDF creation and trigger device download
-        await html2pdf().set(opt).from(sandbox).save();
-        showToast(`PDF (${orientationLabel.toUpperCase()}) successfully downloaded!`);
+        await worker.toCanvas();
+        const canvas = worker.prop.canvas;
+
+        await worker.toPdf();
+        const pdf = worker.prop.pdf;
+
+        // Force exactly 1 single page by clearing any auto-sliced pages
+        const totalPages = pdf.internal.getNumberOfPages();
+        for (let p = totalPages; p > 1; p--) {
+          pdf.deletePage(p);
+        }
+        pdf.deletePage(1);
+        pdf.addPage("letter", "portrait");
+
+        // Fit entire canvas proportionally onto the single 8.5" x 11.0" Letter page
+        const pageWidth = 8.5;
+        const pageHeight = 11.0;
+        const marginX = 0.25;
+        const marginY = 0.20;
+        const maxW = pageWidth - (marginX * 2); // 8.00 in
+        const maxH = pageHeight - (marginY * 2); // 10.60 in
+
+        let finalW = maxW;
+        let finalH = (canvas.height * finalW) / canvas.width;
+
+        // Proportional scale guarantee: if height exceeds printable height, scale down
+        if (finalH > maxH) {
+          finalH = maxH;
+          finalW = (canvas.width * finalH) / canvas.height;
+        }
+
+        const offsetX = marginX + ((maxW - finalW) / 2);
+        const offsetY = marginY;
+
+        const imgData = canvas.toDataURL("image/jpeg", 0.98);
+        pdf.addImage(imgData, "JPEG", offsetX, offsetY, finalW, finalH);
+
+        // Direct download
+        pdf.save(pdfFileName);
+        showToast("Official 1-page PDF downloaded successfully!");
       } catch (err) {
         console.error("PDF generation error:", err);
-        showToast("PDF generation failed. Opening system print as fallback...");
+        showToast("Direct PDF failed. Opening print dialog as fallback...");
         setTimeout(() => {
-          printFormalLog(orientation);
-        }, 600);
-      } finally {
-        // Clean up sandbox from DOM
-        if (sandbox && sandbox.parentNode) {
-          sandbox.parentNode.removeChild(sandbox);
-        }
+          printFormalLog();
+        }, 500);
       }
     }
 
@@ -3357,7 +3203,8 @@
               <td colspan="4" class="hdr-val">${pileCommentsVal}</td>
               <td colspan="9"></td>
             </tr>
-            <tr><td colspan="14"></td></tr>
+            <tr><td colspan="14" style="height: 14px;"></td></tr>
+            <tr><td colspan="14" style="height: 14px;"></td></tr>
 
             <!-- Table Super Headers -->
             <tr>
