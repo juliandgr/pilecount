@@ -708,35 +708,43 @@
           </div>
 
           <!-- Interactive Real-Time Audio Player & Oscilloscope Sync Bar (Visible once file is loaded) -->
-          <div id="audioPlayerControlBar" class="hidden bg-white border-2 border-black p-3 space-y-2.5 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+          <div id="audioPlayerControlBar" class="hidden bg-white border-2 border-black p-2.5 sm:p-3 space-y-2 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] w-full max-w-full box-border overflow-hidden">
             
-            <!-- Row 1: Transport Controls, Timeline Scrubber & Speed -->
-            <div class="space-y-1.5">
-              <div class="flex flex-wrap items-center justify-between gap-2">
+            <!-- Row 1: Transport Controls, Next Foot during Playback, Timeline Scrubber & Speed -->
+            <div class="space-y-1.5 w-full">
+              <div class="flex flex-wrap items-center justify-between gap-1.5 w-full">
                 
-                <!-- Playback Buttons -->
-                <div class="flex items-center space-x-1.5">
-                  <button id="btnAudioPlayPause" class="bg-ink hover:bg-signal text-white font-black px-4 py-2 min-h-[40px] uppercase text-xs flex items-center space-x-1.5 shadow-sm active:translate-x-0.5 active:translate-y-0.5 transition cursor-pointer">
+                <!-- Playback & Fast Foot Actions -->
+                <div class="flex flex-wrap items-center gap-1">
+                  <button id="btnAudioPlayPause" class="bg-ink hover:bg-signal text-white font-black px-3 py-1.5 min-h-[38px] uppercase text-xs flex items-center space-x-1.5 shadow-sm active:translate-x-0.5 active:translate-y-0.5 transition cursor-pointer">
                     <i class="ph-bold ph-play text-base" id="iconAudioPlay"></i>
                     <span id="txtAudioPlay">PLAY AUDIO</span>
                   </button>
-                  <button id="btnAudioRewind5" class="bg-chalk hover:bg-gray-200 border border-black/30 font-bold px-2.5 py-1.5 min-h-[40px] text-xs transition cursor-pointer active:translate-x-0.5 active:translate-y-0.5" title="Rewind 5 seconds">
+                  <button id="btnAudioPlaybackNextFoot" class="bg-signal hover:bg-orange-600 text-white font-black px-3 py-1.5 min-h-[38px] uppercase text-xs flex items-center space-x-1 shadow-sm active:translate-x-0.5 active:translate-y-0.5 transition cursor-pointer" title="Record foot interval at current audio playback mark">
+                    <i class="ph-bold ph-arrow-circle-right text-sm"></i>
+                    <span>NEXT FOOT [REC]</span>
+                  </button>
+                  <button id="btnToggleVoiceBoost" class="bg-chalk hover:bg-amber-100 text-ink border border-black/30 font-bold px-2.5 py-1 min-h-[38px] text-[11px] uppercase transition cursor-pointer active:translate-x-0.5 active:translate-y-0.5 flex items-center space-x-1" title="Filter loud hammer strikes and amplify human voice dictation">
+                    <i class="ph-bold ph-waveform text-sm text-gray-500" id="iconVoiceBoost"></i>
+                    <span id="txtVoiceBoost">VOICE BOOST [OFF]</span>
+                  </button>
+                  <button id="btnAudioRewind5" class="bg-chalk hover:bg-gray-200 border border-black/30 font-bold px-2 py-1 min-h-[38px] text-[11px] transition cursor-pointer active:translate-x-0.5 active:translate-y-0.5" title="Rewind 5 seconds">
                     <i class="ph-bold ph-skip-back"></i> -5s
                   </button>
-                  <button id="btnAudioForward5" class="bg-chalk hover:bg-gray-200 border border-black/30 font-bold px-2.5 py-1.5 min-h-[40px] text-xs transition cursor-pointer active:translate-x-0.5 active:translate-y-0.5" title="Forward 5 seconds">
+                  <button id="btnAudioForward5" class="bg-chalk hover:bg-gray-200 border border-black/30 font-bold px-2 py-1 min-h-[38px] text-[11px] transition cursor-pointer active:translate-x-0.5 active:translate-y-0.5" title="Forward 5 seconds">
                     +5s <i class="ph-bold ph-skip-forward"></i>
                   </button>
-                  <button id="btnAudioRestart" class="bg-chalk hover:bg-gray-200 border border-black/30 font-bold px-2.5 py-1.5 min-h-[40px] text-xs transition cursor-pointer active:translate-x-0.5 active:translate-y-0.5" title="Jump to start">
+                  <button id="btnAudioRestart" class="bg-chalk hover:bg-gray-200 border border-black/30 font-bold px-2 py-1 min-h-[38px] text-[11px] transition cursor-pointer active:translate-x-0.5 active:translate-y-0.5" title="Jump to start">
                     <i class="ph-bold ph-rewind"></i> 0:00
                   </button>
                 </div>
 
                 <!-- Time Readout & Playback Speed -->
-                <div class="flex items-center space-x-2 text-xs">
-                  <span class="font-bold text-ink">
+                <div class="flex items-center space-x-1.5 text-xs">
+                  <span class="font-bold text-ink whitespace-nowrap">
                     <span id="lblAudioCurrentTime" class="font-black text-signal">00:00.0</span> / <span id="lblAudioTotalTime" class="text-gray-500">00:00.0</span>
                   </span>
-                  <select id="selectAudioPlaybackSpeed" class="bg-chalk border border-black/30 font-bold px-2 py-1 min-h-[36px] text-[11px] focus:outline-none cursor-pointer" title="Playback Speed">
+                  <select id="selectAudioPlaybackSpeed" class="bg-chalk border border-black/30 font-bold px-1.5 py-1 min-h-[34px] text-[11px] focus:outline-none cursor-pointer" title="Playback Speed">
                     <option value="0.5">0.5x Slow</option>
                     <option value="0.75">0.75x</option>
                     <option value="1.0" selected>1.0x Normal</option>
@@ -747,53 +755,56 @@
               </div>
 
               <!-- Interactive Timeline Scrubber Slider -->
-              <div class="flex items-center space-x-2 pt-0.5">
+              <div class="flex items-center space-x-2 pt-0.5 w-full">
                 <input id="audioPlaybackScrubber" type="range" min="0" max="100" value="0" step="0.05" class="w-full h-2 bg-gray-200 rounded-none appearance-none cursor-pointer accent-signal">
               </div>
             </div>
 
-            <!-- Row 2: Verification Diagnostics & Refractory Lockout Filter -->
-            <div class="pt-2 border-t border-black/15 flex flex-wrap items-center justify-between gap-2 text-[11px]">
-              
-              <!-- Refractory Dead-Time Gating (Direct fix for 280 vs 200 blow discrepancy!) -->
-              <div class="flex items-center space-x-1.5">
-                <label for="selectRecordingLockout" class="font-bold text-gray-600 uppercase flex items-center space-x-1 whitespace-nowrap">
+            <!-- Row 2: Hammer Preset & Echo Lockout Box (FITS 100% CLEANLY INSIDE CONTAINER - NO IPHONE OVERFLOW!) -->
+            <div class="bg-chalk/80 border border-black/20 p-2 space-y-1 w-full box-border">
+              <div class="flex items-center justify-between text-[10px] font-bold text-gray-700 uppercase">
+                <span class="flex items-center space-x-1 truncate">
                   <i class="ph-bold ph-shield-check text-signal text-sm"></i>
-                  <span>ECHO LOCKOUT:</span>
-                </label>
-                <select id="selectRecordingLockout" class="bg-chalk border border-black/40 font-bold px-2.5 py-1 min-h-[36px] text-[11px] focus:outline-none focus:border-signal cursor-pointer">
-                  <option value="0.40" selected>Diesel Hammer (0.40s &bull; Max 75 BPM)</option>
-                  <option value="0.50">Slow Diesel / Heavy Piles (0.50s &bull; Max 60 BPM)</option>
-                  <option value="0.25">Hydraulic Hammer (0.25s &bull; Max 120 BPM)</option>
-                  <option value="0.10">Excavator Breaker (0.10s &bull; Max 300 BPM)</option>
-                  <option value="0.65">Gravity Drop Hammer (0.65s &bull; Max 45 BPM)</option>
-                </select>
+                  <span>HAMMER PRESET / ECHO LOCKOUT:</span>
+                </span>
+                <span class="text-[9px] text-gray-500 font-mono hidden sm:inline">DEAD-TIME GATING</span>
               </div>
-
-              <!-- Verification Badges -->
-              <div class="flex items-center space-x-2">
-                <span class="bg-chalk border border-black/20 px-2 py-0.5">
-                  BLOWS: <strong id="lblRecValidStrikes" class="text-signal font-black">0</strong>
-                </span>
-                <span class="bg-chalk border border-black/20 px-2 py-0.5">
-                  BPM: <strong id="lblRecAvgBpm" class="text-ink font-bold">0.0</strong>
-                </span>
-                <span class="bg-chalk border border-black/20 px-2 py-0.5" title="Rebound echoes and multi-path reflections safely blocked from double-counting">
-                  ECHOES BLOCKED: <strong id="lblRecBlockedEchoes" class="text-gray-600 font-bold">0</strong>
-                </span>
-                <button id="btnToggleStrikeAudit" class="bg-white hover:bg-gray-100 border border-black/30 font-bold px-2.5 py-1 min-h-[32px] text-[10px] uppercase transition cursor-pointer active:translate-x-0.5 active:translate-y-0.5">
-                  LIST PEAKS [&#9660;]
-                </button>
-              </div>
-
+              <select id="selectRecordingLockout" class="w-full max-w-full bg-white border border-black/40 font-bold px-2 py-1.5 min-h-[38px] text-xs focus:outline-none focus:border-signal cursor-pointer">
+                <option value="0.65" selected>Gravity Drop Hammer (0.65s &bull; Max 45 BPM)</option>
+                <option value="0.40">Diesel Hammer (0.40s &bull; Max 75 BPM)</option>
+                <option value="0.50">Slow Diesel / Heavy Piles (0.50s &bull; Max 60 BPM)</option>
+                <option value="0.25">Hydraulic Hammer (0.25s &bull; Max 120 BPM)</option>
+                <option value="0.10">Excavator Breaker (0.10s &bull; Max 300 BPM)</option>
+              </select>
             </div>
 
-            <!-- Row 3: Collapsible Strike Peaks Audit List with Jump-To Buttons -->
-            <div id="panelStrikeAuditDrawer" class="hidden pt-2 border-t border-black/15 space-y-1.5 max-h-48 overflow-y-auto font-mono text-[10.5px]">
-              <div class="flex justify-between items-center text-gray-500 font-bold uppercase text-[9px]">
-                <span>BLOW # &bull; TIMESTAMP</span>
-                <span>PEAK AMP / CADENCE</span>
-                <span>AUDIT ACTION</span>
+            <!-- Row 3: Verification Badges & Audit List Button -->
+            <div class="flex flex-wrap items-center justify-between gap-1.5 text-[11px] w-full">
+              <div class="grid grid-cols-3 gap-1 flex-1 min-w-[200px]">
+                <div class="bg-chalk border border-black/20 px-1 py-1 text-center">
+                  <span class="text-[8.5px] text-gray-500 block uppercase font-mono">BLOWS</span>
+                  <strong id="lblRecValidStrikes" class="text-signal font-black text-xs">0</strong>
+                </div>
+                <div class="bg-chalk border border-black/20 px-1 py-1 text-center">
+                  <span class="text-[8.5px] text-gray-500 block uppercase font-mono">AVG BPM</span>
+                  <strong id="lblRecAvgBpm" class="text-ink font-bold text-xs">0.0</strong>
+                </div>
+                <div class="bg-chalk border border-black/20 px-1 py-1 text-center" title="Rebound echoes blocked">
+                  <span class="text-[8.5px] text-gray-500 block uppercase font-mono">ECHOES</span>
+                  <strong id="lblRecBlockedEchoes" class="text-gray-600 font-bold text-xs">0</strong>
+                </div>
+              </div>
+              <button id="btnToggleStrikeAudit" class="bg-white hover:bg-gray-100 border border-black/30 font-bold px-2.5 py-1 min-h-[34px] text-[10px] uppercase transition cursor-pointer active:translate-x-0.5 active:translate-y-0.5 whitespace-nowrap shadow-sm">
+                AUDIT PEAKS [&#9660;]
+              </button>
+            </div>
+
+            <!-- Row 4: Collapsible Strike Peaks Audit List with JUMP and DELETE -->
+            <div id="panelStrikeAuditDrawer" class="hidden pt-2 border-t border-black/15 space-y-1.5 max-h-56 overflow-y-auto font-mono text-[10.5px]">
+              <div class="flex justify-between items-center text-gray-500 font-bold uppercase text-[9px] px-1">
+                <span>BLOW # &bull; TIME</span>
+                <span class="hidden sm:inline">PEAK &bull; CADENCE</span>
+                <span>AUDIT ACTIONS (JUMP / DEL)</span>
               </div>
               <div id="listStrikeAuditItems" class="space-y-1">
                 <!-- Injected via JavaScript -->
@@ -2242,6 +2253,12 @@
     btnStickyNextFoot.addEventListener("click", recordNextFootInterval);
 
     function recordNextFootInterval() {
+      // In recording playback mode, route to dedicated audio-timestamped foot logger
+      if (currentOperatingMode === "recording" && decodedAudioBufferData && recordingAnalysisData) {
+        recordPlaybackNextFoot();
+        return;
+      }
+
       const blowsInThisInterval = currentFootBlowCount;
       const currentSeconds = performance.now() / 1000;
       const intervalDurationSeconds = currentFootStartTime ? Math.max(1, Math.round(currentSeconds - currentFootStartTime)) : 0;
@@ -3877,6 +3894,11 @@
       recentStrikeIntervals = [];
       footLogEntries = [];
       strikeMarkerPositions = [];
+      playbackLastFootStrikes = 0;
+      playbackLastFootTime = 0;
+      playbackFootMarkers = [];
+      voiceBoostLevel = 0;
+      updateVoiceBoostButtonUi();
       lblTotalBlowCount.innerText = "0";
       lblCurrentFootBlowCount.innerText = "0";
       lblStickyFootBlows.innerText = "0";
@@ -4037,6 +4059,18 @@
     const btnToggleStrikeAudit = document.getElementById("btnToggleStrikeAudit");
     const panelStrikeAuditDrawer = document.getElementById("panelStrikeAuditDrawer");
     const listStrikeAuditItems = document.getElementById("listStrikeAuditItems");
+    const btnAudioPlaybackNextFoot = document.getElementById("btnAudioPlaybackNextFoot");
+    const btnToggleVoiceBoost = document.getElementById("btnToggleVoiceBoost");
+    const iconVoiceBoost = document.getElementById("iconVoiceBoost");
+    const txtVoiceBoost = document.getElementById("txtVoiceBoost");
+
+    let voiceBoostLevel = 0; // 0 = OFF, 1 = 1x MILD, 2 = 2x STRONG, 3 = 3x MAX MUTE GOLPES
+    let voiceBoostHighPassNode = null;
+    let voiceBoostPresenceNode = null;
+    let voiceBoostLowPassNode = null;
+    let voiceBoostCompressorNode = null;
+    let voiceBoostDuckerGainNode = null;
+    let voiceBoostGainNode = null;
 
     let decodedAudioBufferData = null;
     let recordingAnalysisData = null;
@@ -4046,6 +4080,9 @@
     let isAudioPlaying = false;
     let audioPlaybackSpeed = 1.0;
     let lastAudioFiredBlowNumber = -1;
+    let playbackLastFootStrikes = 0;
+    let playbackLastFootTime = 0;
+    let playbackFootMarkers = [];
 
     // Drag and Drop Listeners
     audioDropZone.addEventListener("click", () => audioFileInput.click());
@@ -4194,8 +4231,11 @@
         decodedAudioBufferData = await decodeAudioBufferUniversal(audioContext, file);
 
         btnProcessUploadedFile.innerText = "FILTERING...";
-        const lockoutSec = parseFloat(selectRecordingLockout.value) || 0.40;
+        const lockoutSec = parseFloat(selectRecordingLockout.value) || 0.65;
         analyzeUploadedAudioBuffer(decodedAudioBufferData, lockoutSec);
+        playbackLastFootStrikes = 0;
+        playbackLastFootTime = 0;
+        playbackFootMarkers = [];
 
         btnProcessUploadedFile.innerText = "RE-ANALYZE FILE";
         btnProcessUploadedFile.disabled = false;
@@ -4223,7 +4263,7 @@
 
     // High-Resolution DSP Strike Detection Algorithm
     // Normalization + High-pass filtering + Dynamic Adaptive Threshold + Local Peak Detection + Echo Lockout
-    function analyzeUploadedAudioBuffer(audioBuffer, lockoutSec = 0.40) {
+    function analyzeUploadedAudioBuffer(audioBuffer, lockoutSec = 0.65) {
       const rawPcm = audioBuffer.getChannelData(0);
       const sr = audioBuffer.sampleRate;
       const duration = audioBuffer.duration;
@@ -4385,31 +4425,35 @@
       renderStrikeAuditList();
     }
 
-    // Populate expandable strike audit list
+    // Populate expandable strike audit list with JUMP and DELETE actions
     function renderStrikeAuditList() {
       if (!recordingAnalysisData || !listStrikeAuditItems) return;
       listStrikeAuditItems.innerHTML = "";
 
       const strikes = recordingAnalysisData.validStrikes;
       if (strikes.length === 0) {
-        listStrikeAuditItems.innerHTML = '<div class="text-gray-400 p-2 text-center">No strikes detected. Try lowering lockout filter.</div>';
+        listStrikeAuditItems.innerHTML = '<div class="text-gray-400 p-2 text-center">No strikes detected. Try adjusting lockout filter.</div>';
         return;
       }
 
       const fragment = document.createDocumentFragment();
-      strikes.forEach((s) => {
+      strikes.forEach((s, idx) => {
         const row = document.createElement("div");
-        row.className = "flex items-center justify-between p-1 bg-chalk hover:bg-gray-200 border border-black/15 transition";
+        row.className = "flex items-center justify-between p-1.5 bg-chalk hover:bg-gray-100 border border-black/15 transition gap-1";
         row.innerHTML = `
-          <div>
+          <div class="flex items-center space-x-1 min-w-[72px]">
             <strong class="text-signal">#${s.blowNumber}</strong> &bull; <span class="font-bold text-ink">${formatTimeMs(s.timeSec)}</span>
           </div>
-          <div class="text-gray-600 text-[10px]">
-            Peak: ${(s.amplitude * 100).toFixed(0)}% | ${s.instBpm > 0 ? s.instBpm + ' BPM' : '1st Strike'}
+          <div class="text-gray-600 text-[10px] hidden sm:block">
+            Peak: ${(s.amplitude * 100).toFixed(0)}% | ${s.instBpm > 0 ? s.instBpm + ' BPM' : '1st'}
           </div>
-          <div>
-            <button onclick="jumpToStrikeTime(${s.timeSec})" class="bg-ink hover:bg-signal text-white font-bold px-2 py-0.5 text-[9px] uppercase transition cursor-pointer">
+          <div class="flex items-center space-x-1">
+            <button onclick="jumpToStrikeTime(${s.timeSec})" class="bg-ink hover:bg-signal text-white font-bold px-2 py-0.5 text-[9px] uppercase transition cursor-pointer" title="Jump playback to this strike">
               JUMP &#9654;
+            </button>
+            <button onclick="deleteStrikePeak(${idx})" class="bg-red-600 hover:bg-red-700 text-white font-bold px-2 py-0.5 text-[9px] uppercase transition cursor-pointer flex items-center space-x-0.5" title="Delete false peak (echo, warmup, non-strike)">
+              <i class="ph-bold ph-trash"></i>
+              <span>DEL</span>
             </button>
           </div>
         `;
@@ -4418,16 +4462,76 @@
       listStrikeAuditItems.appendChild(fragment);
     }
 
+    // Exclude / delete false positive peak from recording audit
+    window.getFootLogEntries = function() { return footLogEntries; };
+    window.recordPlaybackNextFoot = recordPlaybackNextFoot;
+    window.getRecordingAnalysisData = function() { return recordingAnalysisData; };
+    window.setRecordingAnalysisData = function(d) { recordingAnalysisData = d; };
+    window.setDecodedAudioBuffer = function(b) { decodedAudioBufferData = b; };
+    window.getPlaybackFootMarkers = function() { return playbackFootMarkers; };
+    window.toggleVoiceBoostMode = toggleVoiceBoostMode;
+    window.getVoiceBoostLevel = function() { return voiceBoostLevel; };
+    window.setVoiceBoostLevel = function(lvl) { 
+      voiceBoostLevel = lvl; 
+      updateVoiceBoostButtonUi();
+      if (isAudioPlaying && audioPlaybackSourceNode) routePlaybackSource(audioPlaybackSourceNode);
+    };
+    window.deleteStrikePeak = function(idx) {
+      if (!recordingAnalysisData || !recordingAnalysisData.validStrikes) return;
+      if (idx < 0 || idx >= recordingAnalysisData.validStrikes.length) return;
+
+      const removed = recordingAnalysisData.validStrikes.splice(idx, 1)[0];
+      
+      // Move to rejectedEchoes for audit record
+      recordingAnalysisData.rejectedEchoes.push({
+        timeSec: removed.timeSec,
+        amplitude: removed.amplitude,
+        reason: "MANUAL_AUDIT_EXCLUDED",
+        timeSinceLastMs: 0
+      });
+
+      // Renumber remaining strikes
+      recordingAnalysisData.validStrikes.forEach((s, i) => {
+        s.blowNumber = i + 1;
+      });
+
+      // Recalculate average cadence BPM
+      let calculatedBpm = "0.0";
+      const remainingStrikes = recordingAnalysisData.validStrikes;
+      if (remainingStrikes.length > 1) {
+        const firstTime = remainingStrikes[0].timeSec;
+        const lastTime = remainingStrikes[remainingStrikes.length - 1].timeSec;
+        const durationSec = lastTime - firstTime;
+        if (durationSec > 0) {
+          calculatedBpm = ((remainingStrikes.length - 1) / (durationSec / 60.0)).toFixed(1);
+        }
+      }
+      recordingAnalysisData.calculatedBpm = calculatedBpm;
+
+      // Update foot markers strike counts if any
+      if (playbackFootMarkers && playbackFootMarkers.length > 0) {
+        playbackFootMarkers.forEach(m => {
+          m.strikeCount = remainingStrikes.filter(s => s.timeSec <= m.timeSec).length;
+        });
+        playbackLastFootStrikes = playbackFootMarkers[playbackFootMarkers.length - 1].strikeCount;
+      }
+
+      // Update UI metrics, badges, and audit list
+      updateRecordingDiagnosticsUi();
+
+      showToast(`Strike #${removed.blowNumber} at ${formatTimeMs(removed.timeSec)} deleted. Remaining blows: ${remainingStrikes.length}`);
+    };
+
     // Toggle strike audit drawer
     btnToggleStrikeAudit.addEventListener("click", () => {
       const isHidden = panelStrikeAuditDrawer.classList.toggle("hidden");
-      btnToggleStrikeAudit.innerText = isHidden ? "LIST PEAKS [▼]" : "HIDE PEAKS [▲]";
+      btnToggleStrikeAudit.innerText = isHidden ? "AUDIT PEAKS [▼]" : "HIDE PEAKS [▲]";
     });
 
-    // Re-analyze when Lockout Filter is changed
+    // Re-analyze when Lockout Filter is changed (defaults to 0.65s Gravity Drop Hammer)
     selectRecordingLockout.addEventListener("change", () => {
       if (decodedAudioBufferData) {
-        const lockoutSec = parseFloat(selectRecordingLockout.value) || 0.40;
+        const lockoutSec = parseFloat(selectRecordingLockout.value) || 0.65;
         analyzeUploadedAudioBuffer(decodedAudioBufferData, lockoutSec);
         showToast(`Lockout updated to ${lockoutSec}s (${selectRecordingLockout.options[selectRecordingLockout.selectedIndex].text})`);
       }
@@ -4438,6 +4542,294 @@
       seekAudioPlayback(Math.max(0, targetSec - 0.6));
       if (!isAudioPlaying) startAudioPlayback(audioPlaybackOffset);
     };
+
+    // Dedicated Audio Playback Next Foot Action
+    function recordPlaybackNextFoot() {
+      if (!decodedAudioBufferData || !recordingAnalysisData) return;
+
+      const curTime = getCurrentPlaybackTime();
+      const strikesPassed = recordingAnalysisData.validStrikes.filter(s => s.timeSec <= curTime + 0.04).length;
+      const blowsInThisInterval = Math.max(0, strikesPassed - playbackLastFootStrikes);
+
+      // Interval timing in playback
+      const strikesInThisInterval = recordingAnalysisData.validStrikes.filter(s => s.timeSec > (playbackLastFootTime || 0) && s.timeSec <= curTime + 0.04);
+      let intervalAverageBpm = "0.0";
+      if (strikesInThisInterval.length > 1) {
+        const t1 = strikesInThisInterval[0].timeSec;
+        const t2 = strikesInThisInterval[strikesInThisInterval.length - 1].timeSec;
+        const dur = t2 - t1;
+        if (dur > 0) {
+          intervalAverageBpm = ((strikesInThisInterval.length - 1) / (dur / 60)).toFixed(1);
+        }
+      } else {
+        intervalAverageBpm = recordingAnalysisData.calculatedBpm || "0.0";
+      }
+
+      const durationSec = Math.max(1, Math.round(curTime - (playbackLastFootTime || 0)));
+      playbackLastFootTime = curTime;
+      playbackLastFootStrikes = strikesPassed;
+
+      let intervalDisplay = "";
+      let complianceText = "PASS";
+      let complianceBadgeClass = "bg-emerald/10 text-emerald border-emerald font-bold";
+      let endingDepthFeet = currentDepthFeet;
+      let endingDepthInches = currentDepthInches;
+
+      if (currentIntervalUnit === "ft") {
+        const startingDepth = currentDepthFeet;
+        endingDepthFeet = currentDepthFeet + 1;
+        intervalDisplay = `${startingDepth}' &rarr; ${endingDepthFeet}'`;
+
+        const isCompliancePassing = blowsInThisInterval <= 120;
+        const isPracticalRefusalReached = blowsInThisInterval >= 240;
+
+        if (isPracticalRefusalReached) {
+          complianceText = "REFUSAL";
+          complianceBadgeClass = "bg-signal text-white border-signal font-black animate-pulse";
+        } else if (!isCompliancePassing) {
+          complianceText = "HIGH RESIST";
+          complianceBadgeClass = "bg-amber-100 text-amber-900 border-amber-600 font-bold";
+        } else {
+          complianceText = "PASS";
+          complianceBadgeClass = "bg-emerald/10 text-emerald border-emerald font-bold";
+        }
+
+        currentDepthFeet = endingDepthFeet;
+        if (inputCurrentDepthFeet) inputCurrentDepthFeet.value = currentDepthFeet;
+      } else {
+        // INCHES MODE
+        const startFeet = currentDepthFeet;
+        const startInches = currentDepthInches;
+        endingDepthFeet = currentDepthFeet;
+        endingDepthInches = currentDepthInches + 1;
+        if (endingDepthInches >= 12) {
+          endingDepthFeet = currentDepthFeet + 1;
+          endingDepthInches = 0;
+        }
+        intervalDisplay = `${startFeet}' ${startInches}" &rarr; ${endingDepthFeet}' ${endingDepthInches}"`;
+
+        const isPracticalRefusalReached = blowsInThisInterval >= 20;
+        if (isPracticalRefusalReached) {
+          complianceText = "REFUSAL";
+          complianceBadgeClass = "bg-signal text-white border-signal font-black animate-pulse";
+        } else {
+          complianceText = "PASS";
+          complianceBadgeClass = "bg-emerald/10 text-emerald border-emerald font-bold";
+        }
+
+        currentDepthFeet = endingDepthFeet;
+        currentDepthInches = endingDepthInches;
+        if (inputCurrentDepthFeet) inputCurrentDepthFeet.value = currentDepthFeet;
+        if (inputCurrentDepthInches) inputCurrentDepthInches.value = currentDepthInches;
+      }
+
+      // Read custom interval comment if any
+      const inputIntervalComment = document.getElementById("inputIntervalComment");
+      let intervalComment = inputIntervalComment ? inputIntervalComment.value.trim() : "";
+      if (!intervalComment && complianceText === "REFUSAL") {
+        intervalComment = "REFUSAL";
+      }
+
+      // Add to Log Entries Array
+      footLogEntries.unshift({
+        intervalDisplay: intervalDisplay,
+        unit: currentIntervalUnit.toUpperCase(),
+        blowsPerFoot: blowsInThisInterval,
+        cumulativeTotal: strikesPassed,
+        averageBpm: intervalAverageBpm,
+        durationFormatted: `${durationSec}s`,
+        complianceText: complianceText,
+        complianceBadgeClass: complianceBadgeClass,
+        depthNum: currentDepthFeet,
+        depthFeet: endingDepthFeet,
+        depthInches: endingDepthInches,
+        startFeet: (currentIntervalUnit === "in" ? currentDepthFeet : currentDepthFeet - 1),
+        startInches: (currentIntervalUnit === "in" ? (endingDepthInches > 0 ? endingDepthInches - 1 : 11) : 0),
+        comment: intervalComment
+      });
+
+      // Record visual foot boundary marker on oscilloscope
+      playbackFootMarkers.push({
+        timeSec: curTime,
+        strikeCount: strikesPassed,
+        depthLabel: `${endingDepthFeet}'`,
+        blows: blowsInThisInterval
+      });
+
+      if (inputIntervalComment) inputIntervalComment.value = "";
+      updateDepthInterface();
+
+      // Reset Current Foot Counter in UI & Cockpit
+      currentFootBlowCount = 0;
+      lblCurrentFootBlowCount.innerText = "0";
+      lblStickyFootBlows.innerText = "0";
+      updateComplianceBadge(0);
+
+      playFootAdvanceChime();
+      triggerHapticFeedback('foot');
+
+      renderFootLogTable();
+      saveSessionToLocalStorage();
+
+      showToast(`Recorded ${intervalDisplay} (${blowsInThisInterval} blows at ${formatTimeMs(curTime)})`);
+    }
+
+    // ==============================================================
+    // 3-LEVEL VOICE BOOST & HAMMER SUPPRESSION DSP ENGINE (Web Audio API)
+    // Level 1 (1x MILD): 350Hz High-Pass + +8dB Vocal EQ + 12:1 Compression
+    // Level 2 (2x STRONG): 480Hz High-Pass + +12dB Vocal EQ + 18:1 Limiter + 75% Ducking
+    // Level 3 (3x MAX MUTE): 650Hz High-Pass + +16dB Vocal EQ + 20:1 Brickwall + 95% Ducking
+    // ==============================================================
+    function setupPlaybackAudioGraph() {
+      if (!audioContext) return;
+
+      if (!voiceBoostHighPassNode) {
+        // 1. High-Pass Filter (removes hammer low-end & engine rumble)
+        voiceBoostHighPassNode = audioContext.createBiquadFilter();
+        voiceBoostHighPassNode.type = "highpass";
+        voiceBoostHighPassNode.frequency.value = 350;
+        voiceBoostHighPassNode.Q.value = 0.8;
+
+        // 2. Vocal Presence Peaking Filter (amplifies speech formants & spoken numbers)
+        voiceBoostPresenceNode = audioContext.createBiquadFilter();
+        voiceBoostPresenceNode.type = "peaking";
+        voiceBoostPresenceNode.frequency.value = 2200;
+        voiceBoostPresenceNode.Q.value = 1.2;
+        voiceBoostPresenceNode.gain.value = 8.0;
+
+        // 3. Low-Pass Filter (removes high wind & metal clatter)
+        voiceBoostLowPassNode = audioContext.createBiquadFilter();
+        voiceBoostLowPassNode.type = "lowpass";
+        voiceBoostLowPassNode.frequency.value = 4500;
+        voiceBoostLowPassNode.Q.value = 0.7;
+
+        // 4. Fast Dynamics Compressor / Limiter (clamps loud bangs down to vocal level)
+        voiceBoostCompressorNode = audioContext.createDynamicsCompressor();
+        voiceBoostCompressorNode.threshold.value = -26;
+        voiceBoostCompressorNode.knee.value = 10;
+        voiceBoostCompressorNode.ratio.value = 12;
+        voiceBoostCompressorNode.attack.value = 0.003;
+        voiceBoostCompressorNode.release.value = 0.12;
+
+        // 5. Transient Strike Ducker Node (dynamically ducks during hammer impact)
+        voiceBoostDuckerGainNode = audioContext.createGain();
+        voiceBoostDuckerGainNode.gain.value = 1.0;
+
+        // 6. Make-up Gain Node (boosts speech volume into clear audibility)
+        voiceBoostGainNode = audioContext.createGain();
+        voiceBoostGainNode.gain.value = 1.8;
+
+        // Connect DSP chain in series:
+        voiceBoostHighPassNode.connect(voiceBoostPresenceNode);
+        voiceBoostPresenceNode.connect(voiceBoostLowPassNode);
+        voiceBoostLowPassNode.connect(voiceBoostCompressorNode);
+        voiceBoostCompressorNode.connect(voiceBoostDuckerGainNode);
+        voiceBoostDuckerGainNode.connect(voiceBoostGainNode);
+        voiceBoostGainNode.connect(audioContext.destination);
+      }
+    }
+
+    function applyVoiceBoostLevelParams(level) {
+      if (!audioContext || !voiceBoostHighPassNode) return;
+
+      if (level === 1) {
+        // 1x MILD: Sub-bass removal + gentle speech lift
+        voiceBoostHighPassNode.frequency.value = 350;
+        voiceBoostHighPassNode.Q.value = 0.8;
+        voiceBoostPresenceNode.frequency.value = 2200;
+        voiceBoostPresenceNode.gain.value = 8.0;
+        voiceBoostLowPassNode.frequency.value = 4500;
+        voiceBoostCompressorNode.threshold.value = -26;
+        voiceBoostCompressorNode.ratio.value = 12;
+        voiceBoostCompressorNode.attack.value = 0.003;
+        voiceBoostCompressorNode.release.value = 0.12;
+        voiceBoostGainNode.gain.value = 1.8;
+      } else if (level === 2) {
+        // 2x STRONG: Heavy hammer body attenuation + telephone speech band + moderate ducking
+        voiceBoostHighPassNode.frequency.value = 480;
+        voiceBoostHighPassNode.Q.value = 1.0;
+        voiceBoostPresenceNode.frequency.value = 2400;
+        voiceBoostPresenceNode.gain.value = 12.0;
+        voiceBoostLowPassNode.frequency.value = 3600;
+        voiceBoostCompressorNode.threshold.value = -34;
+        voiceBoostCompressorNode.ratio.value = 18;
+        voiceBoostCompressorNode.attack.value = 0.002;
+        voiceBoostCompressorNode.release.value = 0.09;
+        voiceBoostGainNode.gain.value = 2.6;
+      } else if (level === 3) {
+        // 3x MAX MUTE: Aggressive strike notch + max vocal projection + 95% transient ducking
+        voiceBoostHighPassNode.frequency.value = 650;
+        voiceBoostHighPassNode.Q.value = 1.2;
+        voiceBoostPresenceNode.frequency.value = 2500;
+        voiceBoostPresenceNode.gain.value = 16.0;
+        voiceBoostLowPassNode.frequency.value = 3200;
+        voiceBoostCompressorNode.threshold.value = -42;
+        voiceBoostCompressorNode.ratio.value = 20;
+        voiceBoostCompressorNode.attack.value = 0.001;
+        voiceBoostCompressorNode.release.value = 0.08;
+        voiceBoostGainNode.gain.value = 3.6;
+      }
+    }
+
+    function routePlaybackSource(sourceNode) {
+      if (!sourceNode || !audioContext) return;
+      setupPlaybackAudioGraph();
+
+      try {
+        sourceNode.disconnect();
+      } catch (e) {}
+
+      if (voiceBoostLevel > 0) {
+        applyVoiceBoostLevelParams(voiceBoostLevel);
+        sourceNode.connect(voiceBoostHighPassNode);
+      } else {
+        if (voiceBoostDuckerGainNode) {
+          voiceBoostDuckerGainNode.gain.setValueAtTime(1.0, audioContext.currentTime);
+        }
+        sourceNode.connect(audioContext.destination);
+      }
+    }
+
+    function toggleVoiceBoostMode() {
+      // Cycle: 0 (OFF) -> 1 (1x MILD) -> 2 (2x STRONG) -> 3 (3x MAX MUTE) -> 0 (OFF)
+      voiceBoostLevel = (voiceBoostLevel + 1) % 4;
+      updateVoiceBoostButtonUi();
+
+      if (isAudioPlaying && audioPlaybackSourceNode) {
+        routePlaybackSource(audioPlaybackSourceNode);
+      }
+
+      if (voiceBoostLevel === 0) {
+        showToast("Voice Boost OFF: Playing original raw field audio.");
+      } else if (voiceBoostLevel === 1) {
+        showToast("Voice Boost 1x (MILD): Sub-bass rumble filtered, speech clarity boosted.");
+      } else if (voiceBoostLevel === 2) {
+        showToast("Voice Boost 2x (STRONG): Heavy hammer suppression, telephone speech band.");
+      } else if (voiceBoostLevel === 3) {
+        showToast("Voice Boost 3x (MAX MUTE): Hammer strikes ducked (-26dB), maximum voice isolation!");
+      }
+    }
+
+    function updateVoiceBoostButtonUi() {
+      if (!btnToggleVoiceBoost) return;
+      if (voiceBoostLevel === 0) {
+        btnToggleVoiceBoost.className = "bg-chalk hover:bg-amber-100 text-ink border border-black/30 font-bold px-2.5 py-1 min-h-[38px] text-[11px] uppercase transition cursor-pointer active:translate-x-0.5 active:translate-y-0.5 flex items-center space-x-1";
+        if (iconVoiceBoost) iconVoiceBoost.className = "ph-bold ph-waveform text-sm text-gray-500";
+        if (txtVoiceBoost) txtVoiceBoost.innerText = "VOICE BOOST [OFF]";
+      } else if (voiceBoostLevel === 1) {
+        btnToggleVoiceBoost.className = "bg-amber-400 hover:bg-amber-500 text-black border border-amber-600 font-black px-2.5 py-1 min-h-[38px] text-[11px] uppercase transition cursor-pointer active:translate-x-0.5 active:translate-y-0.5 flex items-center space-x-1 shadow-sm";
+        if (iconVoiceBoost) iconVoiceBoost.className = "ph-bold ph-speaker-low text-sm text-black";
+        if (txtVoiceBoost) txtVoiceBoost.innerText = "VOICE BOOST [1x]";
+      } else if (voiceBoostLevel === 2) {
+        btnToggleVoiceBoost.className = "bg-orange-500 hover:bg-orange-600 text-white border border-orange-700 font-black px-2.5 py-1 min-h-[38px] text-[11px] uppercase transition cursor-pointer active:translate-x-0.5 active:translate-y-0.5 flex items-center space-x-1 shadow-sm";
+        if (iconVoiceBoost) iconVoiceBoost.className = "ph-bold ph-speaker-high text-sm text-white";
+        if (txtVoiceBoost) txtVoiceBoost.innerText = "VOICE BOOST [2x]";
+      } else if (voiceBoostLevel === 3) {
+        btnToggleVoiceBoost.className = "bg-red-600 hover:bg-red-700 text-white border border-red-800 font-black px-2.5 py-1 min-h-[38px] text-[11px] uppercase transition cursor-pointer active:translate-x-0.5 active:translate-y-0.5 flex items-center space-x-1 shadow-md animate-pulse";
+        if (iconVoiceBoost) iconVoiceBoost.className = "ph-bold ph-shield-check text-sm text-white";
+        if (txtVoiceBoost) txtVoiceBoost.innerText = "VOICE BOOST [3x MAX]";
+      }
+    }
 
     // ==============================================================
     // AUDIO PLAYBACK TRANSPORT ENGINE (Web Audio API)
@@ -4453,7 +4845,7 @@
       audioPlaybackSourceNode = audioContext.createBufferSource();
       audioPlaybackSourceNode.buffer = decodedAudioBufferData;
       audioPlaybackSourceNode.playbackRate.value = audioPlaybackSpeed;
-      audioPlaybackSourceNode.connect(audioContext.destination);
+      routePlaybackSource(audioPlaybackSourceNode);
 
       audioPlaybackOffset = Math.max(0, Math.min(offsetSec, decodedAudioBufferData.duration));
       audioPlaybackStartTime = audioContext.currentTime;
@@ -4539,7 +4931,13 @@
       }
     }
 
-    // Transport Button Listeners
+    // Transport & Playback Foot Log Button Listeners
+    if (btnAudioPlaybackNextFoot) {
+      btnAudioPlaybackNextFoot.addEventListener("click", recordPlaybackNextFoot);
+    }
+    if (btnToggleVoiceBoost) {
+      btnToggleVoiceBoost.addEventListener("click", toggleVoiceBoostMode);
+    }
     btnAudioPlayPause.addEventListener("click", toggleAudioPlayback);
     btnAudioRewind5.addEventListener("click", () => seekAudioPlayback(getCurrentPlaybackTime() - 5.0));
     btnAudioForward5.addEventListener("click", () => seekAudioPlayback(getCurrentPlaybackTime() + 5.0));
@@ -4735,6 +5133,57 @@
         }
       }
 
+      // 5.4 Active Voice Boost Indicator Tag & Real-Time Strike Ducking
+      if (voiceBoostLevel > 0) {
+        const badgeColors = ["", "rgba(245, 158, 11, 0.9)", "rgba(249, 115, 22, 0.9)", "rgba(220, 38, 38, 0.95)"];
+        const badgeTexts = ["", "VOICE BOOST: 1x (MILD)", "VOICE BOOST: 2x (STRONG)", "VOICE BOOST: 3x (MAX MUTE)"];
+        canvasContext.fillStyle = badgeColors[voiceBoostLevel] || "rgba(245, 158, 11, 0.9)";
+        canvasContext.fillRect(canvasWidth - 150, 4, 145, 16);
+        canvasContext.fillStyle = "#ffffff";
+        canvasContext.font = "bold 8.5px 'JetBrains Mono', monospace";
+        canvasContext.textAlign = "center";
+        canvasContext.fillText(badgeTexts[voiceBoostLevel] || "VOICE BOOST", canvasWidth - 77, 15);
+
+        // Real-time Strike Peak Ducking during hammer impacts for Level 2 and Level 3
+        if (voiceBoostLevel >= 2 && voiceBoostDuckerGainNode && recordingAnalysisData && recordingAnalysisData.validStrikes) {
+          const isNearStrike = recordingAnalysisData.validStrikes.some(s => Math.abs(curTime - s.timeSec) < 0.045);
+          if (isNearStrike) {
+            // Mute / duck transient impact: 95% reduction (-26dB) for 3x, 75% (-12dB) for 2x
+            const duckGain = (voiceBoostLevel === 3) ? 0.05 : 0.25;
+            voiceBoostDuckerGainNode.gain.setValueAtTime(duckGain, audioContext.currentTime);
+          } else {
+            // Full volume for spoken voice
+            voiceBoostDuckerGainNode.gain.setValueAtTime(1.0, audioContext.currentTime);
+          }
+        }
+      } else if (voiceBoostDuckerGainNode) {
+        voiceBoostDuckerGainNode.gain.setValueAtTime(1.0, audioContext.currentTime);
+      }
+
+      // 5.5 Foot Boundary Markers recorded by inspector during playback
+      if (playbackFootMarkers && playbackFootMarkers.length > 0) {
+        for (let marker of playbackFootMarkers) {
+          if (marker.timeSec >= startTime && marker.timeSec <= endTime) {
+            const mx = timeToCanvasX(marker.timeSec);
+            canvasContext.strokeStyle = "#059669";
+            canvasContext.lineWidth = 1.8;
+            canvasContext.setLineDash([4, 2]);
+            canvasContext.beginPath();
+            canvasContext.moveTo(mx, 0);
+            canvasContext.lineTo(mx, canvasHeight);
+            canvasContext.stroke();
+            canvasContext.setLineDash([]);
+
+            canvasContext.fillStyle = "#059669";
+            canvasContext.fillRect(mx - 22, 0, 44, 15);
+            canvasContext.fillStyle = "#ffffff";
+            canvasContext.font = "bold 8.5px 'JetBrains Mono', monospace";
+            canvasContext.textAlign = "center";
+            canvasContext.fillText(marker.depthLabel, mx, 11);
+          }
+        }
+      }
+
       // 6. Playhead Cursor (Signal Orange Center Line with Live Time Badge)
       canvasContext.strokeStyle = "#ff4400";
       canvasContext.lineWidth = 2.0;
@@ -4766,11 +5215,24 @@
 
       // Real-time passed count synchronization as playhead sweeps:
       const strikesPassed = recordingAnalysisData.validStrikes.filter(s => s.timeSec <= curTime + 0.04).length;
+      let baseStrikes = 0;
+      if (playbackFootMarkers && playbackFootMarkers.length > 0) {
+        for (let i = playbackFootMarkers.length - 1; i >= 0; i--) {
+          if (playbackFootMarkers[i].timeSec <= curTime) {
+            baseStrikes = playbackFootMarkers[i].strikeCount;
+            break;
+          }
+        }
+      } else {
+        baseStrikes = playbackLastFootStrikes || 0;
+      }
+      const currentFootBlows = Math.max(0, strikesPassed - baseStrikes);
+
       lblTotalBlowCount.innerText = strikesPassed;
-      lblCurrentFootBlowCount.innerText = strikesPassed;
+      lblCurrentFootBlowCount.innerText = currentFootBlows;
       lblStickyTotalBlows.innerText = strikesPassed;
-      lblStickyFootBlows.innerText = strikesPassed;
-      updateComplianceBadge(strikesPassed);
+      lblStickyFootBlows.innerText = currentFootBlows;
+      updateComplianceBadge(currentFootBlows);
 
       // Keep scrubber & time display synchronized during playback
       if (isAudioPlaying) {
